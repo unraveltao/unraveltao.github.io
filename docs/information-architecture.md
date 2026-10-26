@@ -96,7 +96,7 @@
 | `<html lang>` | `zh-CN` |
 | `<title>` | 文章页 `{title} · {站名}`；其余 `{站名} — {tagline}` |
 | `description` | 取 `summary`，长度 140–160 字符 |
-| canonical | 每页绝对 URL，无尾斜杠 |
+| canonical | 每页绝对 URL，带尾斜杠 |
 | OG / Twitter | `og:type=article`（文章页）、`og:image` 为构建期生成的 1200×630 PNG |
 | OG 图模板 | 纸白底 + `#0F6E56` 细线 + 标题（最多 2 行）+ 站名，字体与站点一致 |
 | JSON-LD | 文章页注入 `BlogPosting`：`headline`、`datePublished`、`dateModified`、`author`、`image`、`inLanguage: zh-CN` |
@@ -114,7 +114,7 @@
 
 ## 6. URL 不变式
 
-1. 永不带尾斜杠（`trailingSlash: 'never'`）。
+1. 所有页面 URL **带尾斜杠**（`trailingSlash: 'always'`）。GitHub Pages 是目录式托管，不带斜杠会被 301 到带斜杠版本，两个 URL 并存会让 canonical 指向一个会跳转的地址。
 2. slug 全小写 kebab-case，**一经发布永不修改**。
 3. URL 里不出现日期。
 4. 分页（若将来引入）不用 `?page=`，用 `/posts/page/2`。

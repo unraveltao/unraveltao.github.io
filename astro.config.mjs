@@ -6,7 +6,8 @@ export default defineConfig({
   // 用户站点部署在根路径，不需要 base
   site: 'https://unraveltao.github.io',
   output: 'static',
-  trailingSlash: 'never',
+  // GitHub Pages 是目录式托管，无尾斜杠会被 301，所以全站统一带尾斜杠
+  trailingSlash: 'always',
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {

@@ -4,11 +4,11 @@ import ThemeToggle from './ThemeToggle.astro';
 
 const pathname = Astro.url.pathname;
 const items = [
-  { href: '/posts', label: 'writing' },
-  { href: '/tags', label: 'tags' },
-  { href: '/about', label: 'about' },
+  { href: '/posts/', label: 'writing' },
+  { href: '/tags/', label: 'tags' },
+  { href: '/about/', label: 'about' },
 ];
-const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+const isActive = (href: string) => pathname.startsWith(href);
 ---
 
 <header class="nav" id="site-nav">

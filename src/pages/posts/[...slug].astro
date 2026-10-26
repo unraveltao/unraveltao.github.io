@@ -60,7 +60,7 @@ const seriesPosition = seriesKey ? seriesPosts.findIndex((p) => p.id === post.id
               post.data.tags.map((tag) => (
                 <>
                   <span class="dot">·</span>
-                  <a class="tag" href={`/tags/${tag}`}>
+                  <a class="tag" href={`/tags/${tag}/`}>
                     #{tag}
                   </a>
                 </>
@@ -87,7 +87,7 @@ const seriesPosition = seriesKey ? seriesPosts.findIndex((p) => p.id === post.id
                     {item.id === post.id ? (
                       <span>{item.data.title}</span>
                     ) : (
-                      <a href={`/posts/${item.id}`}>{item.data.title}</a>
+                      <a href={`/posts/${item.id}/`}>{item.data.title}</a>
                     )}
                   </li>
                 ))}
@@ -100,7 +100,7 @@ const seriesPosition = seriesKey ? seriesPosts.findIndex((p) => p.id === post.id
           <div class="post-nav__side">
             {
               older && (
-                <a href={`/posts/${older.id}`}>
+                <a href={`/posts/${older.id}/`}>
                   <span class="meta">← 上一篇</span>
                   <span class="post-nav__title">{older.data.title}</span>
                 </a>
@@ -110,7 +110,7 @@ const seriesPosition = seriesKey ? seriesPosts.findIndex((p) => p.id === post.id
           <div class="post-nav__side post-nav__side--right">
             {
               newer && (
-                <a href={`/posts/${newer.id}`}>
+                <a href={`/posts/${newer.id}/`}>
                   <span class="meta">下一篇 →</span>
                   <span class="post-nav__title">{newer.data.title}</span>
                 </a>

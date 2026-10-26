@@ -36,7 +36,7 @@ const description = seriesDescription(key);
         posts.map((post, i) => (
           <li>
             <span class="meta series-list__index">{String(i + 1).padStart(2, '0')}</span>
-            <a href={`/posts/${post.id}`}>
+            <a href={`/posts/${post.id}/`}>
               <span class="series-list__title">{post.data.title}</span>
               <span class="series-list__summary">{post.data.summary}</span>
             </a>

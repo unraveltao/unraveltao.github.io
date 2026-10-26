@@ -4,4 +4,4 @@
 
 **Considered Options**：`blog.github` 这类项目站点要加 `base` 前缀并改写所有内部链接，URL 还多一层；Cloudflare Pages 访问更稳，但要额外维护一个平台。
 
-**Consequences**：站点 URL 被仓库名锁死，改仓库名等于改 URL 且没有跳转；GitHub Pages 在国内访问速度不稳定。将来若绑自定义域名，只需加 CNAME、改 `site` 一处，不影响代码结构。
+**Consequences**：站点 URL 被仓库名锁死，改仓库名等于改 URL 且没有跳转；GitHub Pages 在国内访问速度不稳定。GitHub Pages 是目录式托管，`/posts/x` 会被 301 到 `/posts/x/`，所以全站改成 `trailingSlash: 'always'`——原先"永不带尾斜杠"的约定在它上面无法成立。将来若绑自定义域名，只需加 CNAME、改 `site` 一处，不影响代码结构。

@@ -10,7 +10,7 @@ const { post } = Astro.props;
 ---
 
 <li class="post-item">
-  <a class="post-item__link" href={`/posts/${post.id}`}>
+  <a class="post-item__link" href={`/posts/${post.id}/`}>
     <time class="meta post-item__date" datetime={formatDate(post.data.date)}>
       {formatDate(post.data.date)}
     </time>

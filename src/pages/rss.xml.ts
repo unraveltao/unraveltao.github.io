@@ -14,7 +14,7 @@ export async function GET(context: APIContext) {
       title: post.data.title,
       pubDate: post.data.date,
       description: post.data.summary,
-      link: `/posts/${post.id}`,
+      link: `/posts/${post.id}/`,
       // TODO(M1): 用容器 API 渲染成 HTML，目前输出的是 MDX 原文（已去掉 import 行）
       content: (post.body ?? '').replace(/^import .*$/gm, ''),
     })),

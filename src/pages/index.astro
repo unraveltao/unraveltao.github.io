@@ -21,7 +21,7 @@ const rest = posts.filter((post) => post.id !== featured?.id).slice(0, 10);
       featured && (
         <section class="featured">
           <p class="meta featured__label">selected</p>
-          <a class="featured__link" href={`/posts/${featured.id}`}>
+          <a class="featured__link" href={`/posts/${featured.id}/`}>
             <h2 class="featured__title">{featured.data.title}</h2>
             <p class="featured__summary">{featured.data.summary}</p>
             <p class="meta">

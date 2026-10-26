@@ -126,7 +126,7 @@ Series 不是实体，只是两个字段；Project 退化为一个字符串字�
 /rss.xml  /sitemap-index.xml  /404
 ```
 
-URL 不变式：无尾斜杠、无日期、slug 全小写且**发布后永不修改**、中文不进 URL。
+URL 不变式：带尾斜杠、无日期、slug 全小写且**发布后永不修改**、中文不进 URL。
 页面组成与 SEO / JSON-LD / RSS 规格见 [information-architecture.md](./information-architecture.md)。
 
 ## 7. 设计与体验
