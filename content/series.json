@@ -1,0 +1,6 @@
+{
+  "lattice-teardown": {
+    "name": "lattice 拆解",
+    "description": "把一个 Tauri 应用从架构到落地拆开看：为什么这么切模块、哪些地方是妥协、代价是多少。"
+  }
+}

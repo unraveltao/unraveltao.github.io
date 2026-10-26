@@ -1,0 +1,50 @@
+---
+title: "把状态机从 UI 里抽出来之后，代码少了三分之一"
+summary: "编辑器有 14 个交互状态，散在 9 个组件里时没人说得清。收敛成一个显式状态机后，删掉了大量防御性 if。"
+date: 2026-10-22
+tags: [tauri, rust]
+series: lattice-teardown
+order: 2
+project: lattice
+---
+
+## 症状
+
+编辑器面板的 bug 有一个共同特征：**复现路径超过五步就没人能稳定复现**。这不是玄学，是状态空间没有被显式表达——每个组件各自持有几个 `isLoading` / `isEditing` / `hasError` 布尔值，组合起来是 2 的 N 次方。
+
+最典型的一次：用户在全选状态下按了删除，同时后台的自动保存刚好回来，结果是「已保存的空文档」覆盖了磁盘上正确的内容。三个组件各自都「正确」，组合起来是错的。
+
+## 做法
+
+把所有布尔量换成一个枚举，并把转移写成显式的：
+
+```rust
+pub enum Phase {
+    Idle,
+    Loading { doc: DocId },
+    Editing { doc: DocId, dirty: bool },
+    Saving { doc: DocId },
+    Failed { doc: DocId, error: SaveError },
+}
+
+pub fn on_event(phase: Phase, event: Event) -> Phase {
+    match (phase, event) {
+        (Phase::Editing { doc, .. }, Event::SaveRequested) => Phase::Saving { doc },
+        (Phase::Saving { doc }, Event::Saved) => Phase::Editing { doc, dirty: false },
+        (Phase::Saving { doc }, Event::SaveFailed(e)) => Phase::Failed { doc, error: e },
+        (phase, _) => phase,
+    }
+}
+```
+
+关键不是这段代码有多优雅，而是**未处理的事件会掉进最后一条分支**——它强迫你面对「这个组合到底该不该发生」。
+
+## 收益
+
+- 删掉了约 30% 的防御性判断，因为它们描述的正是「不可能发生的状态」。
+- 状态转移可以穷举测试，14 个状态 × 9 个事件，表驱动跑完不到 1 秒。
+- 新人问「保存失败后还能编辑吗」，答案在 `match` 里，不在某个组件里。
+
+## 别做的事
+
+不要为了「纯函数」把副作用也塞进状态机。IO 仍然发生在边界外，状态机只回答「下一个状态是什么」。一旦让状态机自己发起保存，它就从描述变成了编排，测试立刻变难。

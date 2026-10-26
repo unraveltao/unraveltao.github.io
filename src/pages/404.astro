@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404" description="这个地址没有内容。">
+  <div class="wrap notfound">
+    <p class="meta">404</p>
+    <h1 class="notfound__title">这个地址没有内容</h1>
+    <p class="notfound__text">可能是链接过期了，也可能是我改了 slug（不应该发生）。</p>
+    <p class="notfound__links meta">
+      <a href="/">回首页</a>
+      <span class="dot">·</span>
+      <a href="/posts">看全部文章</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding: var(--s32) 0;
+  }
+
+  .notfound__title {
+    margin: var(--s3) 0 0;
+    font-size: var(--text-h2);
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  .notfound__text {
+    margin: var(--s3) 0 0;
+    color: var(--ink-600);
+  }
+
+  .notfound__links {
+    margin-top: var(--s8);
+    display: flex;
+    gap: var(--s2);
+  }
+
+  .notfound__links .dot {
+    color: var(--line);
+  }
+</style>

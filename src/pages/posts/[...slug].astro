@@ -1,0 +1,239 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Toc from '../../components/Toc.astro';
+import { getPublishedPosts, formatDate, type Post } from '../../lib/posts';
+import { readingTime } from '../../lib/reading-time';
+import { seriesName } from '../../lib/series';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post, index) => {
+    const seriesPosts = post.data.series
+      ? posts
+          .filter((p) => p.data.series === post.data.series)
+          .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+      : [];
+
+    return {
+      params: { slug: post.id },
+      props: {
+        post,
+        newer: (posts[index - 1] ?? null) as Post | null,
+        older: (posts[index + 1] ?? null) as Post | null,
+        seriesPosts,
+      },
+    };
+  });
+}
+
+const { post, newer, older, seriesPosts } = Astro.props;
+const { Content, headings } = await render(post);
+const minutes = readingTime(post.body ?? '');
+const date = formatDate(post.data.date);
+const updatedDate = post.data.updated ? formatDate(post.data.updated) : null;
+const updated = updatedDate && updatedDate !== date ? updatedDate : null;
+
+const seriesKey = post.data.series;
+const seriesPosition = seriesKey ? seriesPosts.findIndex((p) => p.id === post.id) + 1 : 0;
+---
+
+<BaseLayout title={post.data.title} description={post.data.summary} ogType="article">
+  <article class="article">
+    <div class="article__grid">
+      <div class="article__main">
+        <header class="article__header">
+          <h1 class="article__title">{post.data.title}</h1>
+          <p class="meta article__meta">
+            <time datetime={date}>{date}</time>
+            <span class="dot">·</span>
+            <span>{minutes} min</span>
+            {
+              updated && (
+                <>
+                  <span class="dot">·</span>
+                  <span>更新于 {updated}</span>
+                </>
+              )
+            }
+            {
+              post.data.tags.map((tag) => (
+                <>
+                  <span class="dot">·</span>
+                  <a class="tag" href={`/tags/${tag}`}>
+                    #{tag}
+                  </a>
+                </>
+              ))
+            }
+          </p>
+          <p class="article__summary">{post.data.summary}</p>
+        </header>
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        {
+          seriesKey && seriesPosts.length > 1 && (
+            <nav class="series-nav" aria-label="本系列">
+              <p class="meta">
+                本系列 {seriesPosition} / {seriesPosts.length} · {seriesName(seriesKey)}
+              </p>
+              <ul>
+                {seriesPosts.map((item, i) => (
+                  <li class:list={[{ 'is-current': item.id === post.id }]}>
+                    <span class="meta series-nav__index">{String(i + 1).padStart(2, '0')}</span>
+                    {item.id === post.id ? (
+                      <span>{item.data.title}</span>
+                    ) : (
+                      <a href={`/posts/${item.id}`}>{item.data.title}</a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )
+        }
+
+        <nav class="post-nav" aria-label="上下篇">
+          <div class="post-nav__side">
+            {
+              older && (
+                <a href={`/posts/${older.id}`}>
+                  <span class="meta">← 上一篇</span>
+                  <span class="post-nav__title">{older.data.title}</span>
+                </a>
+              )
+            }
+          </div>
+          <div class="post-nav__side post-nav__side--right">
+            {
+              newer && (
+                <a href={`/posts/${newer.id}`}>
+                  <span class="meta">下一篇 →</span>
+                  <span class="post-nav__title">{newer.data.title}</span>
+                </a>
+              )
+            }
+          </div>
+        </nav>
+      </div>
+
+      <Toc headings={headings} />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article__grid {
+    width: 100%;
+    max-width: calc(var(--measure) + var(--s12));
+    margin: 0 auto;
+    padding: 0 var(--s6);
+  }
+
+  @media (min-width: 1200px) {
+    .article__grid {
+      max-width: calc(var(--measure) + 12.5rem + var(--s12) + var(--s12));
+      display: grid;
+      grid-template-columns: minmax(0, var(--measure)) 12.5rem;
+      gap: var(--s12);
+      align-items: start;
+    }
+  }
+
+  .article__header {
+    padding: var(--s24) 0 var(--s8);
+  }
+
+  .article__title {
+    margin: 0;
+    font-size: var(--text-display);
+    line-height: 1.15;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .article__meta {
+    margin: var(--s4) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2);
+  }
+
+  .article__meta .dot {
+    color: var(--line);
+  }
+
+  .article__summary {
+    margin: var(--s4) 0 0;
+    font-size: var(--text-lead);
+    line-height: 1.7;
+    color: var(--ink-600);
+    max-width: 36em;
+  }
+
+  .series-nav,
+  .post-nav {
+    margin-top: var(--s16);
+    padding-top: var(--s6);
+    border-top: 1px solid var(--line);
+  }
+
+  .series-nav ul {
+    list-style: none;
+    margin: var(--s3) 0 0;
+    padding: 0;
+  }
+
+  .series-nav li {
+    display: flex;
+    gap: var(--s3);
+    padding: 0.35em 0;
+    color: var(--ink-600);
+  }
+
+  .series-nav li.is-current {
+    color: var(--ink-900);
+    font-weight: 600;
+  }
+
+  .series-nav__index {
+    color: var(--ink-400);
+  }
+
+  .post-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s8);
+  }
+
+  .post-nav__side {
+    max-width: 45%;
+  }
+
+  .post-nav__side--right {
+    text-align: right;
+    margin-left: auto;
+  }
+
+  .post-nav a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s1);
+    color: inherit;
+  }
+
+  .post-nav__title {
+    font-size: var(--text-small);
+    color: var(--ink-900);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .post-nav a:hover .post-nav__title {
+    color: var(--accent);
+  }
+</style>

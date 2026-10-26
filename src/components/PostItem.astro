@@ -1,0 +1,28 @@
+---
+import type { Post } from '../lib/posts';
+import { formatDate } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+---
+
+<li class="post-item">
+  <a class="post-item__link" href={`/posts/${post.id}`}>
+    <time class="meta post-item__date" datetime={formatDate(post.data.date)}>
+      {formatDate(post.data.date)}
+    </time>
+    <span class="post-item__title">{post.data.title}</span>
+    <p class="post-item__summary">{post.data.summary}</p>
+  </a>
+</li>
+
+<style>
+  .post-item__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+</style>

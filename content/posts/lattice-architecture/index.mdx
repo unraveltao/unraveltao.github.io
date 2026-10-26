@@ -1,0 +1,59 @@
+---
+title: "lattice 的模块边界：前端不该知道文件系统"
+summary: "把 Rust 侧当成一个没有 UI 的领域层，前端只拿到命令和事件。这条边界换来了可测试性，代价是多写一层转换。"
+date: 2026-10-20
+updated: 2026-10-22
+tags: [tauri, rust, architecture]
+series: lattice-teardown
+order: 1
+project: lattice
+featured: true
+---
+
+## 一开始没有边界
+
+`lattice` 最初的样子很朴素：前端直接调 `@tauri-apps/plugin-fs`，Rust 侧只做窗口和菜单。写起来快，坏起来也快——第一周就出现了三个前端各自拼路径、各自处理「文件不存在」的分支。
+
+真正的转折点是一次数据损坏。前端在保存时先 `write` 再 `rename`，但两次调用之间窗口被关掉了，于是留下一个半截文件。这类问题在前端修不了，因为**它根本不知道「保存」是一个原子操作**。
+
+## 边界画在哪
+
+现在的结构是三段：
+
+- **命令层**：`#[tauri::command]`，只做参数反序列化和错误映射，不含业务判断。
+- **领域层**：纯 Rust，输入是结构体，输出是结构体或 `Result`。不碰 `AppHandle`，不碰窗口。
+- **适配层**：真正读写磁盘、调系统 API 的地方，被 trait 隔离。
+
+```rust
+pub trait Store {
+    fn read(&self, key: &Key) -> Result<Doc, StoreError>;
+    fn write(&self, key: &Key, doc: &Doc) -> Result<(), StoreError>;
+}
+
+pub fn save(store: &impl Store, key: &Key, doc: &Doc) -> Result<Doc, DomainError> {
+    let current = store.read(key).map_err(DomainError::from)?;
+    let next = doc.rebase_on(&current);
+    store.write(key, &next).map_err(DomainError::from)?;
+    Ok(next)
+}
+```
+
+这样 `save` 的测试不需要真的落盘，注入一个内存实现就够了。
+
+> 判断边界是否画对，看一件事：删掉 UI 之后，这一层还能不能跑测试。跑不了，说明业务逻辑漏到上面去了。
+
+## 代价
+
+多一层转换不是免费的：
+
+| 代价 | 具体表现 |
+| --- | --- |
+| 样板代码 | 每个命令要写一次 DTO ↔ 领域模型的转换 |
+| 序列化成本 | 大文档全量跨边界传，实测 8MB 文档约 12ms |
+| 心智负担 | 新人要理解「为什么不能直接调 fs」 |
+
+第三条最贵。我的处理办法是在命令层文件顶部写一行注释，说明这一层**只做翻译**，不写 `if`。违反这条的 PR 会被打回，哪怕它「更短」。
+
+## 现在回头看
+
+如果重来一次，我仍会画这条边界，但会把 DTO 生成交给 `specta` 之类的工具，而不是手写。手写转换在第 20 个命令之后就不再是「一层薄翻译」，而是一份需要维护的镜像。

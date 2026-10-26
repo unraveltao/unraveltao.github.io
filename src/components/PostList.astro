@@ -1,0 +1,34 @@
+---
+import type { Post } from '../lib/posts';
+import { groupByYear } from '../lib/posts';
+import PostItem from './PostItem.astro';
+
+interface Props {
+  posts: Post[];
+  grouped?: boolean;
+}
+
+const { posts, grouped = false } = Astro.props;
+const groups = grouped ? groupByYear(posts) : null;
+---
+
+{
+  groups ? (
+    groups.map(([year, items]) => (
+      <section class="year-group">
+        <p class="meta year-label">{year}</p>
+        <ul class="post-list">
+          {items.map((post) => (
+            <PostItem post={post} />
+          ))}
+        </ul>
+      </section>
+    ))
+  ) : (
+    <ul class="post-list">
+      {posts.map((post) => (
+        <PostItem post={post} />
+      ))}
+    </ul>
+  )
+}

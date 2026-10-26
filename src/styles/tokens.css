@@ -1,0 +1,75 @@
+/* 设计系统 token —— 唯一允许写色值的地方。见 docs/design-system.md */
+
+:root {
+  color-scheme: light;
+
+  /* 色板 · light */
+  --bg: #ffffff;
+  --surface: #f7f7f2;
+  --ink-900: #1a1a17;
+  --ink-600: #57574f;
+  --ink-400: #6e6e66;
+  --line: #e6e6df;
+  --accent: #0f6e56;
+  --accent-strong: #0a5340;
+  --accent-wash: #eaf3f0;
+
+  /* 字体 */
+  --font-sans: "Inter", "Inter var", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Noto Sans Mono CJK SC", monospace;
+
+  /* 字号阶梯（基准 17px） */
+  --text-display: 2.625rem;
+  --text-h2: 2.0625rem;
+  --text-h3: 1.6875rem;
+  --text-h4: 1.3125rem;
+  --text-lead: 1.1875rem;
+  --text-body: 1.0625rem;
+  --text-small: 0.9375rem;
+  --text-meta: 0.8125rem;
+
+  /* 间距（4 基准） */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s6: 1.5rem;
+  --s8: 2rem;
+  --s12: 3rem;
+  --s16: 4rem;
+  --s24: 6rem;
+  --s32: 8rem;
+
+  --measure: 42.5rem;
+  --radius-sm: 2px;
+  --dur: 160ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --text-display: 2rem;
+    --text-h2: 1.6875rem;
+    --text-h3: 1.375rem;
+    --text-h4: 1.1875rem;
+    --text-lead: 1.125rem;
+    --s24: 3.5rem;
+    --s32: 4.5rem;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #121211;
+  --surface: #1b1b19;
+  --ink-900: #edede7;
+  --ink-600: #a6a69c;
+  --ink-400: #8c8c82;
+  --line: #2a2a26;
+  --accent: #4ec3a3;
+  --accent-strong: #6fd8bb;
+  --accent-wash: #17322a;
+}
