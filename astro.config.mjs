@@ -11,6 +11,11 @@ export default defineConfig({
   trailingSlash: 'always',
   // MDX 不会自动继承 markdown.rehypePlugins，需要显式传一次
   integrations: [mdx({ rehypePlugins: [rehypeCodeWindow] }), sitemap()],
+  build: {
+    // 全站 CSS 只有 ~8KB，内联后省掉一次阻塞渲染的请求：
+    // 样式和文档同批到达，首次布局在 FCP 之前完成，不会变成 TBT
+    inlineStylesheets: 'always',
+  },
   markdown: {
     shikiConfig: {
       // min-* 是低饱和主题，接近「高亮色从 ink/accent 派生」的设计约束
