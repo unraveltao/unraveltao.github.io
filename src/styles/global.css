@@ -268,12 +268,12 @@ main {
 
 .prose pre {
   background: var(--surface);
-  border-radius: var(--radius-sm);
-  padding: var(--s4);
+  padding: 1rem 1.25rem;
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.7;
-  margin: 1.6em 0;
+  margin: 0;
+  border-radius: 0;
 }
 
 .prose pre code {
@@ -283,12 +283,51 @@ main {
   border-radius: 0;
 }
 
-.prose pre[data-language]::before {
-  content: attr(data-language);
+/* ---------- 代码块：macOS 窗口 ---------- */
+.code-window {
+  margin: 1.8em 0;
+  background: var(--surface);
+  border-radius: var(--radius-window);
+  overflow: hidden;
+}
+
+.code-window__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.code-window__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.code-window__dot {
   display: block;
-  margin-bottom: 0.75rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.code-window__dot:nth-child(1) {
+  background: #ff5f57;
+}
+
+.code-window__dot:nth-child(2) {
+  background: #febc2e;
+}
+
+.code-window__dot:nth-child(3) {
+  background: #28c840;
+}
+
+.code-window__lang {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-400);
 }

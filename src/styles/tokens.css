@@ -44,6 +44,7 @@
 
   --measure: 42.5rem;
   --radius-sm: 2px;
+  --radius-window: 6px;
   --dur: 160ms;
   --ease: cubic-bezier(0.2, 0, 0, 1);
 }
