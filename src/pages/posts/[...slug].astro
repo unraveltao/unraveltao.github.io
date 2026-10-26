@@ -5,6 +5,7 @@ import Toc from '../../components/Toc.astro';
 import { getPublishedPosts, formatDate, type Post } from '../../lib/posts';
 import { readingTime } from '../../lib/reading-time';
 import { seriesName } from '../../lib/series';
+import { SITE_AUTHOR } from '../../lib/site';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -36,9 +37,31 @@ const updated = updatedDate && updatedDate !== date ? updatedDate : null;
 
 const seriesKey = post.data.series;
 const seriesPosition = seriesKey ? seriesPosts.findIndex((p) => p.id === post.id) + 1 : 0;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/og.png', Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.summary,
+  datePublished: post.data.date.toISOString(),
+  dateModified: (post.data.updated ?? post.data.date).toISOString(),
+  author: { '@type': 'Person', name: SITE_AUTHOR },
+  image: ogImage,
+  inLanguage: 'zh-CN',
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+};
 ---
 
-<BaseLayout title={post.data.title} description={post.data.summary} ogType="article">
+<BaseLayout
+  title={post.data.title}
+  description={post.data.summary}
+  ogType="article"
+  publishedTime={post.data.date}
+  jsonLd={jsonLd}
+>
   <article class="article">
     <div class="article__grid">
       <div class="article__main">
