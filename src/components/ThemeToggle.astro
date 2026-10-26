@@ -1,4 +1,4 @@
-<button class="theme" id="theme-toggle" type="button" aria-label="切换深浅色主题">
+<button class="theme" id="theme-toggle" type="button" aria-label="light 主题，切换到深色">
   <span data-theme-label>light</span>
 </button>
 
@@ -10,7 +10,12 @@
     const render = () => {
       const current = document.documentElement.dataset.theme || 'light';
       if (label) label.textContent = current;
-      btn.setAttribute('aria-label', current === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+      // 可访问名必须包含可见文字（WCAG 2.5.3 Label in Name），
+      // 否则读屏用户说的「dark」在无障碍名里找不到。
+      btn.setAttribute(
+        'aria-label',
+        current === 'dark' ? 'dark 主题，切换到浅色' : 'light 主题，切换到深色',
+      );
     };
     render();
     btn.addEventListener('click', () => {

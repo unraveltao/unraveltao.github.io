@@ -48,6 +48,7 @@
 - 在 `<html>` 上挂 `data-theme`，token 用 `:root[data-theme='dark']` 覆盖，不用两套 class。
 - `<head>` 内联一段同步脚本读 localStorage 设置 `data-theme`，避免首屏闪白。
 - 切换控件是文字按钮（`light` / `dark`），不是图标开关——图标在极简界面里是额外的视觉噪音。
+- 按钮的 `aria-label` 必须**包含可见的那两个词**：`light 主题，切换到深色` / `dark 主题，切换到浅色`。只写「切换深浅色主题」会踩 WCAG 2.5.3（Label in Name）——读屏用户说「点击 dark」，而按钮的无障碍名里没有 `dark` 这个词，语音控制就对不上。
 
 ## 3. 字体
 
