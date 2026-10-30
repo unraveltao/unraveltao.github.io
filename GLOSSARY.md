@@ -41,7 +41,7 @@ _Avoid_: 主题（当你想说"视觉风格"时）
 _Avoid_: 主题、皮肤、skin
 
 **locale**：
-界面与内容的语言。本站只有 `zh-CN`；英文只出现在 `titleEn` / `summaryEn` 两个元信息字段里，不构成第二个 locale。
+界面与内容的语言。本站只有 `zh-CN`，不存在第二个 locale，也没有任何英文元信息字段（ADR-0009 删掉了 `titleEn` / `summaryEn`）。
 _Avoid_: 语言版本、双语版
 
 **publish / 发布**：

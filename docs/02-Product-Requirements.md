@@ -176,9 +176,6 @@ content/
 | `project` | string | | — | 关联项目标识（如 `lattice`），仅用于展示 |
 | `featured` | boolean | | `false` | 首页精选轨；**全站最多 1 篇** |
 | `draft` | boolean | | `false` | `dev` 可见并带角标，`build` 排除 |
-| `titleEn` | string | | — | 仅用于 OG 卡片与英文摘要，缺失则回落中文 |
-| `summaryEn` | string | | — | 同上 |
-| `cover` | image | | — | 相对路径；不填时 OG 图用纯文字模板 |
 
 `series.json` 结构（唯一一个非 Post 的数据文件，只是一张对照表，没有生命周期）：
 
@@ -210,10 +207,12 @@ schema 的**唯一真源**是 [`src/content.config.ts`](../src/content.config.ts
 | 6 | `updated` 早于 `date` → 失败 | `scripts/validate-content.mjs` | ✅ 已实现 |
 | 7 | `slug` 或 `tags` 不符合 kebab-case → 失败 | schema | ✅ 已实现 |
 | 8 | 同一 slug 出现在两个目录 → 失败 | loader / 构建脚本 | ⚠️ 部分：目录名天然唯一，但 frontmatter 的 `slug` 可覆盖目录名，覆盖后重复不会报错 |
-| 9 | `status` 不在 `active` / `done` / `archived` 枚举内 → 失败 | Project schema | ⬜ 随 `/projects` 实现 |
-| 10 | `stack` 为空数组 → 失败 | Project schema | ⬜ 随 `/projects` 实现 |
+| 9 | `status` 不在 `active` / `done` / `archived` 枚举内 → 失败 | Project schema | ✅ 已实现 |
+| 10 | `stack` 为空数组 → 失败 | Project schema | ✅ 已实现 |
 
-规则 3–6 需要跨文件检查，放在 `scripts/validate-content.mjs` 里跑，不放在单文件 schema 里。`pnpm build` 的第一条命令就是它，**失败则不进入 astro build**。
+规则 3–6 需要跨文件检查，放在 `scripts/validate-content.mjs` 里跑，不放在单文件 schema 里。`pnpm build` 的第一条命令就是它，**失败则不进入 astro check，更不进入 astro build**。
+
+规则本身是纯函数，在 `scripts/lib/content-rules.mjs`；CLI 只负责读盘与打印。`pnpm test` 跑 `tests/content-rules.test.mjs` 的回归。
 
 这个脚本不引入 YAML 解析依赖，只读 `series` / `order` / `featured` / `date` / `updated` / `draft` 六个标量字段；读不懂就报错，不静默放过。
 
