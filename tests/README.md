@@ -24,7 +24,7 @@ tests/
 
 ### `content-validation/`
 
-把 `docs/02` §5.5 的规则写成纯函数（`scripts/validate-content.mjs` 导出），逐条断言：
+把 `docs/02` §5.5 的规则写成纯函数（目前它们内联在 `scripts/validate-content.mjs` 里，需要先抽出来才能单测），逐条断言：
 
 | 规则 | 用例 |
 |---|---|

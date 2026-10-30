@@ -39,7 +39,8 @@
 ```bash
 pnpm install
 pnpm dev       # http://localhost:4321
-pnpm build     # 输出 dist/；这是唯一的验收命令
+pnpm validate  # 只跑跨文件校验（规则 3–6），不构建
+pnpm build     # validate → astro build；这是唯一的验收命令
 pnpm preview   # 预览 dist/
 ```
 
@@ -205,8 +206,8 @@ pnpm preview   # 预览 dist/
 | 代理 502         | 本机代理到 GitHub 会 502。`clone` / `push` 用 `git -c http.proxy= -c https.proxy= push`               |
 | 尾斜杠            | GitHub Pages 是目录式托管，缺尾斜杠会 301。手写内链必须带 `/`                                                     |
 | MDX 不继承 rehype | `markdown.rehypePlugins` 对 MDX 无效，必须在 `mdx()` 里再传一次                                           |
-| `series` 拼错不报错 | `src/lib/series.ts` 缺失时回退成 slug。**校验脚本尚未实现这条检查**，写系列名时手工核对 `content/series.json`              |
-| 文档与代码的落差       | `docs/02` §5.5 里 3 条跨文件校验**尚未实现**。如果任务要求"按文档实现校验"，是去补 `scripts/validate-content.mjs`，不是假设它已存在 |
+| `series` 拼错 | 现在会构建失败（`scripts/validate-content.mjs` 规则 4）。但 `src/lib/series.ts` 仍保留 `?? key` 回退——那是给运行时兜底的，不要依赖它 |
+| 文档与代码的落差       | `docs/04` §8 列了 6 条已知债（draft 在 dev 不可见、无 typecheck、无测试、OG 单图…）。动手前先看一眼，别把"文档写了"当成"代码有了" |
 | 主题闪烁           | 主题脚本必须内联在 `<head>` 且同步执行，挪到 `defer` 或外部文件会闪白                                                  |
 | 两个项目别混         | 文章推送管线（公众号/知乎）**不是本项目**。看到相关需求，先确认是不是走错了仓库                                                  |
 

@@ -204,16 +204,18 @@ schema 的**唯一真源**是 [`src/content.config.ts`](../src/content.config.ts
 |---|---|---|---|
 | 1 | `summary` 为空或 < 20 字 → 失败；> 160 字 → 失败 | schema | ✅ 已实现 |
 | 2 | `series` 有值但 `order` 缺失 → 失败 | schema `.refine()` | ✅ 已实现 |
-| 3 | 同一 `series` 内 `order` 重复 → 失败 | 构建脚本 | ⬜ **未实现** |
-| 4 | `series` 的值不在 `series.json` 里 → 失败 | 构建脚本 | ⬜ **未实现** |
-| 5 | `featured: true` 超过 1 篇 → 失败 | 构建脚本 | ⬜ **未实现** |
-| 6 | `updated` 早于 `date` → 失败 | schema `.refine()` | ⬜ 待加 |
+| 3 | 同一 `series` 内 `order` 重复 → 失败 | `scripts/validate-content.mjs` | ✅ 已实现 |
+| 4 | `series` 的值不在 `series.json` 里 → 失败 | `scripts/validate-content.mjs` | ✅ 已实现 |
+| 5 | `featured: true` 超过 1 篇 → 失败 | `scripts/validate-content.mjs` | ✅ 已实现（只算非草稿） |
+| 6 | `updated` 早于 `date` → 失败 | `scripts/validate-content.mjs` | ✅ 已实现 |
 | 7 | `slug` 或 `tags` 不符合 kebab-case → 失败 | schema | ✅ 已实现 |
 | 8 | 同一 slug 出现在两个目录 → 失败 | loader / 构建脚本 | ⚠️ 部分：目录名天然唯一，但 frontmatter 的 `slug` 可覆盖目录名，覆盖后重复不会报错 |
 | 9 | `status` 不在 `active` / `done` / `archived` 枚举内 → 失败 | Project schema | ⬜ 随 `/projects` 实现 |
 | 10 | `stack` 为空数组 → 失败 | Project schema | ⬜ 随 `/projects` 实现 |
 
-规则 3、4、5 是**已知技术债**，优先级见 [05-Development-Roadmap.md](./05-Development-Roadmap.md)。在补齐之前，这三条只能靠人工 review 保证。
+规则 3–6 需要跨文件检查，放在 `scripts/validate-content.mjs` 里跑，不放在单文件 schema 里。`pnpm build` 的第一条命令就是它，**失败则不进入 astro build**。
+
+这个脚本不引入 YAML 解析依赖，只读 `series` / `order` / `featured` / `date` / `updated` / `draft` 六个标量字段；读不懂就报错，不静默放过。
 
 ### 5.6 写作约定
 

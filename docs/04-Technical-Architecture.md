@@ -35,7 +35,9 @@ blog/
 ├── AGENTS.md                    # Agent 行为规范（改代码前必读）
 ├── README.md                    # 项目介绍、安装、运行
 ├── astro.config.mjs             # site / trailingSlash / inlineStylesheets / shiki
-├── package.json                 # 只有 dev / build / preview
+├── package.json                 # dev / validate / build / preview
+├── scripts/
+│   └── validate-content.mjs     # 跨文件校验（规则 3–6），build 的第一道闸
 ├── tsconfig.json                # 继承 astro/tsconfigs/strict
 ├── content/                     # 内容，不属于 src
 │   ├── posts/<slug>/index.mdx   # 文章与图片同目录，目录名即 slug
@@ -113,9 +115,12 @@ blog/
 ```bash
 pnpm install
 pnpm dev       # http://localhost:4321
-pnpm build     # 输出 dist/，18 个页面 + rss.xml + sitemap-index.xml
+pnpm validate  # 只跑跨文件校验，不构建
+pnpm build     # validate → astro build，输出 dist/（18 个页面 + rss + sitemap）
 pnpm preview   # 本地预览 dist/
 ```
+
+`build` 的第一条命令是 `validate-content.mjs`：**校验失败则不进入 astro build**。这样"内容错误"和"渲染错误"在输出上是分开的——前者能直接定位到文件和字段。
 
 **CI**（`.github/workflows/deploy.yml`）：push 到 `main` → `withastro/action@v3`（Node 22 / pnpm 9）构建 → `actions/deploy-pages@v4` 发布。仓库 Settings → Pages → Source 必须选 **GitHub Actions**（一次性手动开启）。
 
@@ -152,12 +157,12 @@ git -c http.proxy= -c https.proxy= push
 
 | # | 债 | 影响 | 现状 |
 |---|---|---|---|
-| 1 | 跨文件内容校验缺失 | `order` 重复、`featured` 超一篇、`series` 拼错都**不会**让构建失败 | 文档承诺 8 条，实际 schema 覆盖 4 条 |
-| 2 | **draft 在 dev 也不可见** | 文档说"`dev` 可见并带角标"，实际 `isPublished()` 与 `getProjects()` 都无条件过滤 draft | 与 `docs/02` §6 不符；要么改代码，要么改文档 |
-| 3 | 无 typecheck / lint | `.astro` 与 `.ts` 的类型错误只能靠编辑器发现 | `@astrojs/check`、`prettier` 未安装 |
-| 4 | 无测试 | 内容校验规则没有回归保护 | `tests/` 只有约定文档 |
-| 5 | OG 图是单张静态图 | 所有文章共用 `public/og.png`，不是逐篇生成；**连带 `titleEn` / `summaryEn` 不生效** | 文档写"构建期生成 1200×630"，未实现 |
-| 6 | 无 `pnpm new` 脚手架 | 新文章手写 frontmatter，容易漏字段 | 文档提到但脚本不存在 |
+| 1 | **draft 在 dev 也不可见** | 文档说"`dev` 可见并带角标"，实际 `isPublished()` 与 `getProjects()` 都无条件过滤 draft | 与 `docs/02` §6 不符；要么改代码，要么改文档 |
+| 2 | 无 typecheck / lint | `.astro` 与 `.ts` 的类型错误只能靠编辑器发现 | `@astrojs/check`、`prettier` 未安装 |
+| 3 | 无测试 | 校验脚本本身没有回归保护 | `tests/` 只有约定文档 |
+| 4 | OG 图是单张静态图 | 所有文章共用 `public/og.png`，不是逐篇生成；**连带 `titleEn` / `summaryEn` 不生效** | 文档写"构建期生成 1200×630"，未实现 |
+| 5 | 无 `pnpm new` 脚手架 | 新文章手写 frontmatter，容易漏字段 | 文档提到但脚本不存在 |
+| 6 | 校验脚本只认六个标量字段 | 手写 YAML 解析，`order: "1"` 这类变体会报错而非兼容；新增字段要同步改脚本 | 刻意为之：宁可不兼容，也不静默放过 |
 
 ## 9. 扩展指引
 

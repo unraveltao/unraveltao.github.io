@@ -38,18 +38,13 @@
 
 **偏差记录**：原计划顶栏标签用 `projects`，实测 375px 放不下，改成 `work`（见 `docs/02` §3）。原计划状态与技术栈分两行，实现时合成一行元信息——与文章列表项的形状更一致。
 
-### P0 — 补齐跨文件内容校验
+### ✅ 已完成 — 跨文件内容校验（2026-10-31）
 
-**为什么先做这个**：它是唯一一个"文档承诺了、代码没做、而且会随内容增长必然踩到"的缺口。`series` 拼错现在不会报错，只会静默把系列名显示成 slug；`featured` 写两篇会让首页悄悄只显示第一篇；`order` 重复会让系列顺序随机。这三类错误都发生在**写作时**，而写作时人最不想被打断——所以必须让机器兜住。
+`scripts/validate-content.mjs` 补齐规则 3–6（`order` 重复 / `series` 不存在 / `featured` 超一篇 / `updated < date`），`build` 改成 `validate → astro build`。
 
-**怎么做**：
-1. 新建 `scripts/validate-content.mjs`，读 `content/posts/**/index.mdx` 与 `content/series.json`；
-2. 实现三条检查：同系列 `order` 去重、`series` 存在于 `series.json`、`featured` 全局 ≤ 1；
-3. 顺手加第 6 条：`updated < date`；
-4. `package.json` 加 `"build": "node scripts/validate-content.mjs && astro build"`；
-5. 失败时打印**文件路径 + 字段 + 期望值**，退出码 1。
+实测：造三个坏样例（重复 `order`、`series: typo-series`、第二篇 `featured`）后 `pnpm build` 退出码 1，报错直接给出文件路径与字段；正常内容通过（4 篇 / 1 系列 / 1 精选）。
 
-**完成标志**：故意造三个坏用例，`pnpm build` 三次都失败且报错信息能直接定位到文件；正常内容构建通过。
+**偏差记录**：没有引入 YAML 解析依赖，改用只认六个标量字段的手写解析器——读不懂就报错，不静默放过。代价写进 `docs/04` §8 技术债 6。
 
 ### P1 — 让工具链能兜住类型与格式
 
@@ -100,11 +95,10 @@
 依赖关系决定了顺序，不要跳：
 
 ```
-P0 校验脚本 ──→ P1 测试（测试的对象就是它）
-     │
-     └──→ P1 check/lint（与前者并行，互不阻塞）
+P1 测试 ── 对象是 scripts/validate-content.mjs（规则 3–6 已完成，缺回归保护）
+P1 check/lint ── 独立，可与测试并行
 P2 OG 图 ── 独立，随时可做；做完 `titleEn` / `summaryEn` 才生效
-P2 脚手架 ── 依赖 P0 的校验规则先稳定
+P2 脚手架 ── 校验规则已稳定，可以做了
 ```
 
 **不要同时开两条 P0/P1**。单人维护的项目，并行的代价不是时间，是每条线都要重新捡起上下文。

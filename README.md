@@ -45,9 +45,10 @@ blog/
 
 ```bash
 pnpm install
-pnpm dev      # http://localhost:4321
-pnpm build    # 输出 dist/
-pnpm preview  # 预览 dist/
+pnpm dev       # http://localhost:4321
+pnpm validate  # 跨文件内容校验（不构建）
+pnpm build     # validate → build，输出 dist/
+pnpm preview   # 预览 dist/
 ```
 
 > 目前只有这三个脚本。`check` / `lint` / `test` / `new` 尚未接入，见 [docs/05](docs/05-Development-Roadmap.md)。
