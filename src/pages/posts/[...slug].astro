@@ -69,6 +69,14 @@ const jsonLd = {
           <h1 class="article__title">{post.data.title}</h1>
           <p class="meta article__meta">
             <time datetime={date}>{date}</time>
+            {
+              post.data.draft && (
+                <>
+                  <span class="dot">·</span>
+                  <span class="article__draft">草稿</span>
+                </>
+              )
+            }
             <span class="dot">·</span>
             <span>{minutes} min</span>
             {
@@ -189,6 +197,11 @@ const jsonLd = {
 
   .article__meta .dot {
     color: var(--line);
+  }
+
+  /* 草稿只在 dev 出现（build 已过滤），单色文字角标，不加底色/边框 */
+  .article__draft {
+    color: var(--accent);
   }
 
   .article__summary {

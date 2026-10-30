@@ -2,8 +2,15 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Post = CollectionEntry<'posts'>;
 
-/** 已发布 = 非草稿 且 日期已到 */
+/**
+ * dev 下全部可见——草稿和未来日期的文章都能本地预览（docs/02 §6）。
+ * build 下才真正过滤，所以草稿永远进不了构建产物。
+ */
+const SHOW_UNPUBLISHED = import.meta.env.DEV;
+
+/** 已发布 = 非草稿 且 日期已到；dev 下恒为 true */
 export function isPublished(post: Post, now = new Date()) {
+  if (SHOW_UNPUBLISHED) return true;
   return !post.data.draft && post.data.date <= now;
 }
 

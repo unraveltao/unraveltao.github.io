@@ -13,12 +13,15 @@ export function statusLabel(status: Project['data']['status']): string {
   return STATUS_LABEL[status];
 }
 
+/** 与 posts.ts 一致：dev 下草稿也可见，build 下才过滤 */
+const SHOW_DRAFTS = import.meta.env.DEV;
+
 /**
  * 全部已发布项目，按 order 升序；没有 order 的排在后面，再按 name 排。
  * 与 posts.ts 一致：draft 不进构建产物。
  */
 export async function getProjects(): Promise<Project[]> {
-  const projects = await getCollection('projects', (p) => !p.data.draft);
+  const projects = await getCollection('projects', (p) => SHOW_DRAFTS || !p.data.draft);
   return projects.sort((a, b) => {
     const ao = a.data.order ?? Number.MAX_SAFE_INTEGER;
     const bo = b.data.order ?? Number.MAX_SAFE_INTEGER;
