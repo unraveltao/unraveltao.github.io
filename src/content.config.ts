@@ -45,4 +45,27 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { posts, pages };
+// 项目不是文章：没有 date、不进 RSS、不进标签（ADR-0007）
+const projects = defineCollection({
+  loader: glob({
+    pattern: '**/index.mdx',
+    base: './content/projects',
+    generateId: ({ entry, data }) =>
+      (data?.slug as string | undefined) ?? entry.replace(/\/index\.mdx$/, ''),
+  }),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string().min(1).max(24),
+      summary: z.string().min(20).max(80),
+      status: z.enum(['active', 'done', 'archived']).default('active'),
+      stack: z.array(kebab).min(1).max(5),
+      repo: z.string().url().optional(),
+      demo: z.string().url().optional(),
+      order: z.number().int().positive().optional(),
+      slug: kebab.optional(),
+      draft: z.boolean().default(false),
+      cover: image().optional(),
+    }),
+});
+
+export const collections = { posts, pages, projects };

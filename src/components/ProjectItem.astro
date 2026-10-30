@@ -1,0 +1,30 @@
+---
+import type { Project } from '../lib/projects';
+import { statusLabel } from '../lib/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { name, summary, status, stack } = project.data;
+
+// 元信息行：状态 · 技术栈（最多 3 个）。与文章列表项同一个形状，只换内容。
+const metaLine = [statusLabel(status), ...stack.slice(0, 3)].join(' · ');
+---
+
+<li class="post-item">
+  <a class="post-item__link" href={`/projects/${project.id}/`}>
+    <span class="meta post-item__date">{metaLine}</span>
+    <span class="post-item__title">{name}</span>
+    <p class="post-item__summary">{summary}</p>
+  </a>
+</li>
+
+<style>
+  .post-item__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+</style>

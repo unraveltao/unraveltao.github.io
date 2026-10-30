@@ -1,0 +1,105 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProjects, statusLabel } from '../../lib/projects';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { name, summary, status, stack, repo, demo } = project.data;
+---
+
+<BaseLayout title={name} description={summary}>
+  <article class="project">
+    <header class="project__header">
+      <h1 class="project__title">{name}</h1>
+      <p class="meta project__meta">
+        <span>{statusLabel(status)}</span>
+        {
+          stack.map((item) => (
+            <>
+              <span class="dot">·</span>
+              <span>{item}</span>
+            </>
+          ))
+        }
+        {
+          repo && (
+            <>
+              <span class="dot">·</span>
+              <a href={repo}>仓库</a>
+            </>
+          )
+        }
+        {
+          demo && (
+            <>
+              <span class="dot">·</span>
+              <a href={demo}>演示</a>
+            </>
+          )
+        }
+      </p>
+      <p class="project__summary">{summary}</p>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project {
+    width: 100%;
+    max-width: calc(var(--measure) + var(--s12));
+    margin: 0 auto;
+    padding: 0 var(--s6);
+  }
+
+  .project__header {
+    padding: var(--s24) 0 var(--s8);
+  }
+
+  .project__title {
+    margin: 0;
+    font-size: var(--text-display);
+    line-height: 1.15;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .project__meta {
+    margin: var(--s4) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2);
+  }
+
+  .project__meta .dot {
+    color: var(--line);
+  }
+
+  .project__meta a {
+    color: var(--ink-600);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .project__meta a:hover {
+    color: var(--accent);
+  }
+
+  .project__summary {
+    margin: var(--s4) 0 0;
+    font-size: var(--text-lead);
+    line-height: 1.7;
+    color: var(--ink-600);
+    max-width: 36em;
+  }
+</style>
