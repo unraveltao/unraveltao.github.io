@@ -36,12 +36,13 @@
 
 | 维度 | 状态 |
 |---|---|
-| 阶段 | M0 骨架、M1 内容管线、M2 上线均已完成 |
+| 阶段 | M0 骨架、M1 内容管线、M2 上线、M3 项目展示均已完成 |
 | 文章 | `content/posts/` 下 4 篇（含 1 篇 `featured`、1 个系列 2 篇） |
 | 项目展示 | `/projects` 与 `/projects/lattice/` 已上线，1 个项目 |
 | 构建产物 | 18 个 HTML 页面 + RSS + sitemap + OG 图 |
 | 线上性能 | 文章页移动端 Lighthouse 99/100/100/100，首屏 JS 0 个请求 |
-| 主要缺口 | 跨文件内容校验未实现；无 typecheck / lint / test；站名未定 |
+| 工具链 | `validate` / `check` / `test` 均在 `pnpm build` 或提交前生效 |
+| 主要缺口 | 无 lint / 格式化；OG 图是单张静态图；无 `pnpm new` 脚手架 |
 
 详细进度与待办见 [05-Development-Roadmap.md](./05-Development-Roadmap.md)。
 

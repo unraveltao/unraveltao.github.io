@@ -15,7 +15,7 @@ blog/
 ├── src/                # 页面、组件、lib、样式
 ├── content/            # 文章（posts/）、固定页（pages/）、系列表（series.json）
 ├── public/             # favicon / og.png / robots.txt
-├── tests/              # 测试约定（暂无 runner）
+├── tests/              # node:test 回归
 └── .github/workflows/  # 构建并发布到 GitHub Pages
 ```
 
@@ -45,13 +45,15 @@ blog/
 
 ```bash
 pnpm install
-pnpm dev       # http://localhost:4321
+pnpm dev       # http://localhost:4321，草稿可见
 pnpm validate  # 跨文件内容校验（不构建）
-pnpm build     # validate → build，输出 dist/
+pnpm test      # 校验规则的回归测试
+pnpm check     # 类型检查（astro check）
+pnpm build     # validate → astro check → build，输出 dist/
 pnpm preview   # 预览 dist/
 ```
 
-> 目前只有这三个脚本。`check` / `lint` / `test` / `new` 尚未接入，见 [docs/05](docs/05-Development-Roadmap.md)。
+> `lint` / `format` / `new` 尚未接入，见 [docs/05](docs/05-Development-Roadmap.md)。
 
 ## 写作
 

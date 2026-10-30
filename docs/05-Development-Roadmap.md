@@ -25,8 +25,8 @@
 | 构建产物 | 18 个 HTML + `rss.xml` + `sitemap-index.xml` |
 | 线上性能 | 文章页移动端 99/100/100/100；LCP 1.2s；TBT 0–130ms；CLS 0 |
 | 请求数 | 全站 0 个 script 请求，2 个请求，8KiB（gzip） |
-| 校验覆盖 | 8 条规则中 3 条完全生效（1/2/7）、1 条部分生效（8）、3 条缺失（3/4/5）、1 条待加（6） |
-| 工具链 | 只有 `dev` / `build` / `preview`，无 typecheck、无 lint、无 test |
+| 校验覆盖 | 10 条规则中 9 条完全生效，1 条部分生效（8：frontmatter `slug` 覆盖目录名后可能重复） |
+| 工具链 | `dev` / `validate` / `check` / `test` / `build` / `preview`；无 lint、无格式化 |
 
 ## 3. 下一步
 
@@ -46,24 +46,41 @@
 
 **偏差记录**：没有引入 YAML 解析依赖，改用只认六个标量字段的手写解析器——读不懂就报错，不静默放过。代价写进 `docs/04` §8 技术债 6。
 
-### P1 — 让工具链能兜住类型与格式
+### ✅ 已完成 — 校验可测化 + 类型检查 + 草稿可见性（2026-10-30）
+
+三件原本并列在 P1 的事一起做了，因为它们共用同一批文件：
+
+1. **规则抽成纯函数**：`scripts/lib/content-rules.mjs` 导出 `parseScalarFields` + 四条规则 + `checkAll`，返回 `Problem[]` 而不是抛异常——一次报全部违规。`scripts/validate-content.mjs` 瘦成读盘 + 打印的 CLI。
+2. **类型检查进构建**：`@astrojs/check` + `typescript@^5` 装成 devDependency，`build` 变成 `validate → astro check → astro build`。实测 31 个文件 0 errors / 0 warnings / 0 hints。
+3. **草稿可见性**：`isPublished()` 与 `getProjects()` 在 `import.meta.env.DEV` 下不再过滤，草稿与未来日期都能本地预览，列表项与详情页带"草稿"角标（单色文字，不加底色边框）。
+
+实测：`pnpm test` 27 个用例全绿；`pnpm validate` 输出与改动前一致（4 篇 / 1 系列 / 1 精选）。
+
+**顺手修的 bug**：规则 4 原来用 `key in seriesRegistry`，走原型链——`series: constructor` / `toString` / `__proto__` 会**静默通过**校验。改成 `Object.hasOwn`，并写了回归用例锁住。
+
+**偏差记录**：
+- `node --test tests` 在本机 Node 22 + Windows 上把目录当成模块入口去 require，报 `MODULE_NOT_FOUND`；改用 `node --test "tests/**/*.test.mjs"`（引号内交给 Node 自己展开 glob，不依赖 shell）。
+- 测试用内联对象而非 fixture 文件：规则是纯函数，读盘由 CLI 负责，fixture 只会多一层间接。
+- `typescript` 必须锁 `^5`——`pnpm add -D typescript` 默认装到 7.x，而 `@astrojs/check` 与 `@volar` 都要求 `<7`。
+- 计划里原写"CI 加一个独立 check job"，实现时改为串进 `build` 脚本，`deploy.yml` 一行未动——`withastro/action@v3` 内部就是跑 `pnpm run build`。
+
+### P1 — 让工具链能兜住类型与格式（类型部分 ✅ 2026-10-30，格式未做）
 
 **为什么**：`tsconfig` 是 `strict`，但没有 `astro check` 在跑，严格模式的价值只在编辑器里兑现。多人（或 agent）协作时，没有 lint 就没有一致的格式基线。
 
-**怎么做**：
-1. 加 `@astrojs/check` + `typescript`，`"check": "astro check"`；
-2. 加 `prettier` + `prettier-plugin-astro`，`"format": "prettier --write ."`；
-3. CI 的 build job 前插入 `pnpm check`（格式化只做本地，不进 CI，避免噪声）。
+**已完成**：`@astrojs/check` + `typescript` 装好，`"check": "astro check"`，并串进 `build`——CI 不用改 workflow 就带上了。
 
-**完成标志**：`pnpm check` 零错误；故意写一个类型错误能被它拦住。
+**还没做**：`prettier` + `prettier-plugin-astro`，`"format": "prettier --write ."`。格式化只做本地，不进 CI，避免噪声。
 
-### P1 — 测试最小闭环
+**完成标志**：`pnpm check` 零错误 ✅；故意写一个类型错误能被它拦住 ✅。
+
+### P1 — 测试最小闭环（✅ 2026-10-30）
 
 **为什么**：校验脚本本身也需要回归保护——它是"构建失败即拦截"的最后一道闸，闸坏了没人知道。
 
-**怎么做**：用 Node 内置 `node:test`（零依赖，符合 §5 依赖策略），把校验规则写成纯函数，`tests/content-validation/` 下放合法/非法 fixture，逐条断言。目录约定见 [`tests/README.md`](../tests/README.md)。
+**实际做法**：Node 内置 `node:test`（零依赖，符合 §5 依赖策略），规则抽到 `scripts/lib/content-rules.mjs` 变成纯函数，`tests/content-rules.test.mjs` 用内联对象逐条断言。目录约定见 [`tests/README.md`](../tests/README.md)。
 
-**完成标志**：`node --test tests/` 覆盖 4 条跨文件规则 + 2 条 schema 规则；删掉任一规则对应实现，测试变红。
+**完成标志**：覆盖 4 条跨文件规则 + `parseScalarFields` 的 9 种输入，共 27 个用例 ✅；删掉任一规则实现，测试变红 ✅。
 
 ### P2 — 逐篇 OG 图
 
@@ -95,9 +112,9 @@
 依赖关系决定了顺序，不要跳：
 
 ```
-P1 测试 ── 对象是 scripts/validate-content.mjs（规则 3–6 已完成，缺回归保护）
-P1 check/lint ── 独立，可与测试并行
-P2 OG 图 ── 独立，随时可做；做完 `titleEn` / `summaryEn` 才生效
+P1 测试 ── ✅ 已完成（2026-10-30，规则抽成纯函数 + node:test）
+P1 check/lint ── ✅ 类型检查已完成；lint 仍未做（见 04 §8）
+P2 OG 图 ── 独立，随时可做；做完才需要重新引入英文标题字段（ADR-0009）
 P2 脚手架 ── 校验规则已稳定，可以做了
 ```
 

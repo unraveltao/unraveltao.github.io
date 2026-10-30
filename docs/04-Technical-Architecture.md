@@ -35,9 +35,10 @@ blog/
 ├── AGENTS.md                    # Agent 行为规范（改代码前必读）
 ├── README.md                    # 项目介绍、安装、运行
 ├── astro.config.mjs             # site / trailingSlash / inlineStylesheets / shiki
-├── package.json                 # dev / validate / build / preview
+├── package.json                 # dev / validate / check / test / build / preview
 ├── scripts/
-│   └── validate-content.mjs     # 跨文件校验（规则 3–6），build 的第一道闸
+│   ├── lib/content-rules.mjs    # 跨文件校验规则（纯函数，有回归测试）
+│   └── validate-content.mjs     # 上述规则的 CLI 外壳，build 的第一道闸
 ├── tsconfig.json                # 继承 astro/tsconfigs/strict
 ├── content/                     # 内容，不属于 src
 │   ├── posts/<slug>/index.mdx   # 文章与图片同目录，目录名即 slug
@@ -71,7 +72,7 @@ blog/
 │       ├── series/[series].astro
 │       ├── projects/index.astro   projects/[slug].astro
 │       └── rss.xml.ts
-├── tests/                       # 见 tests/README.md（当前只有约定，无 runner）
+├── tests/                       # node:test 回归，见 tests/README.md
 ├── docs/                        # 本套文档 + adr/
 └── .github/workflows/deploy.yml
 ```
@@ -83,7 +84,8 @@ blog/
 | 模块 | 职责 | 注意 |
 |---|---|---|
 | `src/content.config.ts` | 定义 posts / pages 两个 collection 与字段约束 | 字段改这里，同时改 `docs/02` §5.3 |
-| `src/lib/posts.ts` | `isPublished` 是**唯一**的发布判定 | 草稿/未来日期的过滤只在这里发生，别在页面里重复实现 |
+| `src/lib/posts.ts` | `isPublished` 是**唯一**的发布判定 | 草稿/未来日期的过滤只在这里发生，别在页面里重复实现。dev 下恒为 true（草稿可预览），build 下才真过滤 |
+| `scripts/lib/content-rules.mjs` | 规则 3–6 的纯函数，返回 `Problem[]` 而非抛异常 | 一次报全部违规。**别用 `key in obj` 判系列是否存在**——原型链会让 `constructor` 通过 |
 | `src/lib/projects.ts` | 项目排序（`order` 缺省时按 `name`）与 `status` → 中文文案 | 文案映射不要散落在页面里 |
 | `src/lib/series.ts` | 读 `series.json`，缺失时回退成 slug | 回退意味着**系列名拼错不会失败**，只会显示成 slug（见 §8 技术债） |
 | `src/lib/rehype-code-window.mjs` | 把 `<pre>` 包成窗口外壳 | 与 `global.css` 里的 `.code-window` 样式强耦合 |
@@ -93,6 +95,8 @@ blog/
 ## 5. 依赖策略
 
 **只有官方集成**：`astro` · `@astrojs/mdx` · `@astrojs/sitemap` · `@astrojs/rss`。`zod` 与 `shiki` 随 Astro 提供。
+
+**devDependencies 例外**：`@astrojs/check` + `typescript` 只在构建期跑类型检查，不进产物、不影响运行期零 JS。除此之外不新增。
 
 **不引入**：任何第三方主题、UI 框架、CSS-in-JS、动画库、图标库、日期库、状态管理。图标一律内联 SVG（全站不超过 4 个）。
 
@@ -157,10 +161,10 @@ git -c http.proxy= -c https.proxy= push
 
 | # | 债 | 影响 | 现状 |
 |---|---|---|---|
-| 1 | **draft 在 dev 也不可见** | 文档说"`dev` 可见并带角标"，实际 `isPublished()` 与 `getProjects()` 都无条件过滤 draft | 与 `docs/02` §6 不符；要么改代码，要么改文档 |
-| 2 | 无 typecheck / lint | `.astro` 与 `.ts` 的类型错误只能靠编辑器发现 | `@astrojs/check`、`prettier` 未安装 |
-| 3 | 无测试 | 校验脚本本身没有回归保护 | `tests/` 只有约定文档 |
-| 4 | OG 图是单张静态图 | 所有文章共用 `public/og.png`，不是逐篇生成；**连带 `titleEn` / `summaryEn` 不生效** | 文档写"构建期生成 1200×630"，未实现 |
+| 1 | ~~draft 在 dev 也不可见~~ | ~~文档说"`dev` 可见并带角标"，实际 `isPublished()` 与 `getProjects()` 都无条件过滤 draft~~ | ✅ 已修（2026-10-30）：`import.meta.env.DEV` 下不过滤，列表与详情带"草稿"角标 |
+| 2 | ~~无 typecheck~~ / 无 lint | 类型错误已能拦在构建前；格式仍无约束 | ✅ `astro check` 已进 `pnpm build`（`@astrojs/check` + `typescript`）；prettier 仍未装 |
+| 3 | ~~无测试~~ | ~~校验脚本本身没有回归保护~~ | ✅ `pnpm test`（`node:test`），规则抽到 `scripts/lib/content-rules.mjs` |
+| 4 | OG 图是单张静态图 | 所有文章共用 `public/og.png`，不是逐篇生成 | 文档写"构建期生成 1200×630"，未实现 |
 | 5 | 无 `pnpm new` 脚手架 | 新文章手写 frontmatter，容易漏字段 | 文档提到但脚本不存在 |
 | 6 | 校验脚本只认六个标量字段 | 手写 YAML 解析，`order: "1"` 这类变体会报错而非兼容；新增字段要同步改脚本 | 刻意为之：宁可不兼容，也不静默放过 |
 

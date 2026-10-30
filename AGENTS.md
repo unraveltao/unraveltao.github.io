@@ -38,15 +38,19 @@
 
 ```bash
 pnpm install
-pnpm dev       # http://localhost:4321
+pnpm dev       # http://localhost:4321，草稿与未来日期的文章都可见
 pnpm validate  # 只跑跨文件校验（规则 3–6），不构建
-pnpm build     # validate → astro build；这是唯一的验收命令
+pnpm test      # node:test 回归，对象是 scripts/lib/content-rules.mjs
+pnpm check     # astro check，类型检查
+pnpm build     # validate → astro check → astro build；这是唯一的验收命令
 pnpm preview   # 预览 dist/
 ```
 
-**当前不存在、不要假设存在的命令**：`check`（typecheck）、`lint`、`format`、`test`、`new`。
+**当前不存在、不要假设存在的命令**：`lint`、`format`、`new`。
 
-`package.json` 只有 `dev` / `build` / `preview` 三个脚本。需要跑类型检查时用 `pnpm exec astro check`——但 `@astrojs/check` **尚未安装**，直接跑会提示安装；**不要**为了跑一次检查就自作主张 `pnpm add`，先确认这是不是任务的一部分。
+`pnpm build` 已经把类型检查串进去了，CI 的 `deploy.yml` 不需要也不应该再加单独一步。跑 `pnpm dev` 时类型检查**不会**触发（Vite 只做转译），所以改完 `.ts` / `.astro` 要自己跑一次 `pnpm check`，别指望热更新报错。
+
+加依赖仍需先过 `docs/04` §5 的三问；`@astrojs/check` + `typescript` 是已经批准的 devDependency 例外，不要顺手再加 `prettier` 之外的同类工具。
 
 ## 4. 硬约束（违反即回退，不接受"更现代的做法"）
 
@@ -139,6 +143,7 @@ pnpm preview   # 预览 dist/
 | 你改了什么                 | 必须同步                                |
 | --------------------- | ----------------------------------- |
 | frontmatter 字段 / 校验规则 | `docs/02` §5.3、§5.5                 |
+| 校验规则实现 / 测试用例        | `scripts/lib/content-rules.mjs` 与 `tests/` 同步改，`docs/04` §2 |
 | 路由 / 页面结构 / 导航        | `docs/02` §2、§3、§4                  |
 | 颜色 / 字号 / 间距 / 组件规格   | `docs/03`                           |
 | 目录结构 / 依赖 / 构建流程 / 部署 | `docs/04`                           |
@@ -177,7 +182,7 @@ pnpm preview   # 预览 dist/
 1. 读  → 本文档 + §2 表里对应的文档
 2. 查  → 相关源码（不要猜实现，先读 content.config.ts / lib / 目标页面）
 3. 改  → 最小改动；一次只碰一个关注点
-4. 验  → pnpm build 必须通过（这是唯一硬验收）
+4. 验  → pnpm test + pnpm build 必须通过（build 已含 validate 与 astro check）
         视觉改动另加：375px 无横向滚动 + 键盘可走完
 5. 记  → 按 §7 同步文档；有取舍则补 docs/06
 ```
@@ -207,13 +212,16 @@ pnpm preview   # 预览 dist/
 | 尾斜杠            | GitHub Pages 是目录式托管，缺尾斜杠会 301。手写内链必须带 `/`                                                     |
 | MDX 不继承 rehype | `markdown.rehypePlugins` 对 MDX 无效，必须在 `mdx()` 里再传一次                                           |
 | `series` 拼错 | 现在会构建失败（`scripts/validate-content.mjs` 规则 4）。但 `src/lib/series.ts` 仍保留 `?? key` 回退——那是给运行时兜底的，不要依赖它 |
-| 文档与代码的落差       | `docs/04` §8 列了 6 条已知债（draft 在 dev 不可见、无 typecheck、无测试、OG 单图…）。动手前先看一眼，别把"文档写了"当成"代码有了" |
+| 文档与代码的落差       | `docs/04` §8 列了已知债（无 lint、OG 单图、无 `pnpm new`…）。动手前先看一眼，别把"文档写了"当成"代码有了" |
+| 校验规则用 `key in obj` | 会走原型链——`series: constructor` 能静默通过规则 4。判自有键一律用 `Object.hasOwn`，回归用例在 `tests/content-rules.test.mjs` |
+| 在 `pnpm dev` 里等类型报错 | Vite 只转译不检查，类型错误只在 `pnpm check` / `pnpm build` 出现 |
 | 主题闪烁           | 主题脚本必须内联在 `<head>` 且同步执行，挪到 `defer` 或外部文件会闪白                                                  |
 | 两个项目别混         | 文章推送管线（公众号/知乎）**不是本项目**。看到相关需求，先确认是不是走错了仓库                                                  |
 
 ## 12. 交付前自检
 
-- [ ] `pnpm build` 通过
+- [ ] `pnpm test` 通过
+- [ ] `pnpm build` 通过（含 `astro check`）
 - [ ] 没有新增依赖（或已说明理由）
 - [ ] 没有字面色值逃出 `tokens.css`
 - [ ] 没有新增卡片/阴影/胶囊标签
