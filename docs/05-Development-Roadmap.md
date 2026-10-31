@@ -8,11 +8,14 @@
 
 | 阶段 | 内容 | 完成标志 | 状态 |
 |---|---|---|---|
-| **M0 骨架** | Astro 初始化、tokens、BaseLayout、Nav/Footer、空态首页、404 | `pnpm dev` 能跑，页面骨架与设计系统一致 | ✅ 已完成 |
+| **M0 骨架** † | Astro 初始化、tokens、BaseLayout、Nav/Footer、空态首页、404 | `pnpm dev` 能跑，页面骨架与设计系统一致 | ✅ 已完成 |
 | **M1 管线** | content schema、校验、文章页、标签、系列、RSS、sitemap、OG | 塞一篇假文章，全链路产物正确 | ✅ 已完成（校验缺 3 条，见 §2） |
 | **M2 上线** | 3 篇真实内容、部署、性能达标 | 公网可访问，Lighthouse ≥ 95 | ✅ 已完成（4 篇，线上四项 99–100） |
 | **M3 项目展示** | Project collection、`/projects` 列表与详情、顶栏入口 | 两个路由上线，`lattice` 可见，RSS 与标签不受影响 | ✅ 已完成 2026-10-31 |
+| **迁移** | Astro → Vite 7 + React 19 + React Router 7 + Velite（ADR-0011） | 18 个页面产物不变、正文文本 1:1、`test` / `build` 全绿 | ✅ 已完成 2026-10-31 |
 | **M4 之后** | 统计 → 搜索（Pagefind）→ 评论（giscus） | 按需，不急 | ⬜ 未启动（有意不做） |
+
+† M0–M3 里的"Astro"字样是历史记录，保留原样不追改；2026-10-31 起渲染层已换成 Vite + React Router，细节见 §3 与 ADR-0011。
 
 **上线门槛已达成**：三篇分工文章全部就位——`lattice-architecture`（精选/架构总览）、`tauri-state-machine`（具体取舍）、`why-astro-mdx`（技术选型自述）。
 
@@ -22,13 +25,38 @@
 |---|---|
 | 文章 | 4 篇（1 篇 featured，1 个系列 2 篇，其余独立） |
 | 项目展示 | 1 个（`lattice`），`/projects` 与 `/projects/lattice/` 已上线 |
-| 构建产物 | 18 个 HTML + `rss.xml` + `sitemap-index.xml` |
-| 线上性能 | 文章页移动端 99/100/100/100；LCP 1.2s；TBT 0–130ms；CLS 0 |
-| 请求数 | 全站 0 个 script 请求，2 个请求，8KiB（gzip） |
+| 构建产物 | 18 个 HTML + `rss.xml` + `sitemap-index.xml`，输出在 `build/client/` |
+| 线上性能 | 迁移前（Astro）文章页移动端 99/100/100/100，LCP 1.2s，TBT 0–130ms，CLS 0；**迁移后待重测** |
+| 请求数 | 迁移前 0 个 script 请求 / 共 2 个请求 / 8KiB；迁移后首屏 JS **121.8KB gzip**（entry 66.6 + jsx-runtime 42.8 + content 7.2 + 其余），预算上限 130KB |
 | 校验覆盖 | 10 条规则中 9 条完全生效，1 条部分生效（8：frontmatter `slug` 覆盖目录名后可能重复） |
-| 工具链 | `dev` / `validate` / `check` / `test` / `build` / `preview`；无 lint、无格式化 |
+| 工具链 | `dev` / `content` / `validate` / `check` / `test` / `build` / `preview`；无 lint、无格式化 |
 
 ## 3. 下一步
+
+### ✅ 已完成 — 迁移到 Vite + React Router（2026-10-31）
+
+**为什么**：不是为了性能。Astro 的"零 JS"在这个站上是真实收益（迁移前首屏 0 个 script 请求），但作者不熟悉它的组件模型，每次改动都要重新学一遍；可扩展性也被 `.astro` 的边界限制住。这是一次**用确定的性能代价换确定的熟悉度与可扩展性**的交换（[ADR-0011](./adr/0011-vite-react-router.md)）。
+
+**做了什么**：
+
+1. 渲染层：Astro 5 → Vite 7 + React 19 + React Router 7 framework mode，`ssr: true` + `prerender` 清单，产物仍是 18 个静态目录。
+2. 内容层：Content Collections → Velite 0.4（zod schema + `s.markdown()` + `s.toc()` + `s.raw()`）；Shiki 双主题、`rehype-slug`、code-window 插件原样搬过来。
+3. 样式：`.astro` 的作用域 `<style>` → CSS Modules + `global.css`；token 文件一行未改。
+4. 构建后处理：`scripts/postbuild.mjs` 内联 CSS、`404/index.html` → `404.html`、生成 `rss.xml` 与 sitemap。
+5. 预览：`scripts/serve.mjs` 复刻 GitHub Pages 的 301 与 404 回落，替掉 `vite preview`。
+
+**实测**：18 个页面全部预渲染；正文文本与迁移前逐页对比，7 页完全一致、11 页只差空白字符；`pnpm test` 27/27；`pnpm build` 退出码 0（内联 43 段 CSS、RSS 4 条、sitemap 17 条）。浏览器冒烟：hydration 后 `data-theme` 保持、主题切换生效、目录跟随滚动、站内跳转不整页刷新、0 个失败请求、0 条控制台错误。
+
+**偏差记录**：
+
+- Velite 的 `s.slug()` 没有来源，必须从 `path` 派生；`s.mdx()` 产出 `function-body`，没法直接当 HTML 用，改用 `s.markdown()`。
+- `output.clean` 必须关掉——`react-router.config.ts` 在构建期读 `.velite/*.json`，清空会让它 ENOENT。
+- `routeDiscovery` 默认 `lazy`，会去请求 `/__manifest`；静态托管没这个端点，站内跳转全掉进 ErrorBoundary。改成 `initial`。
+- postbuild 内联 CSS 后**不能删** `assets/*.css`，路由清单仍引用这些文件名。
+- React 会移除 `<html>` 上的未知属性，内联脚本写的 `data-theme` 在 hydration 时丢失；靠 `suppressHydrationWarning` + `useLayoutEffect` 补回。
+- canonical 从 `links` 移到 `meta`：预渲染时 `links()` 是无参调用的，类型对不上。
+
+**代价**：首屏 JS 从 0 变成 121.8KB gzip。这是唯一一项变差的指标，写进 ADR-0011 的 Consequences，并在 AGENTS §4.4 设了 130KB 上限。
 
 ### ✅ 已完成 — `/projects`（2026-10-31）
 
@@ -64,13 +92,41 @@
 - `typescript` 必须锁 `^5`——`pnpm add -D typescript` 默认装到 7.x，而 `@astrojs/check` 与 `@volar` 都要求 `<7`。
 - 计划里原写"CI 加一个独立 check job"，实现时改为串进 `build` 脚本，`deploy.yml` 一行未动——`withastro/action@v3` 内部就是跑 `pnpm run build`。
 
+> 以上四条写于 2026-10-30 ～ 10-31 的 Astro 时期，路径与命令保留原文（`src/lib/*.ts`、`ProjectItem.astro`、`astro check` 等）。迁移后的对应关系见 `docs/04` §3 的目录树。
+
+### P1 — 迁移后的 Lighthouse 重测
+
+**为什么**：99/100/100/100 是在 Astro 构建上测的。现在多了 121.8KB JS，LCP 与 TBT 都会变，不重测就等于没有数据，而 ADR-0011 的结论正是拿这个数字换来的。
+
+**完成标志**：文章页移动端 4G 节流重跑，四项数字记进 §2；若低于 95，先按 ADR-0011 的 Consequences 判断是接受还是回退，不要直接改预算。
+
+### P1 — `why-astro-mdx` 与现栈不一致
+
+**为什么**：这篇是上线门槛的三篇之一，标题就叫"为什么我用 Astro + MDX"。栈已经换了，读者点进去会读到与本项目现状矛盾的选型论证。
+
+**怎么做**：**不改原文**——它是当时决策的诚实记录，改了反而失真。在文末补一节"后记（2026-10）"说明为什么又换了，或者另写一篇迁移记并从这篇链过去。二选一，不要两头都写。
+
+**完成标志**：这篇文章读到底能知道"现在是什么栈、为什么换"，且 `docs/01` §5 第 3 条不再挂着"待处理"。
+
+### P1 — 视觉重做（Tailwind / shadcn 是目标上限）
+
+**为什么**：迁移只做到"1:1 不倒退"，视觉没有变好看。这是最初三个诉求里唯一还没动的那个。
+
+**怎么做**：已记录的**上限**是引入 Tailwind + shadcn（ADR-0011）。真要动的时候按这个顺序：
+
+1. 先在 `docs/06` 立一条决策，说清它解决哪个具体的视觉问题——"更现代"不算问题描述。
+2. 再改 `docs/03` 的 token 与组件规格，**先改文档后改代码**。
+3. 最后才动实现。`AGENTS.md` §4.1 的六条（零卡片、零阴影、单一强调色、圆角三档、纯文字标签、焦点环）是这次重做的输入，不是障碍；要推翻其中任何一条，同样得先立决策。
+
+**完成标志**：`docs/03` 有新版规格，代码与规格一致，375px 无横向滚动，首屏 JS 不因 UI 库再涨过 130KB。
+
 ### P1 — 让工具链能兜住类型与格式（类型部分 ✅ 2026-10-30，格式未做）
 
-**为什么**：`tsconfig` 是 `strict`，但没有 `astro check` 在跑，严格模式的价值只在编辑器里兑现。多人（或 agent）协作时，没有 lint 就没有一致的格式基线。
+**为什么**：`tsconfig` 是 `strict`，但构建里没有类型检查在跑，严格模式的价值就只在编辑器里兑现。多人（或 agent）协作时，没有格式化就没有一致的格式基线。
 
-**已完成**：`@astrojs/check` + `typescript` 装好，`"check": "astro check"`，并串进 `build`——CI 不用改 workflow 就带上了。
+**已完成**：`typescript` 装好，`"check": "react-router typegen && tsc --noEmit"`，并串进 `build`——CI 不用改 workflow 就带上了。迁移到 React Router 后，类型来源从 `@astrojs/check` 换成 `react-router typegen` 生成的路由类型（`Route.LoaderArgs`、`Route.MetaArgs` 等）。
 
-**还没做**：`prettier` + `prettier-plugin-astro`，`"format": "prettier --write ."`。格式化只做本地，不进 CI，避免噪声。
+**还没做**：`prettier`，`"format": "prettier --write ."`。格式化只做本地，不进 CI，避免噪声。迁移后不再需要 `prettier-plugin-astro`，但需要 `prettier-plugin-tailwindcss` 的那一天是视觉重做之后的事。
 
 **完成标志**：`pnpm check` 零错误 ✅；故意写一个类型错误能被它拦住 ✅。
 
@@ -114,6 +170,10 @@
 ```
 P1 测试 ── ✅ 已完成（2026-10-30，规则抽成纯函数 + node:test）
 P1 check/lint ── ✅ 类型检查已完成；lint 仍未做（见 04 §8）
+迁移 ── ✅ 已完成（2026-10-31，ADR-0011）
+P1 Lighthouse 重测 ── 迁移的直接尾巴。先做这个，否则后面判断"性能还行不行"没有基线
+P1 视觉重做 ── 依赖 03 的新规格；先改文档再改代码
+P1 why-astro-mdx 后记 ── 独立，下次写文章时顺手做，不用单开一轮
 P2 OG 图 ── 独立，随时可做；做完才需要重新引入英文标题字段（ADR-0009）
 P2 脚手架 ── 校验规则已稳定，可以做了
 ```

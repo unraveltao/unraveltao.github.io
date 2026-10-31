@@ -2,7 +2,7 @@
 
 > 适用：全站。所有取值以 CSS 自定义属性落地，组件只消费 token，不写字面色值。
 > 决策来源：[ADR-0003](./adr/0003-visual-identity.md)（视觉延续 README 身份）。
-> 落地位置：`src/styles/tokens.css`（唯一允许写色值的地方）与 `src/styles/global.css`。
+> 落地位置：`app/styles/tokens.css`（唯一允许写色值的地方）与 `app/styles/global.css`；页面与组件各自的布局写在同名 `*.module.css` 里。
 > 最后更新：2026-10-31
 
 ## 1. 四条原则
@@ -182,8 +182,8 @@
 
 | 项 | 结论 | 落地位置 |
 |---|---|---|
-| 首页精选轨的视觉权重 | 独立区块，位于身份区之下、列表之上；标题用 `--text-h2`，标签文案 `selected`；无 featured 时整块不渲染 | `src/pages/index.astro` |
-| 列表页年份分组是否折叠 | 不折叠。静态分组，组间 1px `--line`，组内靠留白 | `src/pages/posts/index.astro` |
+| 首页精选轨的视觉权重 | 独立区块，位于身份区之下、列表之上；标题用 `--text-h2`，标签文案 `selected`；无 featured 时整块不渲染 | `app/routes/home.tsx` + `home.module.css` |
+| 列表页年份分组是否折叠 | 不折叠。静态分组，组间 1px `--line`，组内靠留白 | `app/routes/posts.tsx` + `posts.module.css` |
 | 搜索框样式 | v1 不做搜索，因此不存在这个样式问题 | [ADR-0005](./adr/0005-post-only-content-model.md) 与 `docs/01` §3 |
 | 视觉预设（minimal / developer / editorial / dashboard） | **不做**。保留为天花板：若将来实现，只换 token、不换布局，且必须与 `theme`（明暗）分属两个变量层 | [ADR-0003](./adr/0003-visual-identity.md)、[06 §4](./06-Decision-Log.md) |
 

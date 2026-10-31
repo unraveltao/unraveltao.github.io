@@ -56,7 +56,7 @@
 ### 4.1 首页 `/`
 
 1. **身份区**：站名（`--text-display`）+ 定位句（`--text-lead`，`--ink-600`）+ 可选的"现在在做什么"一行（`--text-meta`）。
-   - 定位句允许两句话、最长约 70 字（`src/lib/site.ts` 的 `SITE_TAGLINE`），整段自然换行，不拆行。
+   - 定位句允许两句话、最长约 70 字（`app/lib/site.ts` 的 `SITE_TAGLINE`），整段自然换行，不拆行。
    - `<title>` **不用**这个长句，另取 `SITE_TITLE_TAGLINE`（短标语），否则标题会超过 90 字符被截断。
 2. **精选轨**：`featured: true` 的文章，最多 1 篇，用比列表项更大的标题（`--text-h2`）单独呈现。**没有任何 featured 时整块不渲染**，不留空位、不留占位文案。
 3. **最近文章**：10 篇，列表项规格见设计系统 §8。不做分页——看更多的入口是顶栏 `writing`。
@@ -199,7 +199,7 @@ content/
 
 ### 5.4 Schema
 
-schema 的**唯一真源**是 [`src/content.config.ts`](../src/content.config.ts)，本节只说明意图，不复制代码——复制会漂移。
+schema 的**唯一真源**是 [`velite.config.ts`](../velite.config.ts)，本节只说明意图，不复制代码——复制会漂移。
 
 要点：
 - `slug` / `tags` / `series` 共用 `kebab` 正则；
@@ -222,7 +222,7 @@ schema 的**唯一真源**是 [`src/content.config.ts`](../src/content.config.ts
 | 9 | `status` 不在 `active` / `done` / `archived` 枚举内 → 失败 | Project schema | ✅ 已实现 |
 | 10 | `stack` 为空数组 → 失败 | Project schema | ✅ 已实现 |
 
-规则 3–6 需要跨文件检查，放在 `scripts/validate-content.mjs` 里跑，不放在单文件 schema 里。`pnpm build` 的第一条命令就是它，**失败则不进入 astro check，更不进入 astro build**。
+规则 3–6 需要跨文件检查，放在 `scripts/validate-content.mjs` 里跑，不放在单文件 schema 里。`pnpm build` 的第一条命令就是它，**失败则不进入类型检查，更不进入预渲染构建**。
 
 规则本身是纯函数，在 `scripts/lib/content-rules.mjs`；CLI 只负责读盘与打印。`pnpm test` 跑 `tests/content-rules.test.mjs` 的回归。
 
@@ -293,7 +293,8 @@ git add . && git commit -m "post: ..."
 
 ## 9. URL 不变式
 
-1. 所有页面 URL **带尾斜杠**（`trailingSlash: 'always'`）。GitHub Pages 是目录式托管，不带斜杠会被 301 到带斜杠版本，两个 URL 并存会让 canonical 指向一个会跳转的地址。
+1. 所有页面 URL **带尾斜杠**。GitHub Pages 是目录式托管，不带斜杠会被 301 到带斜杠版本，两个 URL 并存会让 canonical 指向一个会跳转的地址。
+   - 实现方式：预渲染产物是 `build/client/<path>/index.html`（`scripts/postbuild.mjs` 把 `X.html` 改写过去），`scripts/serve.mjs` 对缺尾斜杠的请求回 301。新增静态路由要同时进 `app/routes.ts` 与 `react-router.config.ts` 的 `prerender` 数组。
 2. slug 全小写 kebab-case，**一经发布永不修改**。
 3. URL 里不出现日期。
 4. 分页（若将来引入）不用 `?page=`，用 `/posts/page/2`。

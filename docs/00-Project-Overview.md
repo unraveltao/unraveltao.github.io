@@ -40,9 +40,9 @@
 | 文章 | `content/posts/` 下 4 篇（含 1 篇 `featured`、1 个系列 2 篇） |
 | 项目展示 | `/projects` 与 `/projects/lattice/` 已上线，1 个项目 |
 | 构建产物 | 18 个 HTML 页面 + RSS + sitemap + OG 图 |
-| 线上性能 | 文章页移动端 Lighthouse 99/100/100/100，首屏 JS 0 个请求 |
+| 线上性能 | 迁移前（Astro 构建）文章页移动端 99/100/100/100、首屏 JS 0 个请求；迁移后首屏 JS **121.8KB gzip**，Lighthouse 待重测 |
 | 工具链 | `validate` / `check` / `test` 均在 `pnpm build` 或提交前生效 |
-| 主要缺口 | 无 lint / 格式化；OG 图是单张静态图；无 `pnpm new` 脚手架 |
+| 主要缺口 | 无 lint / 格式化；OG 图是单张静态图；无 `pnpm new` 脚手架；`why-astro-mdx` 一文仍在讲旧栈 |
 
 详细进度与待办见 [05-Development-Roadmap.md](./05-Development-Roadmap.md)。
 
@@ -50,10 +50,10 @@
 
 | 层 | 选型 | 一句话理由 |
 |---|---|---|
-| 框架 | Astro 5，`output: 'static'` | 内容站默认零 JS 是真实收益（[ADR-0004](./adr/0004-astro-static.md)） |
-| 内容 | MDX 存仓库 + Content Collections | 可被 git 审阅、被编辑器与 agent 直接读写（[ADR-0002](./adr/0002-mdx-in-repo.md)） |
-| 校验 | zod schema（`src/content.config.ts`） | 构建期拦住 frontmatter 错误 |
-| 样式 | 原生 CSS + CSS 自定义属性 | 全站 ~8KB，无 CSS 框架 |
+| 框架 | Vite 7 + React 19 + React Router 7（`ssr: true` + 全站预渲染） | 熟悉的模型，可扩展性优先；零 JS 的收益让位于此（[ADR-0011](./adr/0011-vite-react-router.md)） |
+| 内容 | Markdown 存仓库 + Velite 内容层 | 可被 git 审阅、被编辑器与 agent 直接读写（[ADR-0002](./adr/0002-mdx-in-repo.md)） |
+| 校验 | zod schema（`velite.config.ts`） | 构建期拦住 frontmatter 错误 |
+| 样式 | 原生 CSS + CSS Modules + 自定义属性 | 无 CSS 框架；Tailwind / shadcn 记为未来视觉重做的**目标上限**，当前未引入 |
 | 高亮 | Shiki（`min-light` / `min-dark`） | 低饱和，色相可控 |
 | 部署 | GitHub Pages + Actions | 用户站点在根路径，不需要 `base`（[ADR-0006](./adr/0006-github-pages.md)） |
 
@@ -83,8 +83,9 @@
 
 ```bash
 pnpm install
-pnpm dev      # http://localhost:4321
-pnpm build    # 输出 dist/
+pnpm dev      # http://localhost:5173
+pnpm build    # 输出 build/client/
+pnpm preview  # 模拟 GitHub Pages 预览
 ```
 
 写作与发布流程见 [02-Product-Requirements.md §7](./02-Product-Requirements.md#7-写作流程)。

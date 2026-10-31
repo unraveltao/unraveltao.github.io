@@ -11,10 +11,10 @@
 
 | 项    | 内容                                            |
 | ---- | --------------------------------------------- |
-| 是什么  | 静态个人站：工程叙事博客 + 项目展示，Astro 5 + MDX           |
+| 是什么  | 静态个人站：工程叙事博客 + 项目展示，Vite 7 + React 19 + React Router 7（全站预渲染） |
 | 线上   | <https://unraveltao.github.io>                |
 | 内容位置 | `content/posts/<slug>/`、`content/projects/<slug>/`（目录名即 slug） |
-| 代码位置 | `src/`（页面、组件、lib、样式）                          |
+| 代码位置 | `app/`（路由、组件、lib、样式）；根目录三个配置文件 `vite.config.ts` / `react-router.config.ts` / `velite.config.ts` |
 | 部署   | push 到 `main` → GitHub Actions → GitHub Pages |
 | **范围** | **只做对外展示。文章推送到公众号/知乎是另一个项目，不在本仓库** |
 
@@ -38,19 +38,22 @@
 
 ```bash
 pnpm install
-pnpm dev       # http://localhost:4321，草稿与未来日期的文章都可见
+pnpm dev       # http://localhost:5173，草稿与未来日期的文章都可见
+pnpm content   # 只重建内容层（.velite/），不启服务
 pnpm validate  # 只跑跨文件校验（规则 3–6），不构建
 pnpm test      # node:test 回归，对象是 scripts/lib/content-rules.mjs
-pnpm check     # astro check，类型检查
-pnpm build     # validate → astro check → astro build；这是唯一的验收命令
-pnpm preview   # 预览 dist/
+pnpm check     # react-router typegen + tsc --noEmit，类型检查
+pnpm build     # 内容层 → validate → typegen → tsc → react-router build → postbuild；这是唯一的验收命令
+pnpm preview   # 用 scripts/serve.mjs 模拟 GitHub Pages（301 / 404 行为与线上一致）
 ```
 
 **当前不存在、不要假设存在的命令**：`lint`、`format`、`new`。
 
-`pnpm build` 已经把类型检查串进去了，CI 的 `deploy.yml` 不需要也不应该再加单独一步。跑 `pnpm dev` 时类型检查**不会**触发（Vite 只做转译），所以改完 `.ts` / `.astro` 要自己跑一次 `pnpm check`，别指望热更新报错。
+`pnpm build` 已经把类型检查与内容校验串进去了，CI 的 `deploy.yml` 不需要也不应该再加单独一步。跑 `pnpm dev` 时类型检查**不会**触发（Vite 只做转译），所以改完 `.ts` / `.tsx` 要自己跑一次 `pnpm check`，别指望热更新报错。
 
-加依赖仍需先过 `docs/04` §5 的三问；`@astrojs/check` + `typescript` 是已经批准的 devDependency 例外，不要顺手再加 `prettier` 之外的同类工具。
+`pnpm preview` **不是** `vite preview`。GitHub Pages 是目录式托管，`vite preview` 不做"缺尾斜杠 301"和"未知路径回落到 `404.html`"，看起来没问题、上线才 404。要改预览行为只改 `scripts/serve.mjs`。
+
+加依赖仍需先过 `docs/04` §5 的三问；`typescript` 是已批准的 devDependency 例外，不要顺手再加 `prettier` 之外的同类工具。
 
 ## 4. 硬约束（违反即回退，不接受"更现代的做法"）
 
@@ -58,14 +61,15 @@ pnpm preview   # 预览 dist/
 
 1. **零卡片、零阴影、零毛玻璃、零渐变。** 层级只能靠字号、字重、灰度、留白。
 2. **只有一个强调色**：浅色 `#0F6E56`，深色 `#4EC3A3`。`#0F6E56` **永远不出现在深色主题里**（对比度仅 3.05:1）。
-3. 色值只能写在 `src/styles/tokens.css`。组件里出现 `#` 开头的字面色值即为违规（代码块窗口的三个圆点是唯一例外）。
+3. 色值只能写在 `app/styles/tokens.css`。组件与 CSS Module 里出现 `#` 开头的字面色值即为违规（代码块窗口的三个圆点是唯一例外）。
 4. 圆角只允许 `0` / `2px`（行内代码、图片）/ `6px`（代码块窗口）。
 5. 标签是纯文字 `#tag`，**不做胶囊、不做色块**。
 6. 禁止 `outline: none`，除非同时给出等效可见替代。焦点环必须 `2px solid var(--accent)`。
 
 ### 4.2 URL 与路由
 
-1. 所有页面 URL **带尾斜杠**（`trailingSlash: 'always'`）。手写链接必须写成 `/posts/xxx/`。
+1. 所有页面 URL **带尾斜杠**，产物是 `build/client/<path>/index.html`。手写链接必须写成 `/posts/xxx/`。
+   - 这不是一个开关：静态路由要同时进 `app/routes.ts` 和 `react-router.config.ts` 的 `prerender` 数组；动态路由（文章、项目、标签、系列）由 `.velite` 内容推导，不用手加。漏加的表现是本地 dev 正常、线上 404。
 2. **slug 一经发布永不修改**，URL 里不出现日期，中文不进 URL。
 3. 不要引入 `/notes`、`/search`、`/archive`、`/en`、分页路由，也不要引入任何"发布状态"页。
 
@@ -82,9 +86,10 @@ pnpm preview   # 预览 dist/
 
 1. **不引入第三方主题、UI 框架、CSS-in-JS、动画库、图标库、日期库。** 图标内联 SVG。
 2. 新增依赖前先过三问（见 `docs/04` §5）。答不出来就不加。
-3. 首屏 JS 预算 ≤ 15KB（gzip）。当前实际为 **0 个 script 请求**——任何让它变成 1 的改动都要先说明理由。
-4. **不要撤销这两个已测过的优化**，除非你有新的 Lighthouse 数据：
-   - `build.inlineStylesheets: 'always'`（CSS 全量内联）
+3. 首屏 JS 预算 ≤ 130KB（gzip）。当前实测 **121.8KB**——这是换框架付出的唯一硬成本（ADR-0011），不是可优化项，而是**不能继续涨**的上限。任何让它变大的改动都要在提交信息里给出新数字和理由。
+4. **不要撤销这三个已测过的优化**，除非你有新的 Lighthouse 数据：
+   - `scripts/postbuild.mjs` 内联全部 CSS（**并保留** `build/client/assets/*.css`，路由清单仍引用它们，删了客户端导航就掉进 ErrorBoundary）
+   - `routeDiscovery: { mode: 'initial' }`（把路由表写进 HTML，静态托管没有 `/__manifest` 端点）
    - 删除 `text-rendering: optimizeLegibility`  
      理由见 `docs/06` §1 与 `docs/04` §7.1。
 
@@ -92,7 +97,7 @@ pnpm preview   # 预览 dist/
 
 ### 5.1 通用
 
-- TypeScript **strict**（继承 `astro/tsconfigs/strict`）。不写 `any`，确实需要时用 `unknown` + 收窄。
+- TypeScript **strict**（`tsconfig.json` 显式开启，含 `noUncheckedIndexedAccess`）。不写 `any`，确实需要时用 `unknown` + 收窄。
 - 不写 `// @ts-ignore`。类型不对就是设计不对。
 - 不引入 `console.log` 作为调试残留；构建脚本里的输出用 `console.error` 并带退出码。
 - 不做与任务无关的重构、格式化、重命名。**一个 PR 只做一件事。**
@@ -101,23 +106,26 @@ pnpm preview   # 预览 dist/
 
 | 类型       | 约定                   | 例                                    |
 | -------- | -------------------- | ------------------------------------ |
-| Astro 组件 | PascalCase，一个文件一个组件  | `PostItem.astro`                     |
-| lib 模块   | kebab-case，纯函数优先     | `reading-time.ts`                    |
-| 页面路由     | 跟随 URL 结构            | `pages/tags/[tag].astro`             |
+| 路由模块     | 一个 URL 一个文件，同目录放同名 `.module.css` | `app/routes/post.tsx`                |
+| 组件       | PascalCase，一个文件一个组件  | `app/components/PostItem.tsx`        |
+| lib 模块   | kebab-case，纯函数优先     | `app/lib/reading-time.ts`            |
+| 路由表      | 显式声明，不用文件路由约定        | `app/routes.ts`                      |
 | 内容目录     | kebab-case，即 slug    | `content/posts/tauri-state-machine/` |
 | CSS 类    | kebab-case，BEM 风格修饰符 | `.featured__title`                   |
 
-### 5.3 Astro 组件
+### 5.3 路由模块与组件
 
-- frontmatter 里只放数据准备（`getCollection`、排序、派生），不写副作用。
-- 组件内的 `<style>` 只写该组件独有的**布局**；颜色一律 `var(--*)`。
-- 全局元素样式（`prose`、`table`、`pre`）放 `global.css`，不要散落在组件里。
-- 交互脚本用 `is:inline` 且保持极小；不要引入客户端框架。
+- 路由模块只做三件事：`loader` 读 `.velite` 数据、`meta` 出 SEO 标签、渲染。不在 `loader` 里写副作用。
+- `meta` 返回 `MetaDescriptor[]`；canonical 写成 `{ tagName: 'link', rel: 'canonical', href }`。**不要用 `links`**——预渲染时 `links()` 是无参调用的，类型对不上。
+- CSS Module 只写该页/该组件独有的**布局**；颜色一律 `var(--*)`。
+- 全局元素样式（`prose`、`table`、`pre`）放 `app/styles/global.css`，不要散落在组件里。
+- 需要交互就用原生 `useState` / `useEffect` / `useLayoutEffect`；不引入状态管理、动画、UI 库。
+- 内容正文是**构建期渲染好的 HTML**（Velite 的 `html` 字段），不要在文章里塞需要 hydrate 的 React 组件。
 
 ### 5.4 内容过滤
 
-- **发布判定只有一处**：`src/lib/posts.ts` 的 `isPublished()`。不要在页面里重新实现"非草稿 + 日期已到"。
-- 排序、分组、标签计数一律走 `src/lib/posts.ts`，不要在页面里写 `sort`。
+- **发布判定只有一处**：`app/lib/publish.ts` 的 `isPublished()`。页面和 `react-router.config.ts` 的 prerender 清单都调它，不要在页面里重新实现"非草稿 + 日期已到"。
+- 排序、分组、标签计数一律走 `app/lib/content.ts` 与 `app/lib/posts.ts`，不要在页面里写 `sort`。
 
 ### 5.5 注释
 
@@ -154,7 +162,7 @@ pnpm preview   # 预览 dist/
 另外两条：
 
 - **`docs/06` 只追加，不改写。** 推翻旧决策时新增一条并标注"取代 000x"，旧条目原文保留。
-- **不要制造第二份真源。** schema 只在 `src/content.config.ts` 定义，文档里描述意图而不复制代码。
+- **不要制造第二份真源。** schema 只在 `velite.config.ts` 定义，文档里描述意图而不复制代码。
 
 ## 8. 提交规范
 
@@ -180,9 +188,9 @@ pnpm preview   # 预览 dist/
 
 ```
 1. 读  → 本文档 + §2 表里对应的文档
-2. 查  → 相关源码（不要猜实现，先读 content.config.ts / lib / 目标页面）
+2. 查  → 相关源码（不要猜实现，先读 velite.config.ts / app/lib / app/routes 下的目标文件）
 3. 改  → 最小改动；一次只碰一个关注点
-4. 验  → pnpm test + pnpm build 必须通过（build 已含 validate 与 astro check）
+4. 验  → pnpm test + pnpm build 必须通过（build 已含 validate 与 tsc）
         视觉改动另加：375px 无横向滚动 + 键盘可走完
 5. 记  → 按 §7 同步文档；有取舍则补 docs/06
 ```
@@ -194,36 +202,40 @@ pnpm preview   # 预览 dist/
 - ❌ 新增第三种内容类型（Note / Author / Task）
 - ❌ **在本仓库实现"发布到外部平台"**（推送管线是另一个项目）
 - ❌ 引入视觉预设 / 多套主题（`preset` 只是天花板，见 GLOSSARY）
-- ❌ 引入 Tailwind、shadcn、任何 UI 组件库
+- ❌ **在视觉重做开工之前**引入 Tailwind / shadcn / 任何 UI 组件库。这两者已被记录为"未来视觉重做的目标上限"（ADR-0011），不是当前的依赖：要引入必须先在 `docs/06` 立一条新决策，说清它解决的是哪个具体的视觉问题，并且不能推翻 §4.1 的六条
 - ❌ 给页面加卡片、阴影、圆角色块、渐变
 - ❌ 修改已发布文章的 slug 或 `date`
 - ❌ 把 `draft` 过滤逻辑复制到新页面里
-- ❌ 撤销 §4.4 第 4 条列出的两个性能优化
-- ❌ 未经确认执行 `pnpm add` / 升级 Astro 大版本
+- ❌ 撤销 §4.4 第 4 条列出的三个优化
+- ❌ 未经确认执行 `pnpm add` / 升级 React 或 React Router 大版本
 - ❌ 改 `.github/workflows/deploy.yml` 的部署目标（GitHub Pages 是 ADR-0006 的结论）
 - ❌ 批量重排格式、批量重命名文件
-- ❌ 编辑 `dist/`（构建产物，已被 gitignore）、`node_modules/`、`.astro/`
+- ❌ 编辑 `build/`（构建产物，已被 gitignore）、`node_modules/`、`.react-router/`、`.velite/`
 
 ## 11. 已知坑
 
 | 坑              | 说明                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------- |
 | 代理 502         | 本机代理到 GitHub 会 502。`clone` / `push` 用 `git -c http.proxy= -c https.proxy= push`               |
-| 尾斜杠            | GitHub Pages 是目录式托管，缺尾斜杠会 301。手写内链必须带 `/`                                                     |
-| MDX 不继承 rehype | `markdown.rehypePlugins` 对 MDX 无效，必须在 `mdx()` 里再传一次                                           |
-| `series` 拼错 | 现在会构建失败（`scripts/validate-content.mjs` 规则 4）。但 `src/lib/series.ts` 仍保留 `?? key` 回退——那是给运行时兜底的，不要依赖它 |
+| 尾斜杠            | GitHub Pages 是目录式托管，缺尾斜杠会 301。React Router 的产物是 `X.html`，`postbuild.mjs` 改写成 `X/index.html`；手写内链必须带 `/`。用 `pnpm preview` 验证，别用 `vite preview` |
+| `data-theme` 被抹掉 | React 会移除 `<html>` 上的未知属性，内联脚本写进去的 `data-theme` 在 hydration 时丢失，主题回退成浅色。`app/root.tsx` 靠 `suppressHydrationWarning` + `useLayoutEffect` 重新应用，**两处都不能删** |
+| 站内跳转变 404    | `react-router.config.ts` 必须 `routeDiscovery: { mode: 'initial' }`。默认 `lazy` 会去请求 `/__manifest`，静态托管上没有这个端点，每次客户端导航都掉进 ErrorBoundary |
+| postbuild 删 CSS 会坏导航 | 内联 CSS 之后**必须保留** `build/client/assets/*.css`——路由清单仍引用这些文件名，删了不影响首屏但会让客户端导航加载失败 |
+| `.velite` 被清空    | Velite 的 `output.clean` 已关掉：`react-router.config.ts` 在构建期直接读 `.velite/*.json`，清空会让它 ENOENT。别"顺手"打开 |
+| `series` 拼错 | 现在会构建失败（`scripts/validate-content.mjs` 规则 4）。但 `app/lib/series.ts` 仍保留 `?? key` 回退——那是给运行时兜底的，不要依赖它 |
 | 文档与代码的落差       | `docs/04` §8 列了已知债（无 lint、OG 单图、无 `pnpm new`…）。动手前先看一眼，别把"文档写了"当成"代码有了" |
 | 校验规则用 `key in obj` | 会走原型链——`series: constructor` 能静默通过规则 4。判自有键一律用 `Object.hasOwn`，回归用例在 `tests/content-rules.test.mjs` |
 | 在 `pnpm dev` 里等类型报错 | Vite 只转译不检查，类型错误只在 `pnpm check` / `pnpm build` 出现 |
-| 主题闪烁           | 主题脚本必须内联在 `<head>` 且同步执行，挪到 `defer` 或外部文件会闪白                                                  |
+| 主题闪烁           | 主题脚本必须内联在 `<head>` 且同步执行（`app/lib/theme.ts` 的 `THEME_INIT`），挪到 `defer` 或外部文件会闪白                                                  |
 | 两个项目别混         | 文章推送管线（公众号/知乎）**不是本项目**。看到相关需求，先确认是不是走错了仓库                                                  |
 
 ## 12. 交付前自检
 
 - [ ] `pnpm test` 通过
-- [ ] `pnpm build` 通过（含 `astro check`）
+- [ ] `pnpm build` 通过（含 `validate` 与 `tsc --noEmit`）
+- [ ] 首屏 JS 没有超过 130KB（gzip），超了要写理由
 - [ ] 没有新增依赖（或已说明理由）
-- [ ] 没有字面色值逃出 `tokens.css`
+- [ ] 没有字面色值逃出 `app/styles/tokens.css`
 - [ ] 没有新增卡片/阴影/胶囊标签
 - [ ] 内链带尾斜杠
 - [ ] 改动的行为已在对应文档里同步（§7 表）

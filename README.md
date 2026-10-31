@@ -1,6 +1,6 @@
 # Blog
 
-一个以工程叙事为主的静态个人博客。Astro + MDX，commit 即发布，无后端。
+一个以工程叙事为主的静态个人博客。Vite + React Router 全站预渲染，commit 即发布，无后端。
 
 **线上**：<https://unraveltao.github.io>
 **状态**：M0 骨架、M1 内容管线、M2 上线、M3 项目展示均已完成（`pnpm build` 产出 18 个页面），4 篇文章、1 个项目。
@@ -12,10 +12,13 @@ blog/
 ├── AGENTS.md           # Agent 开发行为规范、代码规范、项目约束
 ├── README.md           # 本文件：介绍、安装、运行
 ├── docs/               # 项目文档（00–06 + adr/）
-├── src/                # 页面、组件、lib、样式
+├── app/                # 路由、组件、lib、样式
 ├── content/            # 文章（posts/）、固定页（pages/）、系列表（series.json）
 ├── public/             # favicon / og.png / robots.txt
+├── scripts/            # 内容校验、构建后处理（内联 CSS / RSS / sitemap）、预览服务
 ├── tests/              # node:test 回归
+├── velite.config.ts    # 内容层：schema + Markdown 管线
+├── react-router.config.ts  # 预渲染清单
 └── .github/workflows/  # 构建并发布到 GitHub Pages
 ```
 
@@ -45,15 +48,16 @@ blog/
 
 ```bash
 pnpm install
-pnpm dev       # http://localhost:4321，草稿可见
+pnpm dev       # http://localhost:5173，草稿可见
 pnpm validate  # 跨文件内容校验（不构建）
 pnpm test      # 校验规则的回归测试
-pnpm check     # 类型检查（astro check）
-pnpm build     # validate → astro check → build，输出 dist/
-pnpm preview   # 预览 dist/
+pnpm check     # 类型检查（react-router typegen + tsc）
+pnpm build     # 内容层 → validate → tsc → 预渲染 → postbuild，输出 build/client/
+pnpm preview   # 模拟 GitHub Pages 预览 build/client/（http://localhost:4321）
 ```
 
 > `lint` / `format` / `new` 尚未接入，见 [docs/05](docs/05-Development-Roadmap.md)。
+> 预览请用 `pnpm preview`，不要用 `vite preview`——后者不做尾斜杠 301 与 `404.html` 回落，看不出线上会坏的地方。
 
 ## 写作
 
