@@ -63,7 +63,7 @@ blog/
 │   │   ├── projects.ts          # 项目排序与状态文案
 │   │   ├── reading-time.ts      # 中文 400 字/分，英文 200 词/分
 │   │   ├── series.ts            # series.json 读取与回退
-│   │   ├── site.ts              # 站名/tagline/描述/作者/邮箱/仓库
+│   │   ├── site.ts              # 站名/定位句/短标语/描述/作者/邮箱/仓库
 │   │   └── rehype-code-window.mjs  # 代码块套 macOS 窗口
 │   └── pages/                   # 路由即文件
 │       ├── index.astro  about.astro  404.astro
@@ -88,6 +88,7 @@ blog/
 | `scripts/lib/content-rules.mjs` | 规则 3–6 的纯函数，返回 `Problem[]` 而非抛异常 | 一次报全部违规。**别用 `key in obj` 判系列是否存在**——原型链会让 `constructor` 通过 |
 | `src/lib/projects.ts` | 项目排序（`order` 缺省时按 `name`）与 `status` → 中文文案 | 文案映射不要散落在页面里 |
 | `src/lib/series.ts` | 读 `series.json`，缺失时回退成 slug | 回退意味着**系列名拼错不会失败**，只会显示成 slug（见 §8 技术债） |
+| `src/pages/posts/[...slug].astro` | 文章页；≥1280px 系列文章为三栏 | 目录被 `.article__aside` 包着，因为 `.toc` 的样式在组件作用域里、页面够不着。包裹层必须 `align-self: stretch`，否则 sticky 没有可移动距离（见 ADR-0010） |
 | `src/lib/rehype-code-window.mjs` | 把 `<pre>` 包成窗口外壳 | 与 `global.css` 里的 `.code-window` 样式强耦合 |
 | `src/layouts/BaseLayout.astro` | head / meta / OG / 内联主题脚本 | 主题脚本必须内联且同步执行，否则首屏闪白 |
 | `astro.config.mjs` | 站点 URL、尾斜杠、CSS 内联、shiki 主题 | MDX 不继承 `markdown.rehypePlugins`，必须给 `mdx()` 再传一次 |
