@@ -1,7 +1,7 @@
 /**
  * 跨文件内容校验规则——纯函数，不碰文件系统。
  *
- * 单文件字段约束在 src/content.config.ts 的 zod schema 里；这里只做 schema
+ * 单文件字段约束在 velite.config.ts 的 zod schema 里；这里只做 schema
  * 表达不了的四条（docs/02 §5.5 规则 3/4/5/6）：
  *   3. 同一 series 内 order 重复
  *   4. series 不在 content/series.json

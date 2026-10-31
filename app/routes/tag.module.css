@@ -1,0 +1,16 @@
+.pageHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: var(--s24) 0 var(--s8);
+}
+
+.pageHeadTitle {
+  margin: 0;
+  font-size: var(--text-h2);
+  line-height: 1.2;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: -0.01em;
+}

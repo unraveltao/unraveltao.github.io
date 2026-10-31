@@ -1,0 +1,181 @@
+.grid {
+  width: 100%;
+  max-width: calc(var(--measure) + var(--s12));
+  margin: 0 auto;
+  padding: 0 var(--s6);
+}
+
+/* 目录包裹层默认隐藏。<1200px 不显示；1200–1279px 的系列文章也退回单栏 */
+.aside {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .grid:not(.gridSeries) {
+    max-width: calc(var(--measure) + 12.5rem + var(--s12) + var(--s12));
+    display: grid;
+    grid-template-columns: minmax(0, var(--measure)) 12.5rem;
+    /* 行距用 --s16：post-nav 移到第 2 行后，原来的 margin-top 改由行距承担，视觉不变 */
+    column-gap: var(--s12);
+    row-gap: var(--s16);
+    align-items: start;
+  }
+
+  .grid:not(.gridSeries) .main {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .grid:not(.gridSeries) .postNav {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 0;
+  }
+
+  .grid:not(.gridSeries) .aside {
+    display: block;
+    align-self: stretch;
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/* 三栏只给系列文章，且要 ≥1280px：200 + 48 + 680 + 48 + 200 + 48(padding) = 1224 */
+@media (min-width: 1280px) {
+  .gridSeries {
+    max-width: calc(var(--measure) + 25rem + var(--s12) * 2 + var(--s6) * 2);
+    display: grid;
+    grid-template-columns: 12.5rem minmax(0, var(--measure)) 12.5rem;
+    column-gap: var(--s12);
+    row-gap: var(--s16);
+    align-items: start;
+  }
+
+  .gridSeries .main {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .gridSeries .postNav {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 0;
+  }
+
+  .gridSeries .aside {
+    display: block;
+    align-self: stretch;
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  /* 左栏：去掉原有的分隔线与大上边距，改成和目录同款的 sticky */
+  .gridSeries .seriesNav {
+    grid-column: 1;
+    grid-row: 1;
+    position: sticky;
+    top: 6rem;
+    margin-top: 0;
+    padding-top: var(--s24);
+    border-top: 0;
+  }
+}
+
+.header {
+  padding: var(--s24) 0 var(--s8);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-display);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.meta {
+  margin: var(--s4) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.dot {
+  color: var(--line);
+}
+
+/* 草稿只在 dev 出现（build 已过滤），单色文字角标，不加底色/边框 */
+.draft {
+  color: var(--accent);
+}
+
+.summary {
+  margin: var(--s4) 0 0;
+  font-size: var(--text-lead);
+  line-height: 1.7;
+  color: var(--ink-600);
+  max-width: 36em;
+}
+
+.seriesNav,
+.postNav {
+  margin-top: var(--s16);
+  padding-top: var(--s6);
+  border-top: 1px solid var(--line);
+}
+
+.seriesNav ul {
+  list-style: none;
+  margin: var(--s3) 0 0;
+  padding: 0;
+}
+
+.seriesNav li {
+  display: flex;
+  gap: var(--s3);
+  padding: 0.35em 0;
+  color: var(--ink-600);
+}
+
+.seriesNav li.isCurrent {
+  color: var(--ink-900);
+  font-weight: 600;
+}
+
+.seriesIndex {
+  color: var(--ink-400);
+}
+
+.postNav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s8);
+}
+
+.postNavSide {
+  max-width: 45%;
+}
+
+.postNavSideRight {
+  text-align: right;
+  margin-left: auto;
+}
+
+.postNav a {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  color: inherit;
+}
+
+.postNavTitle {
+  font-size: var(--text-small);
+  color: var(--ink-900);
+  transition: color var(--dur) var(--ease);
+}
+
+.postNav a:hover .postNavTitle {
+  color: var(--accent);
+}

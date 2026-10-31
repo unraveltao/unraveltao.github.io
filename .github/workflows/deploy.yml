@@ -20,11 +20,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build
-        uses: withastro/action@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-          package-manager: pnpm@9
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      # build 里已经串了 velite、内容校验、类型检查与后处理，这里不重复跑
+      - name: Build
+        run: pnpm build
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # React Router 的静态产物在 build/client
+          path: build/client
 
   deploy:
     needs: build

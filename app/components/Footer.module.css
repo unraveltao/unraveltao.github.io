@@ -1,0 +1,28 @@
+.footer {
+  border-top: 1px solid var(--line);
+  padding: var(--s8) 0 var(--s12);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+  width: 100%;
+  max-width: calc(var(--measure) + var(--s12));
+  margin: 0 auto;
+  padding: 0 var(--s6);
+}
+
+.sep {
+  color: var(--line);
+}
+
+.footer a {
+  color: var(--ink-400);
+  transition: color var(--dur) var(--ease);
+}
+
+.footer a:hover {
+  color: var(--accent);
+}

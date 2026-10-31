@@ -1,0 +1,16 @@
+.theme {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  letter-spacing: 0.04em;
+  color: var(--ink-400);
+  transition: color var(--dur) var(--ease);
+}
+
+.theme:hover {
+  color: var(--accent);
+}

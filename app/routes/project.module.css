@@ -1,0 +1,48 @@
+.project {
+  width: 100%;
+  max-width: calc(var(--measure) + var(--s12));
+  margin: 0 auto;
+  padding: 0 var(--s6);
+}
+
+.header {
+  padding: var(--s24) 0 var(--s8);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-display);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.meta {
+  margin: var(--s4) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.dot {
+  color: var(--line);
+}
+
+.meta a {
+  color: var(--ink-600);
+  transition: color var(--dur) var(--ease);
+}
+
+.meta a:hover {
+  color: var(--accent);
+}
+
+.summary {
+  margin: var(--s4) 0 0;
+  font-size: var(--text-lead);
+  line-height: 1.7;
+  color: var(--ink-600);
+  max-width: 36em;
+}
