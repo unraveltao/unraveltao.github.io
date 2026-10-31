@@ -92,24 +92,26 @@ main {
 /* ============================================================
  * 主题：Geeker
  *
- * 「Hacker 的排版 + Paper 的配色」：终端插画、等宽标题、小一号的 hero，
- * 但底色是米白、强调色是墨绿——也就是 Paper / Spring 那套色板。
+ * 「Hacker 的排版 + 米白纸」：终端插画、等宽标题、小一号的 hero，
+ * 配色是中性暖白的纸 + 墨——不带 Spring 的绿调，两者放一起能一眼分开。
  *
  * 放在 global.css 而不是 garden-themes.css：后者要与参考站逐字一致，
  * 留着才能 diff；Geeker 是本项目新增的主题，改动都记在这里。
  * ============================================================ */
 
 :root[data-theme='geeker'] {
-  --bg: #f7f7ef;
-  --surface: #fffef8;
-  --text: #242a23;
-  --muted: #697064;
-  --border: #dcded2;
-  --accent: #345c40;
-  --accent-soft: #e4ebda;
-  --lime: #dceca7;
-  --art: #e8edda;
-  --shadow: 0 18px 60px #26332718;
+  /* 比 Spring 的 #F7F7EF 更亮、更中性：Spring 偏米绿，这里偏米白 */
+  --bg: #fbfaf6;
+  --surface: #ffffff;
+  --text: #1c1b17;
+  --muted: #6f6a60;
+  --border: #e8e4da;
+  /* 强调色是墨，不是绿。比正文浅一档，标题第二行才读得出层次 */
+  --accent: #4a453a;
+  --accent-soft: #f0ede5;
+  --lime: #eae6dc;
+  --art: #f3f0e7;
+  --shadow: 0 18px 60px #1c1b1712;
   /* 排版跟 Hacker 走：标题落到等宽栈（中文会退到系统字体，与 Hacker 表现一致） */
   --serif: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   color-scheme: light;
@@ -171,20 +173,21 @@ main {
 }
 
 :root[data-theme='geeker'] .terminal-top {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #e3ded1;
   color: var(--muted);
 }
 
+/* 圆点用比 --border 深一档的暖灰，否则在纸底上看不见 */
 :root[data-theme='geeker'] .terminal-top i {
-  border-color: var(--border);
+  border-color: #cdc7b8;
 }
 
 :root[data-theme='geeker'] .terminal-code {
-  color: #2c4535;
+  color: #2e2b24;
 }
 
 :root[data-theme='geeker'] .terminal-comment {
-  color: #8a9a8c;
+  color: #918b7e;
 }
 
 :root[data-theme='geeker'] .terminal-command span,
@@ -192,12 +195,13 @@ main {
   color: var(--accent);
 }
 
+/* 单色语法：三档墨，靠明度分层，不引入第二个色相 */
 :root[data-theme='geeker'] .code-value {
-  color: #6b7f3e;
+  color: #5c5648;
 }
 
 :root[data-theme='geeker'] .code-string {
-  color: #4d7a5e;
+  color: #6f6959;
 }
 
 :root[data-theme='geeker'] .terminal-ready {
@@ -209,12 +213,11 @@ main {
   color: var(--muted);
 }
 
-/* --- 外观面板里的预览卡 --- */
+/* --- 外观面板里的预览卡：米白稿纸 + 墨色提示符 --- */
 .preview-geeker {
-  --preview-bg: #f7f7ef;
-  --preview-text: #345c40;
-  background-image: radial-gradient(#476b4124 0.8px, transparent 0.8px);
-  background-size: 9px 9px;
+  --preview-bg: #fbfaf6;
+  --preview-text: #4a453a;
+  background-image: repeating-linear-gradient(0deg, transparent 0 7px, #1c1b170d 7px 8px);
 }
 
 .preview-geeker .preview-type {
