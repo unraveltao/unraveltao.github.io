@@ -1,5 +1,11 @@
 # 设计系统
 
+> **⚠️ 本文描述的是 `react-rewrite` 分支上的旧视觉层，已被 [ADR-0012](./adr/0012-garden-ui-reskin.md) 取代。**
+> `ui/garden` 分支改用 Digital Garden 的 UI：衬线大标题、季节插画、卡片式项目封面、六套主题。
+> 现在的取值真源是 `app/styles/garden.css`（基础层）与 `app/styles/garden-themes.css`（主题层），
+> 本地化与站点补充在 `app/styles/global.css`。下文 §1 的四条原则（零卡片、单一强调色、直角优先、无主题）在该分支上不再成立。
+> 本文保留原文，供对照与回退。
+
 > 适用：全站。所有取值以 CSS 自定义属性落地，组件只消费 token，不写字面色值。
 > 决策来源：[ADR-0003](./adr/0003-visual-identity.md)（视觉延续 README 身份）。
 > 落地位置：`app/styles/tokens.css`（唯一允许写色值的地方）与 `app/styles/global.css`；页面与组件各自的布局写在同名 `*.module.css` 里。

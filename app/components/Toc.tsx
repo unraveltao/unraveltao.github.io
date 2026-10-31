@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { anchorId, flattenToc, type TocEntry } from '~/lib/toc'
-import styles from './Toc.module.css'
 
+/**
+ * 文章右侧目录。原站的样式语言是「一条左边框 + 11px 灰色链接」，
+ * 这里沿用，只把当前项染成 accent。
+ */
 export function Toc({ items }: { items: TocEntry[] }) {
   const headings = flattenToc(items).filter((heading) => heading.depth === 2 || heading.depth === 3)
   const [active, setActive] = useState<string | null>(null)
@@ -29,23 +32,17 @@ export function Toc({ items }: { items: TocEntry[] }) {
   if (headings.length <= 2) return null
 
   return (
-    <aside className={styles.toc} aria-label="目录">
-      <p className={`meta ${styles.title}`}>on this page</p>
-      <ul className={styles.list}>
-        {headings.map((heading) => (
-          <li
-            key={heading.url}
-            className={`${styles.item} ${heading.depth === 3 ? styles.itemH3 : ''}`}
-          >
-            <a
-              href={heading.url}
-              className={active === anchorId(heading.url) ? styles.isActive : undefined}
-            >
-              {heading.title}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </aside>
+    <nav className="article-toc" aria-label="目录">
+      <h2>ON THIS NOTE</h2>
+      {headings.map((heading) => (
+        <a
+          key={heading.url}
+          href={heading.url}
+          className={active === anchorId(heading.url) ? 'is-active' : undefined}
+        >
+          {heading.title}
+        </a>
+      ))}
+    </nav>
   )
 }

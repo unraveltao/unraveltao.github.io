@@ -1,9 +1,9 @@
 import type { MetaFunction } from 'react-router'
-import { useParams } from 'react-router'
+import { Link, useParams } from 'react-router'
+import { Icon } from '~/components/Icon'
 import { getPublishedPosts } from '~/lib/content'
 import { pageMeta } from '~/lib/seo'
 import { seriesDescription, seriesName } from '~/lib/series'
-import styles from './series.module.css'
 
 export const meta: MetaFunction<{ series: string }> = ({ params }) => {
   const key = params.series ?? ''
@@ -22,25 +22,25 @@ export default function Series() {
   const description = seriesDescription(key)
 
   return (
-    <div className="wrap">
-      <header className={styles.pageHead}>
-        <p className="meta">series</p>
-        <h1 className={styles.pageHeadTitle}>{seriesName(key)}</h1>
-        {description && <p className={styles.pageHeadDesc}>{description}</p>}
-        <p className="meta">{posts.length} 篇</p>
-      </header>
+    <div className="shell">
+      <div className="page-head">
+        <p className="eyebrow">SERIES · {posts.length} PARTS</p>
+        <h1>{seriesName(key)}</h1>
+        {description && <p>{description}</p>}
+      </div>
 
-      <ol className={styles.list}>
+      <div className="writing-list">
         {posts.map((post, index) => (
-          <li key={post.slug}>
-            <span className={`meta ${styles.index}`}>{String(index + 1).padStart(2, '0')}</span>
-            <a href={`/posts/${post.slug}/`}>
-              <span className={styles.title}>{post.title}</span>
-              <span className={styles.summary}>{post.summary}</span>
-            </a>
-          </li>
+          <Link className="writing-row" key={post.slug} to={`/posts/${post.slug}/`}>
+            <span className="order">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{post.title}</h3>
+              <p>{post.summary}</p>
+            </div>
+            <Icon name="arrow" />
+          </Link>
         ))}
-      </ol>
+      </div>
     </div>
   )
 }

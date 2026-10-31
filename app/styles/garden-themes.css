@@ -1,0 +1,459 @@
+/*
+ * 主题层：六套配色、外观面板、季节插画（原 themes.css）
+ *
+ * 逐字取自 Iron Tom Digital Garden 导出包的 src/styles.css 与 src/themes.css，
+ * 只做了换行排版，选择器与数值未改动——保证视觉与参考站一致。
+ * 改动请直接改这里的值；tokens 在文件顶部的 :root 与 [data-theme] 块里。
+ * 站点自己的补充样式写在 app/styles/global.css 末尾，不要往这里加。
+ */
+
+/* Six atmospheres, one shared interface. Spring retains the original garden palette. */
+:root {
+  --season-sun:#ebc77c;
+  --season-sea:#92c9d5;
+  --season-sand:#eeddbb;
+  --season-leaf:#b85f38;
+  --season-gold:#d89c4e;
+  --season-vein:#6f3b25;
+  --season-mountain:#b4cbdc;
+  --season-ice:#ccdee9}
+:root[data-theme=summer] {
+  --bg:#f7f8f2;
+  --surface:#fffef9;
+  --text:#203f4b;
+  --muted:#536d76;
+  --border:#d3e0df;
+  --accent:#146c86;
+  --accent-soft:#e1f0ef;
+  --lime:#f0dba9;
+  --art:#dfedef;
+  --shadow:0 18px 60px #1d66751a;
+  --season-sun:#edc46c;
+  --season-sea:#91c6d3;
+  --season-sand:#ecdcbb;
+  color-scheme:light}
+:root[data-theme=autumn] {
+  --bg:#faf3e9;
+  --surface:#fffaf2;
+  --text:#433127;
+  --muted:#806454;
+  --border:#e6d6c5;
+  --accent:#a24d2b;
+  --accent-soft:#f1e2ce;
+  --lime:#e9bf7b;
+  --art:#f2e4ce;
+  --shadow:0 18px 60px #8d4a2217;
+  color-scheme:light}
+:root[data-theme=winter] {
+  --bg:#f4f8fb;
+  --surface:#ffffff;
+  --text:#293c50;
+  --muted:#5d7285;
+  --border:#d9e3ed;
+  --accent:#3e6b92;
+  --accent-soft:#e3edf6;
+  --lime:#c9dfed;
+  --art:#e2edf5;
+  --shadow:0 18px 60px #3a63851a;
+  color-scheme:light}
+:root[data-theme=light] {
+  --bg:#ffffff;
+  --surface:#ffffff;
+  --text:#292d32;
+  --muted:#656c74;
+  --border:#e2e5e9;
+  --accent:#4a5765;
+  --accent-soft:#f0f2f5;
+  --lime:#e6e9ee;
+  --art:#f5f6f8;
+  --shadow:0 18px 60px #1f293710;
+  color-scheme:light}
+:root[data-theme=hacker] {
+  --bg:#090f0c;
+  --surface:#0f1913;
+  --text:#e2f0e5;
+  --muted:#9ab3a2;
+  --border:#284634;
+  --accent:#72e89c;
+  --accent-soft:#163323;
+  --lime:#81eda3;
+  --art:#0d1d13;
+  --shadow:0 18px 60px #0007;
+  --serif:'SFMono-Regular',Consolas,monospace;
+  color-scheme:dark}
+.theme-trigger {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-height:38px;
+  padding:7px 11px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:var(--surface);
+  font-size:11px;
+  transition:background .15s,border-color .15s}
+.theme-trigger>.icon {
+  width:16px;
+  height:16px}
+.theme-trigger .theme-chevron {
+  width:12px;
+  height:12px;
+  color:var(--muted);
+  transition:transform .15s}
+.theme-trigger:hover,.theme-trigger[aria-expanded=true] {
+  background:var(--accent-soft);
+  border-color:var(--accent)}
+.theme-trigger[aria-expanded=true] .theme-chevron {
+  transform:rotate(180deg)}
+.theme-menu.appearance-panel {
+  top:51px;
+  right:0;
+  width:376px;
+  padding:22px;
+  background:var(--surface);
+  border-radius:12px;
+  max-height:calc(100dvh - 100px);
+  overflow:auto;
+  box-shadow:var(--shadow);
+  z-index:30;
+  text-align:left}
+.appearance-header {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:22px}
+.appearance-eyebrow {
+  font:8px var(--mono);
+  letter-spacing:1.3px;
+  color:var(--muted)}
+.appearance-header p {
+  font:normal 24px/1.25 Georgia,serif;
+  letter-spacing:-.6px;
+  color:var(--text);
+  margin:8px 0 0}
+.theme-menu .appearance-close {
+  width:29px;
+  height:29px;
+  flex:0 0 29px;
+  padding:6px;
+  margin:-4px -6px 0 0;
+  justify-content:center}
+.appearance-close .icon {
+  width:16px;
+  height:16px}
+.theme-group-label {
+  font:8px var(--mono);
+  letter-spacing:1.4px;
+  color:var(--muted);
+  margin:0 0 11px}
+.essentials-label {
+  margin-top:18px}
+.theme-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px}
+.theme-menu .theme-option {
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  text-align:left;
+  padding:0;
+  border:0;
+  border-radius:6px;
+  gap:0;
+  background:transparent;
+  min-width:0}
+.theme-menu .theme-option:hover {
+  background:transparent}
+.theme-preview {
+  display:block;
+  position:relative;
+  height:66px;
+  width:100%;
+  border-radius:6px;
+  overflow:hidden;
+  border:1px solid #00000012;
+  margin-bottom:7px;
+  color:var(--preview-text);
+  background:var(--preview-bg);
+  transition:outline-color .15s,transform .15s}
+.theme-option:hover .theme-preview {
+  transform:translateY(-2px)}
+.theme-option[aria-pressed=true] .theme-preview {
+  outline:2px solid var(--accent);
+  outline-offset:2px}
+.preview-dots {
+  position:absolute;
+  left:10px;
+  top:0;
+  font:bold 16px var(--mono);
+  opacity:.45;
+  letter-spacing:1px}
+.preview-type {
+  position:absolute;
+  left:12px;
+  bottom:8px;
+  font:normal 27px/1 Georgia,serif;
+  letter-spacing:-1px}
+.theme-preview>.icon {
+  position:absolute;
+  right:16px;
+  bottom:12px;
+  width:28px;
+  height:28px;
+  opacity:.75;
+  stroke-width:1.2}
+.preview-spring {
+  --preview-bg:#e7eddc;
+  --preview-text:#3e6547;
+  background-image:radial-gradient(#476b4124 .8px,transparent .8px);
+  background-size:9px 9px}
+.preview-summer {
+  --preview-bg:#dceef0;
+  --preview-text:#1e7185;
+  background:linear-gradient(168deg,#dceef0 53%,#97cbd6 54%,#97cbd6 70%,#eddbb7 71%)}
+.preview-autumn {
+  --preview-bg:#f2e2ca;
+  --preview-text:#a4552e;
+  background:linear-gradient(155deg,#f5e8d5,#eacda5)}
+.preview-winter {
+  --preview-bg:#e5eef5;
+  --preview-text:#4f789a;
+  background:linear-gradient(162deg,#e2edf5 67%,#fff 68%)}
+.preview-light {
+  --preview-bg:#fff;
+  --preview-text:#4d5661;
+  box-shadow:inset 0 0 0 1px #e9ebef}
+.preview-hacker {
+  --preview-bg:#0a1710;
+  --preview-text:#73eea1;
+  background-image:repeating-linear-gradient(0deg,transparent 0 3px,#72e89c05 3px 4px)}
+.preview-hacker .preview-type {
+  font:23px var(--mono)}
+.theme-check {
+  position:absolute;
+  right:5px;
+  top:5px;
+  border-radius:50%;
+  background:var(--accent);
+  color:var(--bg);
+  width:16px;
+  height:16px;
+  display:none;
+  align-items:center;
+  justify-content:center}
+.theme-check .icon {
+  width:10px;
+  height:10px;
+  stroke-width:2}
+.theme-option[aria-pressed=true] .theme-check {
+  display:flex}
+.theme-option-name {
+  font-size:11px;
+  line-height:1.6;
+  color:var(--text);
+  font-weight:500}
+.theme-option-description {
+  font-size:9px;
+  line-height:1.5;
+  color:var(--muted)}
+.appearance-footer {
+  display:flex;
+  align-items:center;
+  gap:7px;
+  border-top:1px solid var(--border);
+  padding-top:14px;
+  margin-top:18px;
+  font:8px var(--mono);
+  color:var(--muted)}
+.appearance-footer kbd {
+  margin-left:auto}
+.preference-dot {
+  width:4px;
+  height:4px;
+  background:var(--accent);
+  border-radius:50%}
+.garden-art .season-scene {
+  width:100%;
+  height:100%;
+  flex-shrink:0}
+.garden-art .art-caption {
+  font-size:8px;
+  z-index:2;
+  max-width:80%}
+.garden-art .art-mark {
+  font-size:16px;
+  z-index:2}
+:root[data-theme=spring] .garden-art .season-scene,:root[data-theme=light] .garden-art .season-scene {
+  width:81%;
+  height:84%}
+:root[data-theme=summer] .garden-art:before,:root[data-theme=winter] .garden-art:before {
+  opacity:.06}
+:root[data-theme=autumn] .garden-art:before {
+  opacity:.08}
+:root[data-theme=autumn] .project-art {
+  background-image:radial-gradient(ellipse at 100% 0,#e3b67e40,transparent 70%)}
+:root[data-theme=winter] .project-art:before {
+  opacity:.4}
+:root[data-theme=light] .garden-art:before {
+  opacity:.07}
+:root[data-theme=light] .project-art:before {
+  opacity:.35}
+:root[data-theme=hacker] .garden-art {
+  border-radius:9px;
+  background:#0b160e;
+  border-color:#335a40;
+  box-shadow:0 0 50px #52d78606;
+  display:block;
+  padding:0}
+:root[data-theme=hacker] .garden-art:before {
+  background-image:repeating-linear-gradient(0deg,transparent 0 3px,#72e89c05 3px 4px);
+  opacity:1;
+  z-index:1;
+  pointer-events:none}
+:root[data-theme=hacker] .hero h1 {
+  font-size:clamp(36px,3.7vw,52px);
+  line-height:1.15;
+  letter-spacing:-2.6px}
+:root[data-theme=hacker] .hero h1 em {
+  font-style:normal}
+:root[data-theme=hacker] .monogram {
+  font-style:normal;
+  font-family:var(--mono);
+  font-size:34px;
+  letter-spacing:-4px}
+:root[data-theme=hacker] .project-art:before {
+  background-size:24px 24px;
+  opacity:.4}
+:root[data-theme=hacker] .button.primary {
+  background:var(--accent);
+  color:var(--bg);
+  border-color:var(--accent)}
+:root[data-theme=hacker] .article-body {
+  font-family:var(--sans);
+  font-size:16px}
+:root[data-theme=hacker] .mini-pane b {
+  font-size:11px}
+.terminal-art {
+  height:100%;
+  position:relative;
+  z-index:2}
+.terminal-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  height:43px;
+  padding:0 18px;
+  border-bottom:1px solid #294632;
+  color:#9ab3a2;
+  font:8px var(--mono)}
+.terminal-top b {
+  font-weight:400}
+.terminal-top>span:first-child {
+  display:flex;
+  gap:5px}
+.terminal-top i {
+  height:6px;
+  width:6px;
+  border:1px solid #598266;
+  border-radius:50%}
+.terminal-code {
+  padding:22px 24px;
+  color:#b7d8c2;
+  font:11px/1.85 var(--mono)}
+.terminal-comment {
+  color:#789983}
+.terminal-command {
+  margin:9px 0 14px}
+.terminal-command span,.code-key {
+  color:#74e89c}
+.terminal-code pre {
+  font:inherit;
+  margin:0 0 12px;
+  line-height:1.9;
+  white-space:pre-wrap}
+.code-value {
+  color:#c3d892}
+.code-string {
+  color:#8ec7a0}
+.terminal-ready {
+  color:#80eaa2}
+.terminal-cursor {
+  animation:terminal-blink 1.2s step-end infinite}
+.terminal-art+.art-caption {
+  font-family:var(--mono);
+  color:#78a286}
+:root[data-theme=hacker] .art-mark {
+  font:12px var(--mono);
+  color:#78a286}
+@keyframes terminal-blink {
+  50% {
+  opacity:0}
+}
+@media(max-width:1100px) {
+  .theme-menu.appearance-panel {
+  right:0}
+.header-actions {
+  gap:7px}
+.site-header {
+  gap:22px}
+.terminal-code {
+  font-size:10px;
+  padding:19px 18px}
+}
+@media(max-width:760px) {
+  .theme-trigger {
+  font-size:10px;
+  min-height:35px;
+  gap:7px;
+  padding:6px 8px}
+.theme-trigger>.icon {
+  width:14px;
+  height:14px}
+.theme-trigger .theme-chevron {
+  width:10px}
+.theme-menu.appearance-panel {
+  position:fixed;
+  top:74px;
+  right:20px;
+  left:20px;
+  width:auto;
+  max-height:calc(100dvh - 94px);
+  padding:20px}
+.appearance-header {
+  margin-bottom:18px}
+.theme-preview {
+  height:61px}
+.theme-grid {
+  gap:12px}
+.appearance-header p {
+  font-size:24px}
+.theme-option-name {
+  font-size:12px}
+.theme-option-description {
+  font-size:10px}
+:root[data-theme=hacker] .hero h1 {
+  font-size:43px;
+  letter-spacing:-2.8px}
+:root[data-theme=hacker] .garden-art {
+  height:320px}
+.terminal-code {
+  padding:20px 20px;
+  font-size:10px}
+.terminal-top {
+  padding-inline:17px}
+.garden-art .art-caption {
+  font-size:7px}
+.garden-art .art-mark {
+  font-size:13px}
+.theme-trigger:focus-visible {
+  outline-offset:2px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .terminal-cursor {
+  animation:none}
+.theme-trigger,.theme-chevron,.theme-preview {
+  transition:none}
+}

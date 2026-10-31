@@ -1,4 +1,4 @@
-import { useLayoutEffect, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import {
   Links,
   Meta,
@@ -9,24 +9,17 @@ import {
   useRouteError,
 } from 'react-router'
 import { Footer } from '~/components/Footer'
-import { Nav } from '~/components/Nav'
+import { Header } from '~/components/Header'
+import { IconSprite } from '~/components/Icon'
+import { ThemeProvider } from '~/components/ThemeProvider'
 import { SITE_NAME } from '~/lib/site'
-import { resolveTheme, THEME_INIT } from '~/lib/theme'
+import { THEME_INIT } from '~/lib/theme'
 import '~/styles/global.css'
-
-/**
- * 内联脚本负责首屏主题（同步执行，避免闪白）。
- * 但 React hydration 会抹掉 <html> 上它不认识的属性，所以 App 里还要用
- * useLayoutEffect 补一次——那是在浏览器下一次绘制之前，用户看不到回退。
- */
-const RESTORE_ON_MOUNT = () => {
-  document.documentElement.dataset.theme = resolveTheme()
-}
 
 export function Layout({ children }: { children: ReactNode }) {
   return (
     // suppressHydrationWarning：<head> 里的内联脚本在 hydration 之前就给 <html>
-    // 加了 data-theme，React 对不上这个属性会报警并把它抹掉（主题因此回退到浅色）
+    // 加了 data-theme，React 对不上这个属性会报警并把它抹掉（主题因此回退到 Spring）
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
@@ -40,6 +33,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:locale" content="zh_CN" />
         <meta name="twitter:card" content="summary_large_image" />
+        {/* 主题要在第一帧之前定下来，否则会先画 Spring 再切走 */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
       <body>
@@ -52,16 +46,18 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  useLayoutEffect(RESTORE_ON_MOUNT, [])
-
   return (
-    <>
-      <Nav />
-      <main>
+    <ThemeProvider>
+      <IconSprite />
+      <a className="skip-link" href="#main">
+        跳到正文
+      </a>
+      <Header />
+      <main id="main">
         <Outlet />
       </main>
       <Footer />
-    </>
+    </ThemeProvider>
   )
 }
 
@@ -70,19 +66,26 @@ export function ErrorBoundary() {
   const notFound = isRouteErrorResponse(error) && error.status === 404
 
   return (
-    <div className="wrap notfound">
-      <p className="meta">{notFound ? '404' : 'error'}</p>
-      <h1 className="notfound__title">{notFound ? '这个地址没有内容' : '这一页出错了'}</h1>
-      <p className="notfound__text">
-        {notFound
-          ? '可能是链接过期了，也可能是我改了 slug（不应该发生）。'
-          : '构建期的校验应该拦住这种情况，如果没拦住，说明有地方绕过了它。'}
-      </p>
-      <p className="notfound__links meta">
-        <a href="/">回首页</a>
-        <span className="dot">·</span>
-        <a href="/posts/">看全部文章</a>
-      </p>
-    </div>
+    <ThemeProvider>
+      <IconSprite />
+      <Header />
+      <main id="main">
+        <div className="shell notfound">
+          <p className="eyebrow">{notFound ? '404' : 'ERROR'}</p>
+          <h1>{notFound ? '这个地址没有内容' : '这一页出错了'}</h1>
+          <p>
+            {notFound
+              ? '可能是链接过期了，也可能是我改了 slug（不应该发生）。'
+              : '构建期的校验应该拦住这种情况，如果没拦住，说明有地方绕过了它。'}
+          </p>
+          <p className="notfound__links">
+            <a href="/">回首页</a>
+            <span>·</span>
+            <a href="/posts/">看全部文章</a>
+          </p>
+        </div>
+      </main>
+      <Footer />
+    </ThemeProvider>
   )
 }

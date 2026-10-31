@@ -16,7 +16,7 @@
 |---|---|---|---|
 | [0001](./adr/0001-blog-positioning.md) | 博客定位 | 工程叙事优先，纯教程不进主线 | 生效中 |
 | [0002](./adr/0002-mdx-in-repo.md) | 内容存储 | MDX 存仓库，commit 即发布，拒绝 CMS | 生效中 |
-| [0003](./adr/0003-visual-identity.md) | 视觉身份 | 延续 Profile README 的语言：纸白 + 单一强调色 + 零卡片 | 生效中 |
+| [0003](./adr/0003-visual-identity.md) | 视觉身份 | 延续 Profile README 的语言：纸白 + 单一强调色 + 零卡片 | 被 0012 取代 |
 | [0004](./adr/0004-astro-static.md) | 框架选型 | Astro 静态输出，不用 Next.js | 被 0011 取代 |
 | [0005](./adr/0005-post-only-content-model.md) | 内容模型 | 只有一种内容类型：Post | 被 0007 部分取代 |
 | [0006](./adr/0006-github-pages.md) | 部署 | GitHub Pages 用户站点，仓库名即域名 | 生效中 |
@@ -25,6 +25,7 @@
 | [0009](./adr/0009-drop-unused-metadata-fields.md) | 内容字段 | 删除未被消费的 `titleEn` / `summaryEn` / `cover` | 生效中 |
 | [0010](./adr/0010-series-nav-as-left-rail.md) | 文章页布局 | 系列导航进左栏，目录留右栏，仅系列文章三栏 | 生效中 |
 | [0011](./adr/0011-vite-react-router.md) | 框架选型 | Vite + React Router 7 + Velite，取代 0004 | 生效中 |
+| [0012](./adr/0012-garden-ui-reskin.md) | 视觉层 | 整体采用 Digital Garden 的 UI 与六套主题，取代 0003 | 生效中 |
 
 ## 3. 摘要与代价
 
@@ -43,6 +44,7 @@
 | 0009 | 字段表达能力 > 字段表达愿望 | 将来做逐篇 OG 时要重新引入英文标题字段；`cover` 不再回来 |
 | 0010 | 系列结构要看得见 > 全站布局统一 | 非系列文章没有左栏，两类页面正文起始位置不同；1200–1279px 系列文章退回单栏、目录消失；左栏视觉在前但 DOM 在后 |
 | 0011 | 熟悉度 > 零 JS 默认 | 首屏 JS 从 0 涨到约 122KB（gzip）；正文渲染成 HTML 字符串，文章里暂时不能嵌 React 组件 |
+| 0012 | 保真 > 可维护 | CSS 从 8.6KB 涨到 46.6KB（内联进每页）；首屏 JS 涨到 126.6KB；六套主题 = 六倍验收成本；色值不再集中一处 |
 
 ## 4. 被否决的提案
 
