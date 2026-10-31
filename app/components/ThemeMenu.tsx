@@ -20,7 +20,7 @@ function ThemeOption({ config, active, onPick }: { config: ThemeConfig; active: 
     >
       <span className={`theme-preview preview-${config.id}`} aria-hidden="true">
         <span className="preview-dots">···</span>
-        <span className="preview-type">{config.id === 'hacker' ? '>_' : 'Aa'}</span>
+        <span className="preview-type">{config.terminal ? '>_' : 'Aa'}</span>
         <Icon name={config.icon} />
         <span className="theme-check">
           <Icon name="check" />

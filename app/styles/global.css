@@ -82,10 +82,143 @@ main {
   }
 }
 
-/* Hacker 主题下插画换成终端，原站的 caption 会压在终端最后一行上（原站也是这个毛病）。
+/* Hacker / Geeker 下插画换成终端，原站的 caption 会压在终端最后一行上（原站也是这个毛病）。
    终端本身已经说完了该说的话，这里直接不显示。 */
-:root[data-theme='hacker'] .garden-art .art-caption {
+:root[data-theme='hacker'] .garden-art .art-caption,
+:root[data-theme='geeker'] .garden-art .art-caption {
   display: none;
+}
+
+/* ============================================================
+ * 主题：Geeker
+ *
+ * 「Hacker 的排版 + Paper 的配色」：终端插画、等宽标题、小一号的 hero，
+ * 但底色是米白、强调色是墨绿——也就是 Paper / Spring 那套色板。
+ *
+ * 放在 global.css 而不是 garden-themes.css：后者要与参考站逐字一致，
+ * 留着才能 diff；Geeker 是本项目新增的主题，改动都记在这里。
+ * ============================================================ */
+
+:root[data-theme='geeker'] {
+  --bg: #f7f7ef;
+  --surface: #fffef8;
+  --text: #242a23;
+  --muted: #697064;
+  --border: #dcded2;
+  --accent: #345c40;
+  --accent-soft: #e4ebda;
+  --lime: #dceca7;
+  --art: #e8edda;
+  --shadow: 0 18px 60px #26332718;
+  /* 排版跟 Hacker 走：标题落到等宽栈（中文会退到系统字体，与 Hacker 表现一致） */
+  --serif: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  color-scheme: light;
+}
+
+/* --- 结构：逐条对应 garden-themes.css 里 hacker 的那组覆盖 --- */
+:root[data-theme='geeker'] .hero h1 {
+  font-size: clamp(36px, 3.7vw, 52px);
+  line-height: 1.15;
+  letter-spacing: -2.6px;
+}
+
+:root[data-theme='geeker'] .hero h1 em {
+  font-style: normal;
+}
+
+:root[data-theme='geeker'] .monogram {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 34px;
+  letter-spacing: -4px;
+}
+
+:root[data-theme='geeker'] .project-art:before {
+  background-size: 24px 24px;
+  opacity: 0.4;
+}
+
+:root[data-theme='geeker'] .button.primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+:root[data-theme='geeker'] .article-body {
+  font-family: var(--sans);
+  font-size: 16px;
+}
+
+:root[data-theme='geeker'] .mini-pane b {
+  font-size: 11px;
+}
+
+/* --- 终端插画：深色换成纸白 --- */
+:root[data-theme='geeker'] .garden-art {
+  border-radius: 9px;
+  /* 用 --art 而不是 --surface：#fffef8 和页底几乎同色，面板会看不出来。
+     --art 是其他主题插画区的底色，Geeker 沿用同一块"画布" */
+  background: var(--art);
+  border-color: var(--border);
+  display: block;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* hacker 的 :before 是扫描线，浅色底上会显脏 */
+:root[data-theme='geeker'] .garden-art:before {
+  display: none;
+}
+
+:root[data-theme='geeker'] .terminal-top {
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+}
+
+:root[data-theme='geeker'] .terminal-top i {
+  border-color: var(--border);
+}
+
+:root[data-theme='geeker'] .terminal-code {
+  color: #2c4535;
+}
+
+:root[data-theme='geeker'] .terminal-comment {
+  color: #8a9a8c;
+}
+
+:root[data-theme='geeker'] .terminal-command span,
+:root[data-theme='geeker'] .code-key {
+  color: var(--accent);
+}
+
+:root[data-theme='geeker'] .code-value {
+  color: #6b7f3e;
+}
+
+:root[data-theme='geeker'] .code-string {
+  color: #4d7a5e;
+}
+
+:root[data-theme='geeker'] .terminal-ready {
+  color: var(--accent);
+}
+
+:root[data-theme='geeker'] .art-mark {
+  font: 12px var(--mono);
+  color: var(--muted);
+}
+
+/* --- 外观面板里的预览卡 --- */
+.preview-geeker {
+  --preview-bg: #f7f7ef;
+  --preview-text: #345c40;
+  background-image: radial-gradient(#476b4124 0.8px, transparent 0.8px);
+  background-size: 9px 9px;
+}
+
+.preview-geeker .preview-type {
+  font: 23px var(--mono);
 }
 
 /* ---------- 代码块窗口（rehype-code-window 产出） ---------- */

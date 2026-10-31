@@ -19,3 +19,7 @@
 - **中文需要二次本地化**：原站是英文站，斜体、字体栈、标题断行都按英文调。已补：中文衬线字体栈、关掉标题与页脚的斜体、窄屏标题 `text-wrap: balance`、单项目时 `auto-fit` 铺满一行。
 - **原站的部分毛病一并继承**：Hacker 主题下插画 caption 压在终端最后一行上（已在本站隐藏）；`.workshop-*`、`.tool-panel`、旧 `.swatch` 等一批选择器在这是死代码，没有删，等真正开始改视觉时再清。
 - **主题切换依赖 `[data-theme]` 写在 `<html>` 上**，而 hydration 会抹掉内联脚本写的属性。ThemeProvider 必须在 `useLayoutEffect` 里把属性写回去，否则选了 Summer 的用户看到的是 Spring 的配色。
+
+**后续调整（2026-11-01）**：`Light` 改名为 `Geeker`——沿用 Hacker 的排版（等宽标题、小一号 hero、终端插画、按钮用强调色填充）与 Paper 的配色（米白 `#F7F7EF` + 墨绿 `#345C40`）。存档值 `light` 迁移到 `geeker`。
+
+Geeker 的样式全部写在 `app/styles/global.css`，`garden-themes.css` 仍与参考站逐字一致——这样参考站更新时还能直接 diff。代价是主题定义从此分散在两处：四套季节主题在 vendored 文件里，Geeker 在 global.css 里，加第七套时要先决定放哪。

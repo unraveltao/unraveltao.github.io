@@ -3,14 +3,16 @@
  * 唯一真源是这个数组——外观面板、内联脚本、resolveTheme 都从它派生。
  */
 
-export type ThemeId = 'spring' | 'summer' | 'autumn' | 'winter' | 'light' | 'hacker'
+export type ThemeId = 'spring' | 'summer' | 'autumn' | 'winter' | 'geeker' | 'hacker'
 
 export type ThemeConfig = {
   id: ThemeId
   name: string
   description: string
   /** 对应 <symbol id="i-…"> 的名字，见 components/Icon.tsx */
-  icon: 'sprout' | 'wave' | 'maple' | 'snow' | 'sun' | 'terminal'
+  icon: 'sprout' | 'wave' | 'maple' | 'snow' | 'code' | 'terminal'
+  /** 终端排版：预览卡片用 ">_" 而不是 "Aa"，插画走终端而不是季节图 */
+  terminal?: boolean
 }
 
 export const THEMES: readonly ThemeConfig[] = [
@@ -18,17 +20,17 @@ export const THEMES: readonly ThemeConfig[] = [
   { id: 'summer', name: 'Summer', description: '海与沙', icon: 'wave' },
   { id: 'autumn', name: 'Autumn', description: '暖色与落叶', icon: 'maple' },
   { id: 'winter', name: 'Winter', description: '清冷与留白', icon: 'snow' },
-  { id: 'light', name: 'Light', description: '纯白与克制', icon: 'sun' },
-  { id: 'hacker', name: 'Hacker', description: '深色终端', icon: 'terminal' },
+  { id: 'geeker', name: 'Geeker', description: '纸白终端', icon: 'code', terminal: true },
+  { id: 'hacker', name: 'Hacker', description: '深色终端', icon: 'terminal', terminal: true },
 ]
 
 export const DEFAULT_THEME: ThemeId = 'spring'
 
 const STORAGE_KEY = 'theme'
 
-/** 旧值迁移：上一版只有 light / dark，dark 对应现在的 hacker */
+/** 旧值迁移：dark 与 ink 都是现在的 hacker；light 的位置现在是 geeker */
 const LEGACY: Record<string, ThemeId> = {
-  light: 'light',
+  light: 'geeker',
   dark: 'hacker',
   paper: 'spring',
   forest: 'spring',
@@ -44,7 +46,7 @@ function isThemeId(value: string | null | undefined): value is ThemeId {
  * 否则浏览器会先画一帧 Spring 再切到用户选的主题——也就是闪一下。
  * 逻辑与 resolveTheme() 保持一致，改一处就要改另一处。
  */
-export const THEME_INIT = `try{var m={light:'light',dark:'hacker',paper:'spring',forest:'spring',ink:'hacker'},s=localStorage.getItem('theme'),t=m[s]||s,ok=['spring','summer','autumn','winter','light','hacker'];document.documentElement.dataset.theme=ok.indexOf(t)>-1?t:'spring'}catch(e){document.documentElement.dataset.theme='spring'}`
+export const THEME_INIT = `try{var m={light:'geeker',dark:'hacker',paper:'spring',forest:'spring',ink:'hacker'},s=localStorage.getItem('theme'),t=m[s]||s,ok=['spring','summer','autumn','winter','geeker','hacker'];document.documentElement.dataset.theme=ok.indexOf(t)>-1?t:'spring'}catch(e){document.documentElement.dataset.theme='spring'}`
 
 /**
  * 当前该用哪套主题。

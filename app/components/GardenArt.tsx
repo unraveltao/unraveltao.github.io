@@ -1,3 +1,4 @@
+import { THEMES } from '~/lib/theme'
 import { useTheme } from './ThemeProvider'
 
 /**
@@ -20,7 +21,6 @@ const SCENES: Record<string, string> = {
   summer: `<circle cx="277" cy="76" r="33" fill="var(--season-sun)"/><circle cx="277" cy="76" r="44" stroke="var(--season-sun)" opacity=".45"/><path d="M0 133Q60 121 120 133T240 133T400 133V270H0Z" fill="var(--season-sea)"/><path d="M0 172Q60 159 120 172T240 172T400 172" stroke="white" opacity=".65" stroke-width="2"/><path d="M0 207Q80 162 170 199T400 190V270H0Z" fill="var(--season-sand)"/><path d="M0 226Q80 184 170 218T400 209" stroke="white" stroke-width="2" opacity=".65"/><g stroke="currentColor" stroke-width="1.2" opacity=".65"><path d="M84 79q9-8 18 0 9-8 18 0m23 19q6-6 12 0 6-6 12 0" fill="none"/><path d="m262 195 10 8-12 5m-2-10 4-3 5 4" fill="none"/></g><ellipse cx="99" cy="226" rx="15" ry="3" fill="currentColor" opacity=".12"/><path d="m88 220 10-12 11 12Z" fill="var(--season-sun)" opacity=".9"/>`,
   autumn: `<ellipse cx="200" cy="235" rx="133" ry="12" fill="currentColor" opacity=".07"/><circle cx="215" cy="127" r="95" stroke="currentColor" opacity=".12"/><g transform="translate(210 126) rotate(-18)"><path d="${LEAF}" fill="var(--season-leaf)"/><path d="M0-44V88M0 14 26-8M0 24-28 3" stroke="var(--season-vein)" fill="none" stroke-width="1.4"/></g><g transform="translate(89 167) rotate(32) scale(.39)"><path d="${LEAF}" fill="var(--season-gold)"/><path d="M0-40V85M0 13 25-8M0 24-27 3" stroke="var(--season-vein)" fill="none" stroke-width="2"/></g><g transform="translate(315 74) rotate(34) scale(.25)"><path d="${LEAF}" fill="var(--season-gold)"/><path d="M0-40V85" stroke="var(--season-vein)" stroke-width="2"/></g><path d="M65 242q100-9 266 0" stroke="currentColor" fill="none" opacity=".25"/>`,
   winter: `<circle cx="283" cy="73" r="25" fill="white" opacity=".8"/><path d="M0 230 125 83l116 147Z" fill="var(--season-mountain)"/><path d="m125 83-47 55 33-9 15 14 16-16 24 6Z" fill="white"/><path d="m137 244 122-145 141 145Z" fill="var(--season-ice)"/><path d="m259 99-45 54 30-8 16 13 15-15 25 7Z" fill="white"/><path d="M0 217q90-18 200 13t200-5v45H0Z" fill="white" opacity=".9"/><path d="M45 245q66-10 133 0m47-1q56-10 127-1" stroke="currentColor" fill="none" opacity=".15"/><g opacity=".7">${snowflake(68, 78, 0.65)}${snowflake(195, 52, 0.8)}${snowflake(335, 133, 0.65)}${snowflake(52, 174, 0.4)}</g>`,
-  light: LATTICE,
 }
 
 const CAPTIONS: Record<string, string> = {
@@ -28,7 +28,6 @@ const CAPTIONS: Record<string, string> = {
   summer: 'A LITTLE SEA. A LITTLE POSSIBILITY.',
   autumn: 'GOOD IDEAS TAKE ROOT.',
   winter: 'SPACE TO THINK CLEARLY.',
-  light: 'SIMPLY, MAKE SOMETHING.',
 }
 
 const THEME_LABEL: Record<string, string> = {
@@ -36,7 +35,6 @@ const THEME_LABEL: Record<string, string> = {
   summer: 'summer',
   autumn: 'autumn',
   winter: 'winter',
-  light: 'light',
 }
 
 const TERMINAL = `<div class="terminal-top"><span><i></i><i></i><i></i></span><b>garden / terminal</b><span>⌘ 01</span></div><div class="terminal-code"><div class="terminal-comment">// curiosity is the entry point.</div><div class="terminal-command"><span>iron@garden</span>:~$ ./explore</div><pre><span class="code-key">const</span> garden = {
@@ -48,7 +46,11 @@ const TERMINAL = `<div class="terminal-top"><span><i></i><i></i><i></i></span><b
 export function GardenArt() {
   const { theme } = useTheme()
 
-  if (theme === 'hacker') {
+  // terminal 标记写在主题定义里（lib/theme.ts），Hacker 和 Geeker 共用这套插画，
+  // 差别只在配色——所以这里判标记，不判 id。
+  const isTerminal = THEMES.find((item) => item.id === theme)?.terminal
+
+  if (isTerminal) {
     return (
       <div className="garden-art" aria-hidden="true">
         <div className="terminal-art" dangerouslySetInnerHTML={{ __html: TERMINAL }} />
