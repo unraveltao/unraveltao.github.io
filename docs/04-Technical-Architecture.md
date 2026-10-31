@@ -141,9 +141,10 @@ pnpm preview   # 预览 build/client（尾斜杠行为与 GitHub Pages 一致）
 
 `build` 的顺序是有意的：内容层先跑（否则类型与数据都不存在），然后跨文件校验，最后才是类型检查与渲染。这样"内容错误"和"代码错误"在输出上是分开的——前者能直接定位到文件和字段。
 
-**CI**（`.github/workflows/deploy.yml`）：push 到 `main` → pnpm 9 + Node 22 → `pnpm install --frozen-lockfile` → `pnpm build` → `actions/upload-pages-artifact@v3`（路径 `build/client`）→ `actions/deploy-pages@v4`。仓库 Settings → Pages → Source 必须选 **GitHub Actions**（一次性手动开启）。
+**CI**（`.github/workflows/deploy.yml`）：push 到 `react-rewrite`（默认分支）→ pnpm 9 + Node 22 → `pnpm install --frozen-lockfile` → `pnpm build` → `actions/upload-pages-artifact@v3`（路径 `build/client`）→ `actions/deploy-pages@v4`。仓库 Settings → Pages → Source 必须选 **GitHub Actions**（一次性手动开启）。
 
 **部署约束**：
+- **默认分支是 `react-rewrite`**（2026-10-31 从 `main` 切过来）。`main` 仍然存在，但**不再触发部署**，也没有被删除——它停留在迁移前的 Astro 版本，作为回滚点。往 `main` 推任何东西都不会上线，这是一个容易踩的坑。
 - 用户站点仓库名必须是 `unraveltao.github.io`，站点在根路径，**不需要 `base`**。改仓库名 = 改 URL 且没有跳转。
 - GitHub Pages 是目录式托管：`/posts/x` 会 301 到 `/posts/x/`。React Router 的预渲染产物本来就是 `X/index.html`，正好对上；手写链接必须带尾斜杠。
 - 将来绑自定义域名：加 `CNAME` + 改 `app/lib/site.json` 一处，代码结构不动。

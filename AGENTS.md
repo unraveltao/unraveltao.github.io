@@ -15,7 +15,7 @@
 | 线上   | <https://unraveltao.github.io>                |
 | 内容位置 | `content/posts/<slug>/`、`content/projects/<slug>/`（目录名即 slug） |
 | 代码位置 | `app/`（路由、组件、lib、样式）；根目录三个配置文件 `vite.config.ts` / `react-router.config.ts` / `velite.config.ts` |
-| 部署   | push 到 `main` → GitHub Actions → GitHub Pages |
+| 部署   | push 到 `react-rewrite`（默认分支）→ GitHub Actions → GitHub Pages |
 | **范围** | **只做对外展示。文章推送到公众号/知乎是另一个项目，不在本仓库** |
 
 **一句话判断标准**：任何改动，如果让"写一篇文章"变慢、或让"维护"变重，就是错的方向。
@@ -216,7 +216,8 @@ pnpm preview   # 用 scripts/serve.mjs 模拟 GitHub Pages（301 / 404 行为与
 
 | 坑              | 说明                                                                                            |
 | -------------- | --------------------------------------------------------------------------------------------- |
-| 代理 502         | 本机代理到 GitHub 会 502。`clone` / `push` 用 `git -c http.proxy= -c https.proxy= push`               |
+| 代理 502         | 本机代理到 GitHub 会 502。`clone` / `push` 用 `git -c http.proxy= -c https.proxy= push`，或直接走 SSH（`git push git@github.com:unraveltao/unraveltao.github.io.git`）              |
+| `main` 不再是默认分支 | 2026-10-31 起默认分支是 `react-rewrite`，`deploy.yml` 只监听它。**往 `main` 推不会上线**——`main` 停在迁移前的 Astro 版本，只作回滚点 |
 | 尾斜杠            | GitHub Pages 是目录式托管，缺尾斜杠会 301。React Router 的产物是 `X.html`，`postbuild.mjs` 改写成 `X/index.html`；手写内链必须带 `/`。用 `pnpm preview` 验证，别用 `vite preview` |
 | `data-theme` 被抹掉 | React 会移除 `<html>` 上的未知属性，内联脚本写进去的 `data-theme` 在 hydration 时丢失，主题回退成浅色。`app/root.tsx` 靠 `suppressHydrationWarning` + `useLayoutEffect` 重新应用，**两处都不能删** |
 | 站内跳转变 404    | `react-router.config.ts` 必须 `routeDiscovery: { mode: 'initial' }`。默认 `lazy` 会去请求 `/__manifest`，静态托管上没有这个端点，每次客户端导航都掉进 ErrorBoundary |

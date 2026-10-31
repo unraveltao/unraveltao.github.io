@@ -272,10 +272,10 @@ schema 的**唯一真源**是 [`velite.config.ts`](../velite.config.ts)，本节
 pnpm dev                               # 本地预览，草稿可见
 # 2. 写，提交即发布
 git add . && git commit -m "post: ..."
-# 3. push 到 main 触发 Actions 构建发布
+# 3. push 到 react-rewrite（默认分支）触发 Actions 构建发布
 ```
 
-> 注意：文档里曾提到的 `pnpm new "<标题>"` 脚手架脚本**尚未实现**（`package.json` 只有 `dev` / `build` / `preview`）。目前新建文章是手写 `index.mdx`。
+> 注意：文档里曾提到的 `pnpm new "<标题>"` 脚手架脚本**尚未实现**（`package.json` 只有 `dev` / `content` / `validate` / `test` / `check` / `build` / `preview`）。目前新建文章是手写 `index.mdx`。
 
 ## 8. Feed 与元数据
 

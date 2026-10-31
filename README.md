@@ -68,4 +68,4 @@ git add . && git commit -m "post: <标题>"
 git -c http.proxy= -c https.proxy= push    # 本机代理到 GitHub 会 502
 ```
 
-push 到 `main` 后由 GitHub Actions 构建并发布。
+push 到 `react-rewrite`（默认分支）后由 GitHub Actions 构建并发布。

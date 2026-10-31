@@ -2,7 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    # 默认分支已从 main 切到 react-rewrite（2026-10-31），部署跟着默认分支走
+    branches: [react-rewrite]
   workflow_dispatch:
 
 permissions:
