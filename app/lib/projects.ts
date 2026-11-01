@@ -1,9 +1,9 @@
 import type { Project } from './content'
 
 const STATUS_LABEL: Record<Project['status'], string> = {
-  active: '进行中',
-  done: '已完成',
-  archived: '已归档',
+  active: 'In development',
+  done: 'Shipped',
+  archived: 'Archived',
 }
 
 /** 状态文案只在这里定义，页面里不要各写一份 */
