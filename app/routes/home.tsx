@@ -28,9 +28,9 @@ export default function Home() {
             A PERSONAL CORNER OF THE INTERNET
           </div>
           <h1>
-            Curiosity, turned into
+            Unravel the world,
             <br />
-            <em>things that work.</em>
+            <em>play the game.</em>
           </h1>
           <p>
             Hi, I’m {SITE_NAME}. {SITE_TAGLINE}
