@@ -37,7 +37,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <Links />
         {/* 全站固定的头部信息放在这里；随页面变化的 title/og 由各路由的 meta 导出提供 */}
         <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        {/* 图标只有一份 PNG（512，`u.` 方图）。不提供 SVG 版本：浏览器优先 SVG，
+            两份并存时换图不生效，会让人以为缓存没清 */}
+        <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="sitemap" href="/sitemap-index.xml" />
         <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:locale" content="zh_CN" />

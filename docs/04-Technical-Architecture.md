@@ -73,7 +73,7 @@ blog/
 │   ├── projects/<slug>/index.mdx # 项目，同上（没有 date）
 │   ├── pages/about.mdx
 │   └── series.json              # 系列 slug → 名称/描述
-├── public/                      # 原样拷贝：favicon.svg / og.png / robots.txt
+├── public/                      # 原样拷贝：favicon.png / apple-touch-icon.png / og.png / robots.txt
 ├── scripts/
 │   ├── lib/content-rules.mjs    # 跨文件校验规则（纯函数，有回归测试）
 │   ├── validate-content.mjs     # 上述规则的 CLI 外壳，build 的第二道闸
