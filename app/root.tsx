@@ -9,7 +9,9 @@ import {
   useRouteError,
 } from 'react-router'
 import { Footer } from '~/components/Footer'
-import { Nav } from '~/components/Nav'
+import { Header } from '~/components/Header'
+import { Icon, IconSprite } from '~/components/Icon'
+import { ThemeProvider } from '~/components/ThemeProvider'
 import { SITE_NAME } from '~/lib/site'
 import { resolveTheme, THEME_INIT } from '~/lib/theme'
 import '~/styles/global.css'
@@ -26,7 +28,7 @@ const RESTORE_ON_MOUNT = () => {
 export function Layout({ children }: { children: ReactNode }) {
   return (
     // suppressHydrationWarning：<head> 里的内联脚本在 hydration 之前就给 <html>
-    // 加了 data-theme，React 对不上这个属性会报警并把它抹掉（主题因此回退到浅色）
+    // 加了 data-theme，React 对不上这个属性会报警并把它抹掉（主题因此回退到 Spring）
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
@@ -55,13 +57,17 @@ export default function App() {
   useLayoutEffect(RESTORE_ON_MOUNT, [])
 
   return (
-    <>
-      <Nav />
-      <main>
+    <ThemeProvider>
+      <IconSprite />
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <Header />
+      <main id="main" className="shell" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />
-    </>
+    </ThemeProvider>
   )
 }
 
@@ -70,19 +76,26 @@ export function ErrorBoundary() {
   const notFound = isRouteErrorResponse(error) && error.status === 404
 
   return (
-    <div className="wrap notfound">
-      <p className="meta">{notFound ? '404' : 'error'}</p>
-      <h1 className="notfound__title">{notFound ? '这个地址没有内容' : '这一页出错了'}</h1>
-      <p className="notfound__text">
-        {notFound
-          ? '可能是链接过期了，也可能是我改了 slug（不应该发生）。'
-          : '构建期的校验应该拦住这种情况，如果没拦住，说明有地方绕过了它。'}
-      </p>
-      <p className="notfound__links meta">
-        <a href="/">回首页</a>
-        <span className="dot">·</span>
-        <a href="/posts/">看全部文章</a>
-      </p>
-    </div>
+    <ThemeProvider>
+      <IconSprite />
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <Header />
+      <main id="main" className="shell" tabIndex={-1}>
+        <div className="empty-state" style={{ marginTop: 60 }}>
+          <h1>{notFound ? 'This path hasn’t grown yet.' : 'The garden needs a moment.'}</h1>
+          <p>
+            {notFound
+              ? 'The page may have moved. There’s plenty to explore back at home.'
+              : 'Something broke while rendering this page. Try again, or head back home.'}
+          </p>
+          <a className="button primary" href="/">
+            Back to the garden <Icon name="arrow" />
+          </a>
+        </div>
+      </main>
+      <Footer />
+    </ThemeProvider>
   )
 }

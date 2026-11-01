@@ -3,7 +3,7 @@
 一个以工程叙事为主的静态个人博客。Vite + React Router 全站预渲染，commit 即发布，无后端。
 
 **线上**：<https://unraveltao.github.io>
-**状态**：M0 骨架、M1 内容管线、M2 上线、M3 项目展示均已完成（`pnpm build` 产出 15 个页面），3 篇文章、1 个项目。
+**状态**：M0 骨架、M1 内容管线、M2 上线、M3 项目展示均已完成（`pnpm build` 产出 11 个页面），3 篇文章、1 个项目。
 
 ## 目录结构
 
@@ -13,7 +13,7 @@ blog/
 ├── README.md           # 本文件：介绍、安装、运行
 ├── docs/               # 项目文档（00–06 + adr/）
 ├── app/                # 路由、组件、lib、样式
-├── content/            # 文章（posts/）、固定页（pages/）、系列表（series.json）
+├── content/            # 文章（posts/）、项目（projects/）、系列表（series.json）
 ├── public/             # favicon / og.png / robots.txt
 ├── scripts/            # 内容校验、构建后处理（内联 CSS / RSS / sitemap）、预览服务
 ├── tests/              # node:test 回归

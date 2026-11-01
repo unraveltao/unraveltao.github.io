@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#0F6E56"/>
-  <path d="M9 23V9h2.6v11.4H23V23H9Z" fill="#FFFFFF"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#2E523D"/>
+  <text x="13" y="45" fill="#E2EDB6" font-family="Georgia, 'Times New Roman', serif" font-size="42">u.</text>
 </svg>

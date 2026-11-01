@@ -1,46 +1,137 @@
 import { Link } from 'react-router'
-import { PostList } from '~/components/PostList'
-import { getPublishedPosts } from '~/lib/content'
-import { formatDate } from '~/lib/posts'
-import { readingTime } from '~/lib/reading-time'
+import { GardenArt } from '~/components/GardenArt'
+import { Icon } from '~/components/Icon'
+import { PostRow } from '~/components/PostRow'
+import { ProjectFeature } from '~/components/ProjectFeature'
+import { getProjects, getPublishedPosts } from '~/lib/content'
 import { pageMeta } from '~/lib/seo'
-import { SITE_NAME, SITE_TAGLINE } from '~/lib/site'
-import styles from './home.module.css'
+import { SITE_NAME, SITE_REPO, SITE_TAGLINE } from '~/lib/site'
 
 export const meta = () => pageMeta({ path: '/' })
 
+/**
+ * 首页版式逐块取自参考站 app.js 的 home()：
+ * hero + 季节插画 → intro-strip → 两栏（左：精选项目 / 最新笔记，右：sidebar + 工坊入口）→ home-note。
+ * 文案保留参考站的英文口吻，只把身份换成 unraveltao。
+ */
 export default function Home() {
-  const posts = getPublishedPosts()
-  const featured = posts.find((post) => post.featured)
-  const rest = posts.filter((post) => post.slug !== featured?.slug).slice(0, 10)
+  const projects = getProjects()
+  const posts = getPublishedPosts().slice(0, 3)
+  const featured = projects[0]
 
   return (
-    <div className="wrap">
-      <section className={styles.hero}>
-        <h1 className={styles.heroName}>{SITE_NAME}</h1>
-        <p className={styles.heroTagline}>{SITE_TAGLINE}</p>
+    <>
+      <section className="hero">
+        <div>
+          <div className="eyebrow">
+            <span className="dot" />
+            A PERSONAL CORNER OF THE INTERNET
+          </div>
+          <h1>
+            Curiosity, turned into
+            <br />
+            <em>things that work.</em>
+          </h1>
+          <p>
+            Hi, I’m {SITE_NAME}. {SITE_TAGLINE}
+          </p>
+          <div className="hero-actions">
+            <Link className="button primary" to="/projects/">
+              Explore my projects <Icon name="arrow" />
+            </Link>
+            <Link className="text-link" to="/posts/">
+              Read the notes <Icon name="out" />
+            </Link>
+          </div>
+        </div>
+        <GardenArt />
       </section>
 
-      {featured && (
-        <section className={styles.featured}>
-          <p className={`meta ${styles.featuredLabel}`}>selected</p>
-          <Link className={styles.featuredLink} to={`/posts/${featured.slug}/`}>
-            <h2 className={styles.featuredTitle}>{featured.title}</h2>
-            <p className={styles.featuredSummary}>{featured.summary}</p>
-            <p className="meta">
-              {formatDate(featured.date)} · {readingTime(featured.raw)} min
+      <div className="intro-strip">
+        <span>
+          <Icon name="leaf" /> <strong>Learning. Building. Sharing.</strong>
+        </span>
+        <span>
+          Currently exploring <strong>AI agents &amp; thoughtful tools</strong>
+        </span>
+        <span>EST. 2026</span>
+      </div>
+
+      <div className="home-content">
+        <div>
+          <section>
+            <div className="section-heading">
+              <h2>
+                <span className="small-index">01</span>Selected work
+              </h2>
+              <Link className="text-link" to="/projects/">
+                All projects <Icon name="arrow" />
+              </Link>
+            </div>
+            {featured && <ProjectFeature project={featured} />}
+          </section>
+
+          <section className="writing-section">
+            <div className="section-heading">
+              <h2>
+                <span className="small-index">02</span>Fresh from the garden
+              </h2>
+              <Link className="text-link" to="/posts/">
+                All writing <Icon name="arrow" />
+              </Link>
+            </div>
+            {posts.map((post) => (
+              <PostRow key={post.slug} post={post} compact />
+            ))}
+          </section>
+        </div>
+
+        <aside className="home-sidebar">
+          <div className="sidebar-box">
+            <div className="eyebrow">A WORK IN PROGRESS</div>
+            <h3>
+              Less consuming.
+              <br />
+              More creating.
+            </h3>
+            <p>
+              This is my space to think out loud, document the process, and make useful things along the
+              way.
             </p>
-          </Link>
-        </section>
-      )}
+            <ul className="focus-list">
+              <li>
+                <i />
+                Building Lattice
+              </li>
+              <li>
+                <i />
+                Learning how agents work
+              </li>
+              <li>
+                <i />
+                Turning notes into knowledge
+              </li>
+            </ul>
+            <a className="text-link" href={SITE_REPO} target="_blank" rel="noopener noreferrer">
+              Find me on GitHub <Icon name="out" />
+            </a>
+          </div>
 
-      <section className={styles.recent}>
-        {rest.length > 0 ? (
-          <PostList posts={rest} />
-        ) : (
-          <p className={`meta ${styles.empty}`}>还没有文章。</p>
-        )}
-      </section>
-    </div>
+          <div className="workshop-teaser">
+            <Icon name="code" />
+            <h4>The little workshop</h4>
+            <p>Small tools for the things I do often. Starting with a Markdown packager.</p>
+            <Link className="text-link" to="/workshop/">
+              Step inside <Icon name="arrow" />
+            </Link>
+          </div>
+        </aside>
+      </div>
+
+      <div className="home-note">
+        <span>A digital garden, not a finished monument. Things grow here.</span>
+        <span>BUILT WITH INTENTION ↗</span>
+      </div>
+    </>
   )
 }

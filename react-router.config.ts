@@ -19,7 +19,6 @@ const now = new Date()
 const posts = readCollection('posts').filter((post) => isPublished(post, now))
 const projects = readCollection('projects').filter((project) => !project.draft)
 
-const tags = [...new Set(posts.flatMap((post) => post.tags))]
 const series = [...new Set(posts.flatMap((post) => (post.series ? [post.series] : [])))]
 
 export default {
@@ -27,16 +26,16 @@ export default {
   // 默认是 lazy：客户端导航时去 GET /__manifest 补路由表——静态托管上没有这个端点，
   // 结果是每次站内跳转都 404 并掉进 ErrorBoundary。initial 把路由表直接写进 HTML。
   routeDiscovery: { mode: 'initial' },
+  // 标签页与 About 已移除，路由表对齐参考站的四个入口 + 系列页
   prerender: [
     '/',
     '/posts',
     '/projects',
-    '/tags',
-    '/about',
+    '/workshop',
+    '/workflow',
     '/404',
     ...posts.map((post) => `/posts/${post.slug}`),
     ...projects.map((project) => `/projects/${project.slug}`),
-    ...tags.map((tag) => `/tags/${tag}`),
     ...series.map((key) => `/series/${key}`),
   ],
 } satisfies Config
