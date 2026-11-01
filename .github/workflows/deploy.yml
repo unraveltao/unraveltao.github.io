@@ -2,8 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    # 默认分支已从 main 切到 react-rewrite（2026-10-31），部署跟着默认分支走
-    branches: [react-rewrite]
+    # 2026-11-01 起默认分支回到 main，react-rewrite 已删除
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -32,6 +32,9 @@ jobs:
           cache: pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
+      # 测试只依赖 scripts/lib/content-rules.mjs 的纯函数，不读 .velite，可以放在构建之前
+      - name: Test
+        run: pnpm test
       # build 里已经串了 velite、内容校验、类型检查与后处理，这里不重复跑
       - name: Build
         run: pnpm build
