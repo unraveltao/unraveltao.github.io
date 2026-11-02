@@ -11,7 +11,7 @@
 | 已完成 | 定位、首页、导航与维护入口收敛 | 首页代表项目与 featured 文章，Workshop 退出入口，原地址保留；README 与现行规则一致 |
 | 已完成 | 项目展示入口修正 | 详情移除装饰产品图、无仓库时不再跳 Workshop；repo/demo 独立显示，自动关联项目文章 |
 | 已完成 | 项目文档入口 | 详情页按 `docs` 字段显示"查看文档"，缺项不渲染、不留占位；schema、页面与文档三处同步 |
-| 已完成 | 入口文档与代码对齐 | README 六段结构、AGENTS 硬约束、GLOSSARY 的 theme / preset 词条与当前实现一致；失效指针改到实际章节 |
+| 已完成 | 入口文档与代码对齐 | README 功能、目录与维护入口、AGENTS 硬约束、GLOSSARY 的 theme / preset 词条与当前实现一致；失效指针改到实际章节 |
 | 已完成 | 工具链与 SEO 复核 | 结论见下方"工具链与 SEO 复核"，本轮不新增依赖 |
 | 进行中 | 补齐一个真实项目案例 | 已基于作者提供的 Lattice 仓库补齐源码和平台定位，并链接原始截图；虚构文章已删除，个人贡献与成果仅使用作者确认的真实材料 |
 | 下一步 | 视觉规范与实现对齐 | 在现行硬约束下收敛样式，375px、键盘和明暗主题验收 |
@@ -23,11 +23,11 @@
 
 只给结论与触发条件，本轮不装任何东西（`pnpm add` 需先确认，见 AGENTS §10）。
 
-**ESLint：不引入。** `tsconfig` 的 `strict` + `noUncheckedIndexedAccess` + `noUnusedLocals` 已经拦住这个仓库最常见的一类错误（索引访问、未用变量），且 `tsc` 已串进 `build`。剩下的真缺口是 React hooks 依赖正确性——`ThemeMenu`、`SearchDialog`、`vite.config.ts` 里各有 `useEffect`。触发条件：第二次出现因依赖数组导致的 bug。届时只加 `eslint-plugin-react-hooks` 这一条规则集，不要整套配置：首次全仓扫描必然爆出大量既有代码的告警，与"一个提交只做一件事"直接冲突。
+**ESLint：不引入。** `tsconfig` 的 `strict` + `noUncheckedIndexedAccess` + `noUnusedLocals` 已经拦住这个仓库最常见的一类错误（索引访问、未用变量），且 `tsc` 已串进 `build`。剩下的真缺口是 React hooks 依赖正确性——`ThemeMenu`、`SearchDialog` 使用了 `useEffect`。触发条件：第二次出现因依赖数组导致的 bug。届时只加 `eslint-plugin-react-hooks` 这一条规则集，不要整套配置：首次全仓扫描必然爆出大量既有代码的告警，与"一个提交只做一件事"直接冲突。
 
 **Prettier：不引入。** 仓库没有格式基线，首次 `--write` 会产出覆盖全部文件、并重排中文表格的噪声 diff；AGENTS §5.1 已禁止无关格式化。触发条件：出现第二个人协作，或 agent 产出的格式明显漂移。若引入，范围先限 `app/**/*.{ts,tsx}`，单独一个 `chore` 提交，不进 CI。
 
-**CI：两处真缺口。** 现在 push `main` 与手动触发跑 `pnpm test` + `pnpm build`，`build` 已含内容校验与类型检查，所以内容与类型错误拦得住。缺的是：① 没有 PR 或非 `main` 分支的检查——单人仓库影响小，但开 PR 就是合并后才发现；② 130KB 首屏预算没有任何闸门，`scripts/postbuild.mjs` 只打印数字不判定，AGENTS §4.4 的上限靠人盯。补法是 postbuild 里加一条阈值断言，零新依赖；触发条件：再出现一次预算上涨没被当场发现。
+**CI：两处真缺口。** 现在 push `main` 与手动触发跑 `pnpm test` + `pnpm build`，`build` 已含内容校验与类型检查，所以内容与类型错误拦得住。缺的是：① 没有 PR 或非 `main` 分支的检查——单人仓库影响小，但开 PR 就是合并后才发现；② 130KB 首屏预算没有任何闸门，`scripts/postbuild.mjs` 只打印首页 HTML 大小，未计算或判定首屏 JS gzip，AGENTS §4.4 的上限靠人盯。补法是 postbuild 里加一条阈值断言，零新依赖；触发条件：再出现一次预算上涨没被当场发现。
 
 **测试覆盖：保持现状。** 27 个用例只覆盖 `content-rules` 纯函数，这是有意的（见 tests/README）。缺口是 `isPublished()` 与 `getProjects()` 的过滤与排序——它们是发布判定的唯一真源，但零依赖前提下 `node:test` 不能直接 import `.ts`。触发条件：改动这两个文件之前，先把谓词摘成 `.mjs` 纯函数再补用例，不为此引入 vitest。
 

@@ -70,7 +70,7 @@ main 推送触发 .github/workflows/deploy.yml：Node 22、pnpm 9，安装锁定
 - Workshop/DownloadNote 的导出字段与 Post schema 不同，Workshop 写入正文 h1；暂不作为直接可发布的文章生成器。
 - 自定义 slug 重复、标题层级、图片缺失与体积未全部自动校验。
 - OG 图仍共用 public/og.png；没有新建文章脚手架、格式化或 lint 命令（是否引入的结论与触发条件见 `docs/05` 的"工具链与 SEO 复核"）。
-- 首屏 JS 的 130KB 预算没有自动闸门：`scripts/postbuild.mjs` 只打印数字，超限不失败，靠人盯 §6 的记录。
+- 首屏 JS 的 130KB 预算没有自动闸门：`scripts/postbuild.mjs` 只打印首页 HTML 大小，不计算首屏 JS gzip，超限不失败，靠人盯 §6 的记录。
 - 项目真实截图、演示、贡献与成果材料需作者提供，不由 agent 补造。
 - 配置中的示例邮箱没有作为联系入口展示；GitHub 链接有效。
 

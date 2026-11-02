@@ -6,7 +6,7 @@
 
 **Live site:** <https://unraveltao.github.io> · **定位与边界:** [docs/01-Project-Brief.md](docs/01-Project-Brief.md)
 
-## Features
+## 当前功能
 
 | 能力 | 现在实际是什么 |
 | --- | --- |
@@ -19,7 +19,7 @@
 | 静态产物 | RSS、sitemap、robots、canonical 与 OG；所有 URL 带尾斜杠，配合 GitHub Pages 的目录式托管 |
 | 旧地址 | `/workshop/`、`/workflow/` 保留原 URL，已退出主导航与首页 |
 
-## Tech Stack
+## 技术栈
 
 - **Vite 7 + React Router 7**（framework mode，`ssr: true` + 构建期 prerender 清单）
 - **React 19 + TypeScript strict**（含 `noUncheckedIndexedAccess`、`noUnusedLocals`）
@@ -28,7 +28,9 @@
 - **node:test** 跑跨文件内容校验规则的回归
 - 样式是手写 CSS 自定义属性；没有 UI 框架、CSS 库、图标库、状态管理或动画库，图标全部内联 SVG
 
-## Quick Start
+## 本地运行
+
+使用 Node.js 22 与 pnpm 9，与部署环境保持一致。
 
 ```bash
 pnpm install
@@ -46,7 +48,23 @@ pnpm dev        # http://localhost:5173，草稿与未来日期的文章都可�
 
 预览请用 `pnpm preview`，不要用 `vite preview`：后者不做缺尾斜杠的 301 和未知路径回落到 `404.html`，本地看着正常、上线才 404。
 
-## Documentation
+## 目录与内容维护
+
+```text
+app/          路由、组件、共享逻辑与样式
+content/      posts/ 文章、projects/ 项目、series.json 系列说明
+public/       站点图标等公共资源
+scripts/      内容校验、构建后处理、本地静态预览
+tests/        内容校验规则回归
+docs/         需求、设计、维护说明与决策记录
+.github/      GitHub Pages 部署流程
+```
+
+新增内容放入 `content/posts/<slug>/index.mdx` 或 `content/projects/<slug>/index.mdx`，图片与正文同目录。字段要求见 [内容规则](docs/02-Product-Requirements.md#5-内容模型)，字段定义以 `velite.config.ts` 为准；不要复制旧导出工具生成的字段作为模板。写完运行 `pnpm test` 和 `pnpm build`，再用 `pnpm preview` 检查页面。生成目录不手工编辑。
+
+项目详情按已有材料提供三个独立入口：**查看仓库**指向源码，**查看文档**指向该项目的使用说明或架构文档，**查看演示**指向可用演示；没有材料就省略对应字段。本站维护文档放在下面的仓库文档入口，不加入博客主导航。
+
+## 项目文档
 
 | 文档 | 内容 |
 | --- | --- |
@@ -60,7 +78,7 @@ pnpm dev        # http://localhost:5173，草稿与未来日期的文章都可�
 | [AGENTS.md](AGENTS.md) | 行为边界：硬约束、标准工作流、交付前自检 |
 | [GLOSSARY.md](GLOSSARY.md) | 术语：Post / Project / Featured / theme / preset … |
 
-## Development & Contribution
+## 开发与协作
 
 改代码前先读 [AGENTS.md](AGENTS.md)：§2 按任务类型给出必读文档，§4 是硬约束，§7 规定**改行为必须在同一个提交里同步改文档**。
 
