@@ -19,7 +19,8 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const CLIENT = join(ROOT, 'build', 'client')
-const SITE = 'https://unraveltao.github.io'
+const site = JSON.parse(await readFile(new URL('../app/lib/site.json', import.meta.url), 'utf8'))
+const SITE = site.url.replace(/\/+$/, '')
 
 const read = (path) => readFile(path, 'utf8')
 const escapeXml = (value) =>
@@ -53,7 +54,6 @@ function urlFor(file) {
 
 async function inlineCss(htmlFiles) {
   let inlined = 0
-  const usedCss = new Set()
 
   for (const file of htmlFiles) {
     const html = await read(file)
@@ -65,7 +65,6 @@ async function inlineCss(htmlFiles) {
       const cssPath = join(CLIENT, href.replace(/^\//, ''))
       if (!existsSync(cssPath)) continue
       const css = await read(cssPath)
-      usedCss.add(cssPath)
       next = next.replace(tag, `<style>${css}</style>`)
       inlined += 1
     }
@@ -102,7 +101,6 @@ async function writeRss(htmlFiles) {
     })
     .join('')
 
-  const site = JSON.parse(await read(join(ROOT, 'app', 'lib', 'site.json')))
 
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>` +

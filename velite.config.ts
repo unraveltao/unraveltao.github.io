@@ -60,20 +60,6 @@ const posts = defineCollection({
     .transform(({ path, ...rest }) => ({ ...rest, slug: rest.slug ?? slugFrom(path, 'posts') })),
 })
 
-const pages = defineCollection({
-  name: 'Page',
-  pattern: 'pages/**/*.mdx',
-  schema: s
-    .object({
-      title: s.string(),
-      summary: s.string().optional(),
-      slug: kebab.optional(),
-      path: s.path(),
-      html: s.markdown(),
-    })
-    .transform(({ path, ...rest }) => ({ ...rest, slug: rest.slug ?? slugFrom(path, 'pages') })),
-})
-
 // 项目不是文章：没有 date、不进 RSS、不进标签（ADR-0007）
 const projects = defineCollection({
   name: 'Project',
@@ -85,6 +71,9 @@ const projects = defineCollection({
       status: s.enum(['active', 'done', 'archived']).default('active'),
       stack: s.array(kebab).min(1).max(5),
       repo: s.string().url().optional(),
+      // 项目自己的文档入口（仓库 README、架构说明……）。不填就不渲染按钮，
+      // 与 repo/demo 同一套规则：链接来自内容数据，不在页面里写死项目名。
+      docs: s.string().url().optional(),
       demo: s.string().url().optional(),
       order: s.number().int().positive().optional(),
       slug: kebab.optional(),
@@ -107,5 +96,5 @@ export default defineConfig({
     // 名义上不同、运行时完全一致。只在这一个边界上收窄，不扩散到别处。
     rehypePlugins: [highlight, rehypeSlug, rehypeCodeWindow] as unknown as MarkdownOptions['rehypePlugins'],
   },
-  collections: { posts, pages, projects },
+  collections: { posts, projects },
 })

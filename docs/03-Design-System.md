@@ -1,5 +1,9 @@
 # 设计系统
 
+> 2026-11-02 项目详情补充：正文后以普通标题、链接列表与摘要展示相关写作，复用 article-body 排版；不增加卡片、色块或新样式。移除详情中的装饰窗口图，真实截图放入正文。仓库、文档与演示链接各按 repo / docs / demo 字段显示，缺项不渲染，也不新增样式档位。
+
+> 2026-11-02 定位调整：主导航为 Home / Writing / Projects；首页顺序为个人介绍、代表项目、人工精选写作。沿用现有布局与组件，本轮不新增颜色、字号、间距或主题。以下视觉约束继续生效，但当前 garden.css / garden-themes.css / global.css 存在偏差，tokens.css 和 CSS Modules 尚不存在；不能将下文描述当成已经实现。视觉收敛作为独立待办，见路线图。
+
 > 适用：全站。所有取值以 CSS 自定义属性落地，组件只消费 token，不写字面色值。
 > 决策来源：[ADR-0003](./adr/0003-visual-identity.md)（视觉延续 README 身份）。
 > 落地位置：`app/styles/tokens.css`（唯一允许写色值的地方）与 `app/styles/global.css`；页面与组件各自的布局写在同名 `*.module.css` 里。
@@ -182,9 +186,9 @@
 
 | 项 | 结论 | 落地位置 |
 |---|---|---|
-| 首页精选轨的视觉权重 | 独立区块，位于身份区之下、列表之上；标题用 `--text-h2`，标签文案 `selected`；无 featured 时整块不渲染 | `app/routes/home.tsx` + `home.module.css` |
-| 列表页年份分组是否折叠 | 不折叠。静态分组，组间 1px `--line`，组内靠留白 | `app/routes/posts.tsx` + `posts.module.css` |
-| 搜索框样式 | v1 不做搜索，因此不存在这个样式问题 | [ADR-0005](./adr/0005-post-only-content-model.md) 与 `docs/01` §3 |
+| 首页精选写作区的位置 | 排在代表项目之后；没有 featured 文章时整块不渲染，不留空位 | `app/routes/home.tsx`（样式在 `app/styles/garden.css`） |
+| 列表页年份分组 | 不做。当前是标签筛选 + 关键词过滤的扁平列表，按日期倒序 | `app/routes/posts.tsx` |
+| 搜索 | 顶栏 `Ctrl` / `⌘ + K` 打开原生 `<dialog>`，前端过滤已发布文章与项目；样式沿用外观面板那一套 | `app/components/SearchDialog.tsx` |
 | 视觉预设（minimal / developer / editorial / dashboard） | **不做**。保留为天花板：若将来实现，只换 token、不换布局，且必须与 `theme`（明暗）分属两个变量层 | [ADR-0003](./adr/0003-visual-identity.md)、[06 §4](./06-Decision-Log.md) |
 
 ## 11. 页面骨架（文章页）

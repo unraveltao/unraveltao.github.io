@@ -1,9 +1,9 @@
 {
   "name": "unraveltao",
   "url": "https://unraveltao.github.io",
-  "titleTagline": "A digital garden",
-  "tagline": "An aspiring geek exploring programming, technology, and creative ideas. Learning in public, solving problems, and building things that work.",
-  "description": "A personal home for writing, useful software, and curious experiments. The digital garden of unraveltao.",
+  "titleTagline": "项目与精选写作",
+  "tagline": "这里展示我的项目，也记录重要的方法论、技术取舍与实践总结。",
+  "description": "unraveltao 的个人主页与作品集：真实项目、精选技术写作，以及值得长期复用的方法。",
   "author": "unraveltao",
   "email": "hi@example.com",
   "repo": "https://github.com/unraveltao"

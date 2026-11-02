@@ -1,71 +1,77 @@
-# Blog
+# unraveltao — 个人主页与作品集
 
-一个以工程叙事为主的静态个人博客。Vite + React Router 全站预渲染，commit 即发布，无后端。
+> 把想法做成项目，把经验沉淀成方法。
 
-**线上**：<https://unraveltao.github.io>
-**状态**：M0 骨架、M1 内容管线、M2 上线、M3 项目展示均已完成（`pnpm build` 产出 11 个页面），3 篇文章、1 个项目。
+这里展示我在做的项目，以及值得长期保留的方法论、技术取舍与实践总结。全站构建期渲染成静态 HTML，push 到 `main` 即发布；没有后端、数据库或 CMS。
 
-## 目录结构
+**Live site:** <https://unraveltao.github.io> · **定位与边界:** [docs/01-Project-Brief.md](docs/01-Project-Brief.md)
 
-```
-blog/
-├── AGENTS.md           # Agent 开发行为规范、代码规范、项目约束
-├── README.md           # 本文件：介绍、安装、运行
-├── docs/               # 项目文档（00–06 + adr/）
-├── app/                # 路由、组件、lib、样式
-├── content/            # 文章（posts/）、项目（projects/）、系列表（series.json）
-├── public/             # favicon / og.png / robots.txt
-├── scripts/            # 内容校验、构建后处理（内联 CSS / RSS / sitemap）、预览服务
-├── tests/              # node:test 回归
-├── velite.config.ts    # 内容层：schema + Markdown 管线
-├── react-router.config.ts  # 预渲染清单
-└── .github/workflows/  # 构建并发布到 GitHub Pages
-```
+## Features
 
-## 文档
+| 能力 | 现在实际是什么 |
+| --- | --- |
+| 首页 | 个人介绍 → 代表项目（`order` 第一项）→ 精选写作（`featured`，没有精选就整块隐藏） |
+| 作品集 | `/projects/` 列表与详情；详情按 `repo` / `docs` / `demo` 字段显示对应外链，缺项不渲染；正文后自动关联 `Post.project` 命中的已发布文章 |
+| 写作 | `/posts/` 日期倒序，标签筛选 + 关键词过滤都在客户端做；文章页有目录、阅读时长、系列导航（超过一篇才显示）与 Markdown 下载入口 |
+| 系列 | `/series/:name/`，名称与说明在 `content/series.json` |
+| 站内检索 | 顶栏搜索（`Ctrl` / `⌘ + K`），原生 `<dialog>`，前端过滤已发布文章与项目 |
+| 六套外观 | Spring / Summer / Autumn / Winter / Geeker / Hacker；存 `localStorage`，`<head>` 内同步脚本避免首屏闪白 |
+| 静态产物 | RSS、sitemap、robots、canonical 与 OG；所有 URL 带尾斜杠，配合 GitHub Pages 的目录式托管 |
+| 旧地址 | `/workshop/`、`/workflow/` 保留原 URL，已退出主导航与首页 |
 
-| 文档 | 内容 |
-|---|---|
-| [docs/00-Project-Overview.md](docs/00-Project-Overview.md) | **入口**：项目是什么、现在到哪了、该翻哪份 |
-| [docs/01-Project-Brief.md](docs/01-Project-Brief.md) | 为什么做、目标与非目标、成功标准、风险 |
-| [docs/02-Product-Requirements.md](docs/02-Product-Requirements.md) | 路由、页面规格、内容模型、校验规则、验收 |
-| [docs/03-Design-System.md](docs/03-Design-System.md) | 颜色/字号/间距 token 与组件规格 |
-| [docs/04-Technical-Architecture.md](docs/04-Technical-Architecture.md) | 目录、模块职责、构建流水线、部署、技术债 |
-| [docs/05-Development-Roadmap.md](docs/05-Development-Roadmap.md) | 里程碑状态与下一步优先级 |
-| [docs/06-Decision-Log.md](docs/06-Decision-Log.md) | 决策索引与代价；单条记录在 [docs/adr/](docs/adr/) |
-| [AGENTS.md](AGENTS.md) | 改代码前必读：硬约束与禁止事项 |
-| [GLOSSARY.md](GLOSSARY.md) | 术语表：Post / Series / Tag / Featured / Draft |
+## Tech Stack
 
-## 核心约束
+- **Vite 7 + React Router 7**（framework mode，`ssr: true` + 构建期 prerender 清单）
+- **React 19 + TypeScript strict**（含 `noUncheckedIndexedAccess`、`noUnusedLocals`）
+- **Velite 0.4** 内容层：MDX + zod schema，`strict` 让字段错误直接终止构建
+- **Shiki** 双主题高亮，加一个自写的 code-window rehype 插件
+- **node:test** 跑跨文件内容校验规则的回归
+- 样式是手写 CSS 自定义属性；没有 UI 框架、CSS 库、图标库、状态管理或动画库，图标全部内联 SVG
 
-- 只有两种内容类型：**Post** 与 **Project**（Project 不进 RSS、不进标签）
-- URL 里没有日期，slug 发布后永不修改，全站带尾斜杠
-- 零卡片、零阴影、单一强调色 `#0F6E56`（深色换 `#4EC3A3`）
-- 构建期校验失败即构建失败
-- 不引入第三方 UI / 主题 / 动画 / 图标库
-
-## 本地运行
+## Quick Start
 
 ```bash
 pnpm install
-pnpm dev       # http://localhost:5173，草稿可见
-pnpm validate  # 跨文件内容校验（不构建）
-pnpm test      # 校验规则的回归测试
-pnpm check     # 类型检查（react-router typegen + tsc）
-pnpm build     # 内容层 → validate → tsc → 预渲染 → postbuild，输出 build/client/
-pnpm preview   # 模拟 GitHub Pages 预览 build/client/（http://localhost:4321）
+pnpm dev        # http://localhost:5173，草稿与未来日期的文章都可见
 ```
 
-> `lint` / `format` / `new` 尚未接入，见 [docs/05](docs/05-Development-Roadmap.md)。
-> 预览请用 `pnpm preview`，不要用 `vite preview`——后者不做尾斜杠 301 与 `404.html` 回落，看不出线上会坏的地方。
+| 命令 | 作用 |
+| --- | --- |
+| `pnpm content` | 只重建内容层（`.velite/`），不启服务 |
+| `pnpm validate` | 只跑跨文件校验，不构建 |
+| `pnpm test` | 校验规则的 node:test 回归 |
+| `pnpm check` | 类型检查（`react-router typegen` + `tsc --noEmit`）；`pnpm dev` 不会触发它 |
+| `pnpm build` | 唯一的验收命令：内容 → 校验 → 类型 → 预渲染 → postbuild |
+| `pnpm preview` | 用 `scripts/serve.mjs` 模拟 GitHub Pages 的 301 与 404 行为 |
 
-## 写作
+预览请用 `pnpm preview`，不要用 `vite preview`：后者不做缺尾斜杠的 301 和未知路径回落到 `404.html`，本地看着正常、上线才 404。
+
+## Documentation
+
+| 文档 | 内容 |
+| --- | --- |
+| [docs/00-Project-Overview.md](docs/00-Project-Overview.md) | 文档入口：该翻哪一份 |
+| [docs/01-Project-Brief.md](docs/01-Project-Brief.md) | 定位、目标、内容取舍、成功标准 |
+| [docs/02-Product-Requirements.md](docs/02-Product-Requirements.md) | 页面与 URL、导航、内容模型与校验规则 |
+| [docs/03-Design-System.md](docs/03-Design-System.md) | 设计规格；文首标明了与当前实现的偏差 |
+| [docs/04-Technical-Architecture.md](docs/04-Technical-Architecture.md) | 维护说明：目录职责、构建与部署、性能数字、偏差登记 |
+| [docs/05-Development-Roadmap.md](docs/05-Development-Roadmap.md) | 当前计划，以及保留的历史记录 |
+| [docs/06-Decision-Log.md](docs/06-Decision-Log.md) · [docs/adr/](docs/adr/) | 决策索引与单条记录（只追加，不改写） |
+| [AGENTS.md](AGENTS.md) | 行为边界：硬约束、标准工作流、交付前自检 |
+| [GLOSSARY.md](GLOSSARY.md) | 术语：Post / Project / Featured / theme / preset … |
+
+## Development & Contribution
+
+改代码前先读 [AGENTS.md](AGENTS.md)：§2 按任务类型给出必读文档，§4 是硬约束，§7 规定**改行为必须在同一个提交里同步改文档**。
+
+提交信息格式 `<type>: <中文短句>`，type 取自 `feat` / `fix` / `perf` / `a11y` / `post` / `docs` / `chore`；一个提交只做一件事。
+
+只有 `main` 会上线（`deploy.yml` 只监听它，Node 22 + pnpm 9，跑 `pnpm test` 与 `pnpm build`）。本机 HTTPS 到 GitHub 可能 502 或报 CA 锚点错误，走 SSH：
 
 ```bash
-# 新建 content/posts/<slug>/index.mdx，字段见 docs/02 §5.3
-pnpm dev                                   # 草稿可见
-git add . && git commit -m "post: <标题>"
-git -c http.proxy= -c https.proxy= push    # 本机代理到 GitHub 会 502
+git push git@github.com:unraveltao/unraveltao.github.io.git main
 ```
 
-push 到 `main`（默认分支）后由 GitHub Actions 构建并发布。
+写作规范见 [docs/02](docs/02-Product-Requirements.md) §5：图片与内容同目录、`summary` 必填、slug 发布后永不修改。项目事实、截图与成果只使用作者提供的材料，不由 agent 补造。
+
+本仓库暂无 LICENSE 文件。

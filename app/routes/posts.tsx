@@ -7,9 +7,9 @@ import { pageMeta } from '~/lib/seo'
 export const meta = () =>
   pageMeta({
     path: '/posts',
-    title: 'Writing',
+    title: '写作',
     description:
-      'Ideas, useful discoveries, and small lessons from building things. A garden that grows one note at a time.',
+      '精选方法论、技术取舍与实践总结，只收录值得长期引用的结论。',
   })
 
 /**
@@ -40,11 +40,10 @@ export default function Posts() {
   return (
     <>
       <header className="page-head">
-        <div className="eyebrow">NOTES FROM THE PROCESS</div>
-        <h1>A place to think out loud.</h1>
+        <div className="eyebrow">精选技术写作</div>
+        <h1>值得留下的方法与判断。</h1>
         <p>
-          Ideas, useful discoveries, and small lessons from building things. A garden that grows one note
-          at a time.
+          方法论、关键技术取舍与实践总结。有明确的结论，也有支撑结论的过程。
         </p>
       </header>
 

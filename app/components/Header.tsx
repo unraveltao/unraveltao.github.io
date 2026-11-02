@@ -5,7 +5,7 @@ import { SearchDialog } from './SearchDialog'
 import { ThemeMenu } from './ThemeMenu'
 
 /**
- * 头部：monogram + 站名 + 主导航 + 搜索 + 外观面板 + GitHub。
+ * 头部保留三个展示入口；辅助工具原地址继续可访问。
  * 参考站这里还有一个「Private garden」徽标，本站没有访问控制，换成 GitHub 图标链接。
  */
 
@@ -13,7 +13,6 @@ const ITEMS = [
   { href: '/', label: 'Home', exact: true },
   { href: '/posts/', label: 'Writing' },
   { href: '/projects/', label: 'Projects' },
-  { href: '/workshop/', label: 'Workshop' },
 ]
 
 export function Header() {
@@ -30,7 +29,7 @@ export function Header() {
         </span>
         <span className="brand-copy">
           {SITE_NAME}
-          <span>DIGITAL GARDEN</span>
+          <span>PROJECTS & WRITING</span>
         </span>
       </Link>
 

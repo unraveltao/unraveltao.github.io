@@ -1,198 +1,107 @@
-# 技术架构
+# 维护说明
 
-> 这份文件回答"代码为什么这样组织、一次 build 到底发生了什么、哪里是坑"。
-> 需求在 [02-Product-Requirements.md](./02-Product-Requirements.md)，选型理由在 [06-Decision-Log.md](./06-Decision-Log.md)。
-> 最后更新：2026-11-01（ADR-0011：Astro → Vite + React Router）
+> 2026-11-02。日常操作见 README，页面与字段意图见产品需求，历史决策见 docs/06。
 
-## 1. 三条架构原则
+## 1. 目录与修改入口
 
-1. **静态优先**。`react-router.config.ts` 里 `ssr: true` + `prerender`，构建期把每条路由渲染成真 HTML。没有服务端进程、没有数据库、没有运行时 API。
-2. **构建期校验**。内容错误必须在 `pnpm build` 时炸掉，而不是上线后才发现。`velite.config.ts` 的 `strict: true` + `scripts/validate-content.mjs`，两道闸，失败即构建失败。
-3. **客户端状态只有三样**：主题偏好（一个 `localStorage` 键）、TOC 滚动高亮、React Router 的导航状态。没有全局 store，没有数据请求。
-
-## 2. 构建期与运行期
-
-```
-构建期（Node，一次性）                              运行期（浏览器）
-─────────────────────────                          ────────────────────────
-content/**/*.mdx                                   HTML（已内联 CSS）
-   ↓ velite：glob + zod schema                        ↓
-   ├─ 校验失败 ──> build 失败                         hydration（React 接管）
-   ├─ html  ← markdown + shiki + 标题锚点             ├─ 主题切换
-   ├─ toc   ← 标题树                                  ├─ TOC 滚动高亮
-   └─ raw   ← 原文（阅读时长 / RSS）                   └─ 客户端路由（不整页刷新）
-   ↓ .velite/*.json
-scripts/validate-content.mjs（跨文件规则 3–6）
-   ↓
-react-router build
-   ├─ prerender 每条路由 → build/client/**/index.html
-   └─ 客户端 bundle → build/client/assets/
-   ↓
-scripts/postbuild.mjs
-   ├─ CSS 内联进 HTML
-   ├─ 404/index.html → 404.html
-   └─ rss.xml + sitemap
-   ↓
-build/client/  →  GitHub Pages
-```
-
-运行期**没有数据请求**：所有页面数据在构建时就已固化进 HTML 与 bundle。首屏 JS 约 122KB（gzip），见 §7.1。
-
-## 3. 目录结构
-
-```
-blog/
-├── AGENTS.md                    # Agent 行为规范（改代码前必读）
-├── README.md                    # 项目介绍、安装、运行
-├── vite.config.ts               # velite 插件 + ~ / #site 别名
-├── react-router.config.ts       # ssr / routeDiscovery / prerender 清单
-├── velite.config.ts             # 三条 collection 的 zod schema（字段约束的唯一真源）
-├── tsconfig.json                # strict + noUncheckedIndexedAccess
-├── app/
-│   ├── root.tsx                 # html/head/meta/OG/内联主题脚本/ErrorBoundary
-│   ├── routes.ts                # 路由表（URL 表的唯一真源）
-│   ├── routes/                  # 每个路由一个文件，模块导出 meta 提供 title/OG
-│   ├── components/              # Nav / Footer / ThemeToggle / PostList / PostItem / ProjectItem / Toc
-│   ├── lib/
-│   │   ├── content.ts           # 读 velite 产物，类型 + 发布过滤的唯一入口
-│   │   ├── publish.ts           # isPublished：构建期清单与页面共用同一条规则
-│   │   ├── posts.ts             # 按年分组 / 标签计数 / 日期格式
-│   │   ├── projects.ts          # 项目排序与状态文案
-│   │   ├── seo.ts               # title / description / OG / canonical / JSON-LD
-│   │   ├── theme.ts             # 主题读取、切换与内联脚本源码
-│   │   ├── toc.ts               # 嵌套标题树 → 扁平列表
-│   │   ├── reading-time.ts      # 中文 400 字/分，英文 200 词/分
-│   │   ├── series.ts            # series.json 读取与回退
-│   │   ├── site.json            # 站名/域名/定位句/描述/作者/邮箱/仓库（构建脚本也读它）
-│   │   └── rehype-code-window.mjs  # 代码块套 macOS 窗口
-│   └── styles/
-│       ├── tokens.css           # 全部颜色/字号/间距变量
-│       └── global.css           # reset + 元素样式 + 代码块 + 404
-├── content/                     # 内容，不属于 app
-│   ├── posts/<slug>/index.mdx   # 文章与图片同目录，目录名即 slug
-│   ├── projects/<slug>/index.mdx # 项目，同上（没有 date）
-│   ├── pages/about.mdx
-│   └── series.json              # 系列 slug → 名称/描述
-├── public/                      # 原样拷贝：favicon.png / apple-touch-icon.png / og.png / robots.txt
-├── scripts/
-│   ├── lib/content-rules.mjs    # 跨文件校验规则（纯函数，有回归测试）
-│   ├── validate-content.mjs     # 上述规则的 CLI 外壳，build 的第二道闸
-│   ├── postbuild.mjs            # 内联 CSS / 404.html / rss / sitemap
-│   └── serve.mjs                # 本地预览 build/client，行为对齐 GitHub Pages
-├── tests/                       # node:test 回归，见 tests/README.md
-├── docs/                        # 本套文档 + adr/
-└── .github/workflows/deploy.yml
-```
-
-**`content/` 与 `app/` 分开**：内容是可以被非程序员（或 agent）直接改的，代码不是。这个边界让"写文章"不需要理解 React。
-
-## 4. 关键模块
-
-| 模块 | 职责 | 注意 |
+| 位置 | 职责 | 什么时候改 |
 |---|---|---|
-| `velite.config.ts` | 定义 posts / pages / projects 三条 collection 与字段约束 | 字段改这里，同时改 `docs/02` §5.3。`strict: true` 不能关 |
-| `app/lib/content.ts` | velite 产物的类型门面 + 发布过滤 | 页面**不要**直接 import `#site/*.json`，否则发布规则会被复制到各处 |
-| `app/lib/publish.ts` | `isPublished` 是**唯一**的发布判定 | 页面、`react-router.config.ts` 的预渲染清单、RSS 三处共用。dev 下恒为 true |
-| `scripts/lib/content-rules.mjs` | 规则 3–6 的纯函数，返回 `Problem[]` 而非抛异常 | 一次报全部违规。**别用 `key in obj` 判系列是否存在**——原型链会让 `constructor` 通过 |
-| `app/routes.ts` | 路由表 | 加页面要改两处（组件 + 这张表）。路径**不写尾斜杠**，产物是 `X/index.html` |
-| `app/root.tsx` | head / meta / OG / 内联主题脚本 / ErrorBoundary | 主题脚本必须内联且同步执行；且要 `useLayoutEffect` 补一次，因为 hydration 会抹掉 `<html data-theme>` |
-| `app/lib/seo.ts` | 所有 `<title>` / OG / canonical / JSON-LD | canonical 走 `meta` 不走 `links`：预渲染时 `links()` 不带参数，拿不到 params |
-| `app/routes/post.tsx` | 文章页；≥1280px 系列文章为三栏 | 三栏靠 `post.module.css` 里的 `.gridSeries`，断点与 ADR-0010 一致 |
-| `scripts/postbuild.mjs` | 产物后处理 | 见 §7.1：**不要**删 `assets/*.css`，客户端导航会 404 |
-| `react-router.config.ts` | 预渲染清单 | `routeDiscovery: { mode: 'initial' }` 必须保留，静态托管没有 `/__manifest` 端点 |
+| app/routes.ts | 显式路由表 | 增减页面 |
+| app/routes/ | 页面、meta 与局部交互 | 改内容展示 |
+| app/components/ | 复用界面 | 导航、列表项、目录等 |
+| app/lib/content.ts | 内容读取、发布过滤、项目排序 | 内容访问行为 |
+| app/lib/publish.ts | 文章发布判定唯一实现 | 草稿、日期规则 |
+| app/lib/site.json | 身份、站点 URL、描述与 GitHub | 站点信息 |
+| app/lib/seo.ts | title、canonical、OG | 页面元数据 |
+| app/lib/theme.ts | 主题与同步初始化脚本 | 主题行为，需防闪烁验证 |
+| app/styles/ | garden.css、garden-themes.css、global.css | 现有样式，偏差见设计系统 |
+| content/ | Post、Project、系列说明 | 写作与项目更新 |
+| velite.config.ts | 两种内容 schema、正文渲染与高亮 | 字段及 Markdown 管线 |
+| react-router.config.ts | 发布内容的预渲染清单 | 新增静态页时同步 |
+| vite.config.ts | 开发期内容重建、路径别名 | 开发流程 |
+| scripts/lib/content-rules.mjs | 跨文件校验纯函数 | 与 tests/ 同步修改 |
+| scripts/postbuild.mjs | 内联 CSS、404、RSS、sitemap | 静态产物行为 |
+| scripts/serve.mjs | Pages 风格预览 | 301、404 与静态响应 |
 
-## 5. 依赖策略
+当前规模保留浅层目录，不增加空的 features、services、hooks 层。页面私有逻辑先与页面放一起，重复或存在独立规则时再抽取。生成目录 build、.velite、.react-router 不手工编辑。
 
-**运行时**：`react` · `react-dom` · `react-router` · `@react-router/node`（预渲染要它，别挪去 devDependencies）· `isbot`（React Router 的默认 server entry 用它）。
+## 2. 构建与校验
 
-**构建期**：`vite` · `@react-router/dev` · `velite` · `@shikijs/rehype` · `rehype-slug` · `typescript`。
+pnpm build 依次执行 Velite → 跨文件校验 → React Router 类型生成 → TypeScript → 预渲染 → postbuild。任何失败均中止。
 
-**不引入**：任何第三方主题、UI 框架、CSS-in-JS、动画库、图标库、日期库、状态管理。图标一律内联 SVG（全站不超过 4 个）。
+Velite strict 校验单文件字段；scripts/lib/content-rules.mjs 检查系列是否存在、系列顺序重复、非草稿精选数量及修改日期。判系列自有键用 Object.hasOwn。pnpm test 用 Node 内置测试运行这些规则。pnpm check 可单独检查类型，dev 只转译不检查。
 
-Tailwind / shadcn 是**下一轮视觉改造的天花板**：允许评估，但必须先有视觉方案，不能借"已经换成 React 了"顺手引入（2024 年那次 `Next + Tailwind + shadcn` 停在 `Hello World`）。
+运行时内容均已构建固化；内容从 content.ts 读取，不在新页面复制发布过滤。系列排序目前仍在页面中，后续有相关改动再收敛。默认框架服务端入口使用 @react-router/node 与 isbot，不因 app/ 没有显式 import 就删依赖。
 
-新增依赖的判定顺序：
-1. 能不能用平台能力（CSS / 原生 API / 框架内置）？
-2. 能不能在构建期做完，不进入客户端？
-3. 加上它，首屏 JS 预算还剩多少？
+## 3. 部署与 URL
 
-三问答不出来，就不加。
+main 推送触发 .github/workflows/deploy.yml：Node 22、pnpm 9，安装锁定依赖，测试与构建，通过后部署 build/client 到 GitHub Pages。无需另设部署服务。
 
-## 6. 样式架构
+所有页面对外 URL 带尾斜杠，seo.ts 统一规范化 canonical；文章 JSON-LD 同样带尾斜杠。站点域名从 site.json 读取，postbuild 的 RSS 与 sitemap 使用同一配置。新增静态页面要同时登记 routes.ts 和 prerender；动态文章、项目、系列由内容推导。Workflow 和 Workshop 本轮只移除主入口，仍预渲染原地址。
 
-- `tokens.css` 是**唯一允许写色值的地方**；组件只消费 `var(--*)`。
-- 深色主题靠 `:root[data-theme='dark']` 覆盖同名变量，**不是两套 class**。
-- `global.css` 放 reset、元素样式（`prose`、`table`、`pre`）、代码块窗口、404；**组件与页面的布局样式放同名 `*.module.css`**，避免不同页面里同名的 `.page-head` 互相打架。
-- CSS Modules 只做作用域，不做嵌套语法；选择器里引用全局类要显式 `:global(.tag)`。
-- 全站 CSS 约 8KB，构建后处理时全量内联（见 §7.1）。
+## 4. 需要保留的约定
 
-## 7. 构建与部署
+- routeDiscovery 使用 initial：Pages 没有 /__manifest 服务。
+- CSS 全量内联后保留 assets/*.css：客户端导航仍会引用。
+- Velite 不清空输出目录：构建配置直接读取其中 JSON。
+- 主题脚本在 head 同步执行，并保留 hydration 后恢复属性的逻辑；root 和 ThemeProvider 的重复恢复需浏览器验证后再合并。
+- 不使用 text-rendering: optimizeLegibility，旧性能原因保留在决策记录。
+- 预览用 pnpm preview，不用 vite preview；代理导致 GitHub 502 时按 AGENTS 中方法使用直连。
 
-```bash
-pnpm install
-pnpm dev       # http://localhost:5173（改 content/ 会自动重建内容层）
-pnpm content   # 只跑 velite，重建 .velite/
-pnpm validate  # 只跑跨文件校验，不构建
-pnpm test      # node:test 回归，对象是 scripts/lib/content-rules.mjs
-pnpm check     # react-router typegen + tsc --noEmit
-pnpm build     # velite → validate → typegen → tsc → react-router build → postbuild
-pnpm preview   # 预览 build/client（尾斜杠行为与 GitHub Pages 一致）
-```
+## 5. 内容维护
 
-`build` 的顺序是有意的：内容层先跑（否则类型与数据都不存在），然后跨文件校验，最后才是类型检查与渲染。这样"内容错误"和"代码错误"在输出上是分开的——前者能直接定位到文件和字段。
+内容在仓库内写作，字段以 schema 为准，正文不是可 hydrate 的 React 组件。发布文章只在实质修改时填写 updated；不改已发布 slug 或 date。图片同目录，alt 必填。Project 不含日期、不进 RSS。RSS 生成最多 20 篇已发布文章的全文。
 
-**CI**（`.github/workflows/deploy.yml`）：push 到 `main`（默认分支）→ pnpm 9 + Node 22 → `pnpm install --frozen-lockfile` → `pnpm test` → `pnpm build` → `actions/upload-pages-artifact@v3`（路径 `build/client`）→ `actions/deploy-pages@v4`。仓库 Settings → Pages → Source 必须选 **GitHub Actions**（一次性手动开启）。
+首页使用已有项目 order 和文章 featured，避免第二份策展配置。普通文章无需进首页，不以更新频率决定精选。
 
-**部署约束**：
-- **默认分支是 `main`**（2026-11-01 从 `react-rewrite` 切回来）。仓库只有这一个分支；`react-rewrite` / `ui/garden` / `ui/garden-archive` 已删除，它们的 commit 都在 `main` 的历史里，需要时按 SHA 检出即可。往任何非 `main` 的分支推都不会上线。
-- 用户站点仓库名必须是 `unraveltao.github.io`，站点在根路径，**不需要 `base`**。改仓库名 = 改 URL 且没有跳转。
-- GitHub Pages 是目录式托管：`/posts/x` 会 301 到 `/posts/x/`。React Router 的预渲染产物本来就是 `X/index.html`，正好对上；手写链接必须带尾斜杠。
-- 将来绑自定义域名：加 `CNAME` + 改 `app/lib/site.json` 一处，代码结构不动。
+项目详情的相关文章从 getPublishedPosts() 按 Post.project 关联，继承发布过滤与日期排序；repo、docs 与 demo 分别按值显示，缺项不渲染对应入口，不使用 Workshop 作为缺失链接的替代。详情移除装饰窗口图，作者来自 SITE_AUTHOR；真实截图与贡献材料仍待作者提供。
 
-**环境坑**：本机代理到 GitHub 会 502，`clone` / `push` 需绕过代理：
+## 6. 性能与依赖
 
-```bash
-git -c http.proxy= -c https.proxy= push
-```
+首屏 JS gzip 上限 130KB。2026-11-02 定位调整前测得首页所引用 JS 文件（含 modulepreload 与 manifest，去重后逐文件 gzip 求和）129.32KB，已接近预算；定位调整后同口径测得 129.536KB（约 129.54KB），比调整前增加约 0.22KB，主要变化为中文展示文案与 URL 规范化；未新增依赖。Lighthouse 待新版重测，不使用 Astro 时期分数作为当前结论。
 
-### 7.1 三个刻意的取舍（不要撤销）
+同口径（首页 HTML 引用的全部 `.js`，去重逐文件 gzip）复测于文档同步这一轮：首页 13 个文件 **122.67KB**、项目详情页 10 个文件 119.15KB，`assets/` 里共 22 个 JS 文件但多数未被首页引用。比上一轮的 125.594KB 低，差异来自删除两篇文章后的内容分块变化；两次数字都低于 130KB，本轮无新增依赖。重测脚本没有固化进仓库，口径以本段描述为准。
 
-**① CSS 全量内联，但不删源文件**
+新增依赖先判断：平台能否完成、能否只在构建期执行、首屏预算能否承受。没有第三方 UI、主题、状态、动画、图标或日期库；本轮无新增依赖。
 
-`scripts/postbuild.mjs` 把每个页面引用的 `<link rel="stylesheet">` 换成 `<style>`。理由与 Astro 时代相同：唯一的 CSS 请求是全页最长的依赖链（943ms），样式到得比文档晚，第一次布局被推到 FCP 之后。11KB 内联后省掉一次往返，FCP 1.2s → 1.1s，TBT 归零。
+## 7. 已知缺口
 
-**但 `assets/*.css` 不能删**：React Router 的客户端导航会按路由 manifest 补 `<link rel="stylesheet">`，删掉就是 404，而且整页掉进 ErrorBoundary。代价是首次站内跳转会多取一次已经内联过的 CSS（~8KB，可缓存）。
+- 六套主题、卡片与样式色值散落，仍与 AGENTS、ADR-0003 不一致。本轮保留外观，不追认这些偏差；后续独立收敛视觉。
+- Workshop/DownloadNote 的导出字段与 Post schema 不同，Workshop 写入正文 h1；暂不作为直接可发布的文章生成器。
+- 自定义 slug 重复、标题层级、图片缺失与体积未全部自动校验。
+- OG 图仍共用 public/og.png；没有新建文章脚手架、格式化或 lint 命令（是否引入的结论与触发条件见 `docs/05` 的"工具链与 SEO 复核"）。
+- 首屏 JS 的 130KB 预算没有自动闸门：`scripts/postbuild.mjs` 只打印数字，超限不失败，靠人盯 §6 的记录。
+- 项目真实截图、演示、贡献与成果材料需作者提供，不由 agent 补造。
+- 配置中的示例邮箱没有作为联系入口展示；GitHub 链接有效。
 
-**② 首屏 JS 从 0 涨到约 122KB（gzip）**
+## 8. 本轮清理记录
 
-拆开看：React + react-dom 约 43KB，React Router 客户端运行时约 67KB，内容 JSON 约 7KB，应用代码约 5KB。这是 ADR-0011 唯一的硬代价。
+移除无人调用的 posts.ts 工具、空 Page collection/getPage、SITE_EMAIL 与 formatDate 的无用导出，以及 postbuild 内只写不读的 usedCss 集合。保留实际使用的日期格式函数、CSS 产物、框架依赖与既有路由。没有批量搬动源码。
 
-新预算（替代原来的 15KB）：**所有页面首屏 JS ≤ 130KB（gzip），实测 121.8KB**，Lighthouse 四项仍 ≥ 95，移动 4G 节流下 LCP < 1.2s。超了就说明有人往客户端塞了不该塞的东西——先查是不是引入了新依赖，不要先想着调 bundler。
+## 9. 本轮验证
 
-**③ `routeDiscovery: { mode: 'initial' }`**
+pnpm test 27/27、pnpm check、pnpm build 通过；11 个页面预渲染，额外生成根 404.html。产物检查确认首页精选区域不含占位文、主导航无 Workshop、12 份 HTML 的 canonical 均带尾斜杠。
 
-React Router 7 在 `ssr: true` 下默认是 `lazy`：客户端导航时去 GET `/__manifest` 补路由表。静态托管上没有这个端点，结果是**每次站内跳转都 404 并掉进 ErrorBoundary**。改成 `initial` 把路由表直接写进 HTML，代价是每页多几 KB。
+本环境的本机预览连接超时，375px 无横向滚动、键盘流程及实时 301/404 响应尚未完成验收；不能用静态产物检查替代这些检查。
 
-## 8. 已知技术债
+### 项目详情修正验证（2026-11-02）
 
-按优先级排列，详见 [05-Development-Roadmap.md](./05-Development-Roadmap.md)。
+27 项测试与完整构建通过。产物检查确认 Lattice 详情有两篇关联文章、无无关文章、无 Workshop 替代演示、无装饰窗口图，且只保留一个 h1。本轮同口径 JS gzip：首页 129.646KB、项目页 126.018KB；首页较上一轮增加约 0.11KB（关联功能带来共享分块与 manifest 变化），均低于 130KB，无新增依赖。375px 与键盘浏览器验收仍未完成；真实案例材料待作者提供。
 
-| # | 债 | 影响 | 现状 |
-|---|---|---|---|
-| 1 | 正文不能嵌 React 组件 | `s.markdown()` 产出 HTML 字符串，文章里只能用 Markdown | 与 Astro 时代相比是退步；要补就把 `s.markdown()` 换成 `@mdx-js/rollup` 的真实模块 |
-| 2 | 首屏 JS 122KB | 比 Astro 的 0 多两个数量级 | 已记入 ADR-0011 的代价；预算见 §7.1 |
-| 3 | 无 lint / 无 format | 格式无约束 | `tsc --noEmit` 已进 `build`；prettier 仍未装 |
-| 4 | OG 图是单张静态图 | 所有文章共用 `public/og.png`，不是逐篇生成 | 文档写"构建期生成 1200×630"，未实现 |
-| 5 | 无 `pnpm new` 脚手架 | 新文章手写 frontmatter，容易漏字段 | 文档提到但脚本不存在 |
-| 6 | 校验脚本只认六个标量字段 | 手写 YAML 解析，`order: "1"` 这类变体会报错而非兼容 | 刻意为之：宁可不兼容，也不静默放过 |
+### Lattice 仓库材料核对（2026-11-02）
 
-## 9. 扩展指引
+依据作者提供的 https://github.com/unraveltao/Lattice 及其中 README.zh-CN.md、docs/ARCHITECTURE.md，项目介绍改为 Windows 桌面组件平台，补齐 repo 字段，链接仓库真实截图与架构说明；没有复制未经确认的贡献或量化成果。旧文章里的编辑器事故和数字仍需作者确认。27 项测试、完整构建、源码链接产物检查通过；首页 JS gzip 129.95KB。未新增依赖，未改文章 slug/date。
 
-| 想做什么 | 改哪里 | 别忘了 |
-|---|---|---|
-| 加 frontmatter 字段 | `velite.config.ts` → `app/lib/content.ts` 的类型 → 使用它的页面 | 更新 `docs/02` §5.3 表格 |
-| 加一个路由 | `app/routes/` 新建组件 + `app/routes.ts` 登记 + `react-router.config.ts` 的 `prerender` | 更新 `docs/02` §2 路由表 |
-| 加一个项目 | `content/projects/<slug>/index.mdx` | 字段见 `docs/02` §5.7；不进 RSS、不进标签 |
-| 加一个组件 | `app/components/`，PascalCase + 同名 module.css | 先确认设计系统里有这个组件的规格，没有就先补 `docs/03` |
-| 改视觉 | `app/styles/tokens.css` 或对应 module.css | 同步 `docs/03`；不要引入色块/阴影 |
-| 加依赖 | `package.json` | 先过 §5 的三问；在 `docs/06` 记一条决策 |
+### 删除虚构文章（2026-11-02）
+
+作者确认两篇 Lattice 文章中的经历与数字并非事实，已删除 lattice-architecture、tauri-state-machine 及 lattice-teardown 系列配置。上述历史验证中关于两篇文章和待核实数字的描述已失效，不得再作项目事实引用。仅保留 Hello World 与经仓库核对的 Lattice 项目。
+
+27 项测试、完整构建通过，生成 8 个页面、RSS 1 条、sitemap 7 条。产物检查确认旧页面不存在，首页、文章列表、项目详情、RSS、sitemap 无旧 slug；无精选时首页写作区隐藏，无关联文章时项目写作区隐藏。首页 JS gzip 125.594KB。删除的公开 URL 在部署后返回 404，不增加重定向或占位页；本地改动尚未部署。
+
+### 文档同步与项目文档入口（2026-11-02，当前状态）
+
+范围：README 重写为项目入口；AGENTS 与 GLOSSARY 的失效条款按实现现状校准（视觉条款改为约束新增样式 + 指向偏差登记，`tokens.css` / `.module.css` / 单一强调色 / 121.8KB / 远端分支等失真处改正）；`tests/README`、`docs/03` §10、`docs/06` 索引的失效指针修正；Project schema 增加可选 `docs` 外链，详情页按值渲染"查看文档"。工具链与 SEO 的评估结论记在 `docs/05`，本轮未新增依赖。
+
+验证：`pnpm validate` 通过（1 篇、0 系列、0 精选），`pnpm test` 27/27，`pnpm check` 零错误，`pnpm build` 退出码 0——8 个页面预渲染、内联 8 段 CSS、RSS 1 条、sitemap 7 条、额外生成根 `404.html`；首页 JS gzip 122.67KB、项目详情页 119.15KB。本轮 `pnpm preview` 可用（上一轮超时）：`/projects/lattice/` 返回 200 且含"项目文档 / 查看文档"，缺尾斜杠 301，未知路径 404，`rss.xml` 与 `sitemap-index.xml` 均 200。
+
+负例检查：lattice 未填 `demo`，详情页不出现"在线演示"行；项目列表页不出现"查看文档"；无 featured 时首页只剩 01 区块。375px 无横向滚动、键盘全流程与 Lighthouse 重测仍未做，不能用上述产物检查替代。本地改动尚未部署，也未推送。

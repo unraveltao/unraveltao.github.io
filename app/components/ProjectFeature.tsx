@@ -87,5 +87,3 @@ export function ProjectFeature({ project }: { project: Project }) {
     </Link>
   )
 }
-
-export { ProjectArt }

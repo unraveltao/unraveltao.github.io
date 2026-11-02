@@ -18,7 +18,7 @@ tests/
 
 这个项目是静态站：没有服务端逻辑、没有运行时状态、没有 API。绝大部分正确性由三件事保证：
 
-1. **构建期 schema 校验**（`src/content.config.ts`）——字段错了 build 就失败；
+1. **构建期 schema 校验**（`velite.config.ts`）——字段错了 build 就失败；
 2. **跨文件校验**（`scripts/validate-content.mjs`）——规则 3–6 违反则 build 失败；
 3. **`pnpm build` 本身**——路由、链接、RSS、sitemap 生成失败都会炸。
 
@@ -34,7 +34,7 @@ tests/
 
 **Node 内置 `node:test` + `node:assert`。零依赖。**
 
-理由见 `docs/04` §5：这个项目不引入非必要依赖。校验逻辑是纯函数，不需要 vitest 的 mock / snapshot / 浏览器环境。加一个测试框架等于为了跑几十个断言引入一棵依赖树。
+理由见 `docs/04` §6：这个项目不引入非必要依赖。校验逻辑是纯函数，不需要 vitest 的 mock / snapshot / 浏览器环境。加一个测试框架等于为了跑几十个断言引入一棵依赖树。
 
 ```bash
 pnpm test    # node --test "tests/**/*.test.mjs"
@@ -45,9 +45,9 @@ glob 必须带引号，交给 Node 自己展开：`node --test tests` 在 Node 2
 ## 不测什么
 
 - **视觉**。颜色和间距的正确性靠 `docs/03` 的规格 + 人工在 375px / 1200px 两个断点看一眼，不靠截图比对。
-- **Lighthouse 分数**。它是环境相关的连续值，不是断言目标；达标标准写在 `docs/02` §10.1。
-- **Astro 框架本身**。构建成功即视为框架工作正常。
-- **构建产物冒烟**（`dist/` 里的文件是否存在）。价值不如规则层，等构建时间变长再说。
+- **Lighthouse 分数**。它是环境相关的连续值，不是断言目标；达标标准写在 `docs/02` §6。
+- **React Router 框架本身**。构建成功即视为框架工作正常。
+- **构建产物冒烟**（`build/client/` 里的文件是否存在）。价值不如规则层，等构建时间变长再说。
 
 ## 何时该补测试
 
@@ -55,4 +55,4 @@ glob 必须带引号，交给 Node 自己展开：`node --test tests` 在 Node 2
 
 - 一条校验规则被"临时放宽"过一次（说明它会再被放宽）；
 - 同一个 bug 修了第二次；
-- 改动 `src/lib/posts.ts` 的排序 / 过滤逻辑（它没有类型能保证语义正确）——注意它依赖 `astro:content`，需要先把纯逻辑摘出来才可测。
+- 改动 `app/lib/content.ts` / `app/lib/publish.ts` 的排序或发布过滤逻辑（类型不能保证语义正确），先摘出纯逻辑再测。

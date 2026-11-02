@@ -1,21 +1,23 @@
 ---
-name: lattice
-summary: "把文件系统和编辑器状态关在 Rust 侧，前端只拿到命令和事件；代价是多一层转换，换来可测试性。"
+name: Lattice
+summary: "网页组件运行在 Windows 桌面，由平台统一处理窗口、沙箱与权限，让组件专注于自身功能。"
 status: active
-stack: [rust, tauri, typescript]
+stack: [rust, tauri, react, typescript]
+repo: https://github.com/unraveltao/Lattice
+docs: https://github.com/unraveltao/Lattice/blob/main/docs/ARCHITECTURE.md
 order: 1
 ---
 
 ## 它解决什么问题
 
-前端不该知道文件系统。最初前端直接调 `@tauri-apps/plugin-fs`，Rust 侧只做窗口和菜单——写起来快，第一周就出现了三个前端各自拼路径、各自处理「文件不存在」的分支。
+用 HTML、CSS 和 JavaScript 编写桌面组件，无需账号或服务端。
 
-## 怎么搭的
+## 实现与取舍
 
-Rust 侧是一个没有 UI 的领域层，前端只拿到命令和事件。编辑器有 14 个交互状态，散在 9 个组件里时没人说得清；收敛成一个显式状态机后，删掉了大量防御性 `if`。
+Rust 处理系统能力，React 提供平台界面；组件通过沙箱与权限桥访问宿主。官方和第三方共用扩展机制。独立 WebView 换来隔离，也增加内存成本。
 
-代价是多写一层转换，换来的是可测试性，以及 bug 能被稳定复现。
+## 当前进展
 
-## 现在什么状态
+已提供布局编辑、组件分发与 assistant；部分里程碑仍待真机验收。
 
-持续开发中。站上有两篇文章记录了它的两次关键取舍。
+[中文说明与真实界面截图](https://github.com/unraveltao/Lattice/blob/main/README.zh-CN.md) · [架构与已知取舍](https://github.com/unraveltao/Lattice/blob/main/docs/ARCHITECTURE.md)

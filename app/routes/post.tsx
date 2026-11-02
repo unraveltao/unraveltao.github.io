@@ -29,7 +29,7 @@ function findPost(slug: string | undefined): Post {
 
 export const meta: MetaFunction<{ slug: string }> = ({ params }) => {
   const post = findPost(params.slug)
-  const pageUrl = new URL(`/posts/${post.slug}`, SITE_URL).href
+  const pageUrl = new URL(`/posts/${post.slug}/`, SITE_URL).href
   const ogImage = new URL('/og.png', SITE_URL).href
 
   const jsonLd = {

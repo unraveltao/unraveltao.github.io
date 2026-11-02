@@ -32,5 +32,3 @@ export function PostRow({ post, compact = false }: { post: Post; compact?: boole
     </Link>
   )
 }
-
-export { formatDate }

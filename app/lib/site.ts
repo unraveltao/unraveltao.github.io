@@ -19,5 +19,4 @@ export const SITE_TAGLINE: string = site.tagline
 
 export const SITE_DESCRIPTION: string = site.description
 export const SITE_AUTHOR: string = site.author
-export const SITE_EMAIL: string = site.email
 export const SITE_REPO: string = site.repo

@@ -1,10 +1,10 @@
 import type { MetaFunction } from 'react-router'
 import { Link, useParams } from 'react-router'
 import { Icon } from '~/components/Icon'
-import { ProjectArt } from '~/components/ProjectFeature'
-import { getProjects } from '~/lib/content'
+import { getProjects, getPublishedPosts } from '~/lib/content'
 import { statusLabel } from '~/lib/projects'
 import { pageMeta } from '~/lib/seo'
+import { SITE_AUTHOR } from '~/lib/site'
 
 export const meta: MetaFunction<{ slug: string }> = ({ params }) => {
   const project = getProjects().find((item) => item.slug === params.slug)
@@ -18,19 +18,18 @@ export const meta: MetaFunction<{ slug: string }> = ({ params }) => {
 }
 
 /**
- * 版式取自参考站 projectDetail()：
- * back-link → 页头（kicker 用状态）→ project-detail-grid（左：封面 + 正文，右：dl 信息栏）。
- * 参考站的 details / next 两段由 frontmatter 提供，本站写在正文里，所以这里直接渲染 markdown。
+ * 项目正文与相关文章一起展示；关联来自 Post.project，避免再维护一份文章链接。
  */
 export default function ProjectRoute() {
   const { slug } = useParams()
   const project = getProjects().find((item) => item.slug === slug)
   if (!project) throw new Response('Not Found', { status: 404 })
+  const relatedPosts = getPublishedPosts().filter((post) => post.project === project.slug)
 
   return (
     <>
       <Link className="back-link" to="/projects/">
-        <Icon name="arrow" /> All projects
+        <Icon name="arrow" /> 全部项目
       </Link>
 
       <header className="page-head">
@@ -41,19 +40,31 @@ export default function ProjectRoute() {
 
       <div className="project-detail-grid">
         <div>
-          <ProjectArt slug={project.slug} />
           <article className="article-body" dangerouslySetInnerHTML={{ __html: project.html }} />
+          {relatedPosts.length > 0 && (
+            <section className="article-body" aria-labelledby="related-writing">
+              <h2 id="related-writing">相关写作</h2>
+              <ul>
+                {relatedPosts.map((post) => (
+                  <li key={post.slug}>
+                    <Link to={`/posts/${post.slug}/`}>{post.title}</Link>
+                    <p>{post.summary}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
         <dl className="detail-info">
           <div>
-            <dt>Current chapter</dt>
+            <dt>当前状态</dt>
             <dd>
               <span className="status">{statusLabel(project.status)}</span>
             </dd>
           </div>
           <div>
-            <dt>Built around</dt>
+            <dt>技术栈</dt>
             <dd>
               {project.stack.map((item) => (
                 <span className="tag" key={item}>
@@ -63,25 +74,37 @@ export default function ProjectRoute() {
             </dd>
           </div>
           <div>
-            <dt>By</dt>
-            <dd>unraveltao</dd>
+            <dt>作者</dt>
+            <dd>{SITE_AUTHOR}</dd>
           </div>
-          {project.repo ? (
+          {/* 三个外链各自独立：缺哪个就不渲染哪一行，不拿本站页面去补位 */}
+          {project.repo && (
             <div>
-              <dt>Explore the source</dt>
+              <dt>项目源码</dt>
               <dd>
                 <a className="button" href={project.repo} target="_blank" rel="noopener noreferrer">
-                  View on GitHub <Icon name="out" />
+                  查看仓库 <Icon name="out" />
                 </a>
               </dd>
             </div>
-          ) : (
+          )}
+          {project.docs && (
             <div>
-              <dt>Try the workflow</dt>
+              <dt>项目文档</dt>
               <dd>
-                <Link className="button" to="/workshop/">
-                  Open the workshop <Icon name="arrow" />
-                </Link>
+                <a className="text-link" href={project.docs} target="_blank" rel="noopener noreferrer">
+                  查看文档 <Icon name="out" />
+                </a>
+              </dd>
+            </div>
+          )}
+          {project.demo && (
+            <div>
+              <dt>在线演示</dt>
+              <dd>
+                <a className="text-link" href={project.demo} target="_blank" rel="noopener noreferrer">
+                  查看演示 <Icon name="out" />
+                </a>
               </dd>
             </div>
           )}

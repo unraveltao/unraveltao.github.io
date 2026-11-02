@@ -16,7 +16,9 @@ export function pageTitle(title?: string): string {
 }
 
 export function canonical(path: string): string {
-  return new URL(path, SITE_URL).href
+  const url = new URL(path, SITE_URL)
+  url.pathname = `${url.pathname.replace(/\/+$/, '')}/`
+  return url.href
 }
 
 export function pageMeta({

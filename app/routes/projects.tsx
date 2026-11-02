@@ -5,9 +5,9 @@ import { pageMeta } from '~/lib/seo'
 export const meta = () =>
   pageMeta({
     path: '/projects',
-    title: 'Projects',
+    title: '项目',
     description:
-      'A few ongoing explorations in useful software, thoughtful tools, and learning by doing.',
+      '从具体问题出发，记录项目的实现方式、当前状态和关键取舍。',
   })
 
 /** 版式取自参考站 projects()：页头 + 两列 project-grid */
@@ -17,10 +17,10 @@ export default function Projects() {
   return (
     <>
       <header className="page-head">
-        <div className="eyebrow">THINGS I’M MAKING</div>
-        <h1>Built with curiosity.</h1>
+        <div className="eyebrow">项目与实践</div>
+        <h1>做过什么，为什么这样做。</h1>
         <p>
-          A few ongoing explorations in useful software, thoughtful tools, and learning by doing.
+          从具体问题出发，记录项目的实现方式、当前状态和关键取舍。
         </p>
       </header>
 

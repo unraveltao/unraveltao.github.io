@@ -9,14 +9,10 @@ import { SITE_NAME, SITE_REPO, SITE_TAGLINE } from '~/lib/site'
 
 export const meta = () => pageMeta({ path: '/' })
 
-/**
- * 首页版式逐块取自参考站 app.js 的 home()：
- * hero + 季节插画 → intro-strip → 两栏（左：精选项目 / 最新笔记，右：sidebar + 工坊入口）→ home-note。
- * 文案保留参考站的英文口吻，只把身份换成 unraveltao。
- */
+/** 首页以代表项目和人工精选写作为入口，不用更新频率决定展示顺序。 */
 export default function Home() {
   const projects = getProjects()
-  const posts = getPublishedPosts().slice(0, 3)
+  const posts = getPublishedPosts().filter((post) => post.featured)
   const featured = projects[0]
 
   return (
@@ -25,22 +21,22 @@ export default function Home() {
         <div>
           <div className="eyebrow">
             <span className="dot" />
-            A PERSONAL CORNER OF THE INTERNET
+            个人主页 · 项目与精选写作
           </div>
           <h1>
-            Unravel the world,
+            把想法做成项目，
             <br />
-            <em>play the game.</em>
+            <em>把经验沉淀成方法。</em>
           </h1>
           <p>
-            Hi, I’m {SITE_NAME}. {SITE_TAGLINE}
+            我是 {SITE_NAME}。 {SITE_TAGLINE}
           </p>
           <div className="hero-actions">
             <Link className="button primary" to="/projects/">
-              Explore my projects <Icon name="arrow" />
+              查看项目 <Icon name="arrow" />
             </Link>
             <Link className="text-link" to="/posts/">
-              Read the notes <Icon name="out" />
+              阅读精选 <Icon name="out" />
             </Link>
           </div>
         </div>
@@ -49,10 +45,10 @@ export default function Home() {
 
       <div className="intro-strip">
         <span>
-          <Icon name="leaf" /> <strong>Learning. Building. Sharing.</strong>
+          <Icon name="leaf" /> <strong>实践 · 思考 · 方法</strong>
         </span>
         <span>
-          Currently exploring <strong>AI agents &amp; thoughtful tools</strong>
+          正在构建 <strong>Lattice</strong>
         </span>
         <span>EST. 2026</span>
       </div>
@@ -62,75 +58,67 @@ export default function Home() {
           <section>
             <div className="section-heading">
               <h2>
-                <span className="small-index">01</span>Selected work
+                <span className="small-index">01</span>代表项目
               </h2>
               <Link className="text-link" to="/projects/">
-                All projects <Icon name="arrow" />
+                全部项目 <Icon name="arrow" />
               </Link>
             </div>
             {featured && <ProjectFeature project={featured} />}
           </section>
 
-          <section className="writing-section">
-            <div className="section-heading">
-              <h2>
-                <span className="small-index">02</span>Fresh from the garden
-              </h2>
-              <Link className="text-link" to="/posts/">
-                All writing <Icon name="arrow" />
-              </Link>
-            </div>
-            {posts.map((post) => (
-              <PostRow key={post.slug} post={post} compact />
-            ))}
-          </section>
+          {posts.length > 0 && (
+            <section className="writing-section">
+              <div className="section-heading">
+                <h2>
+                  <span className="small-index">02</span>精选写作
+                </h2>
+                <Link className="text-link" to="/posts/">
+                  全部写作 <Icon name="arrow" />
+                </Link>
+              </div>
+              {posts.map((post) => (
+                <PostRow key={post.slug} post={post} compact />
+              ))}
+            </section>
+          )}
         </div>
 
         <aside className="home-sidebar">
           <div className="sidebar-box">
-            <div className="eyebrow">A WORK IN PROGRESS</div>
+            <div className="eyebrow">关于这里</div>
             <h3>
-              Less consuming.
+              用项目展示实践，
               <br />
-              More creating.
+              用文字解释判断。
             </h3>
             <p>
-              This is my space to think out loud, document the process, and make useful things along the
-              way.
+              这里收录我正在做的项目，以及值得长期保留的方法论、技术取舍和实践总结。
             </p>
             <ul className="focus-list">
               <li>
                 <i />
-                Building Lattice
+                项目：问题、实现与取舍
               </li>
               <li>
                 <i />
-                Learning how agents work
+                写作：有实践支撑的结论
               </li>
               <li>
                 <i />
-                Turning notes into knowledge
+                方法：可以反复使用的经验
               </li>
             </ul>
             <a className="text-link" href={SITE_REPO} target="_blank" rel="noopener noreferrer">
-              Find me on GitHub <Icon name="out" />
+              在 GitHub 找到我 <Icon name="out" />
             </a>
-          </div>
-
-          <div className="workshop-teaser">
-            <Icon name="code" />
-            <h4>The little workshop</h4>
-            <p>Small tools for the things I do often. Starting with a Markdown packager.</p>
-            <Link className="text-link" to="/workshop/">
-              Step inside <Icon name="arrow" />
-            </Link>
           </div>
         </aside>
       </div>
 
       <div className="home-note">
-        <span>A digital garden, not a finished monument. Things grow here.</span>
-        <span>BUILT WITH INTENTION ↗</span>
+        <span>只留下值得展示的项目，和值得反复阅读的文字。</span>
+        <span>PROJECTS & WRITING ↗</span>
       </div>
     </>
   )
