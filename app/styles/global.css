@@ -13,6 +13,56 @@
 @import './garden.css';
 @import './garden-themes.css';
 
+/* Personal OS 的模块目录沿用文章列表的文字层级，并按 order 展示阅读顺序。 */
+.personal-os-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.personal-os-list li + li {
+  margin-top: 32px;
+}
+
+.personal-os-list a {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 16px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.personal-os-order,
+.personal-os-updated {
+  color: var(--muted);
+  font: 12px/1.5 var(--mono);
+}
+
+.personal-os-copy,
+.personal-os-title,
+.personal-os-summary,
+.personal-os-updated {
+  display: block;
+}
+
+.personal-os-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.personal-os-list a:hover .personal-os-title {
+  color: var(--accent);
+}
+
+.personal-os-summary {
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+.personal-os-updated {
+  margin-top: 8px;
+}
+
 /* ---------- 字体 ---------- */
 :root {
   --serif: Georgia, 'Times New Roman', 'Songti SC', 'Noto Serif SC', 'Source Han Serif SC',

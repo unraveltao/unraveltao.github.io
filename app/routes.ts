@@ -11,6 +11,7 @@ export default [
   index('routes/home.tsx'),
   route('posts', 'routes/posts.tsx'),
   route('posts/:slug', 'routes/post.tsx'),
+  route('personal-os', 'routes/personal-os.tsx'),
   route('projects', 'routes/projects.tsx'),
   route('projects/:slug', 'routes/project.tsx'),
   route('series/:series', 'routes/series.tsx'),

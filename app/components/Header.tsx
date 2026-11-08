@@ -12,6 +12,7 @@ import { ThemeMenu } from './ThemeMenu'
 const ITEMS = [
   { href: '/', label: 'Home', exact: true },
   { href: '/posts/', label: 'Writing' },
+  { href: '/personal-os/', label: 'Personal OS' },
   { href: '/projects/', label: 'Projects' },
 ]
 

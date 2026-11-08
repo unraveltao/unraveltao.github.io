@@ -37,7 +37,7 @@ Velite strict 校验单文件字段；scripts/lib/content-rules.mjs 检查系列
 
 main 推送触发 .github/workflows/deploy.yml：Node 22、pnpm 9，安装锁定依赖，测试与构建，通过后部署 build/client 到 GitHub Pages。无需另设部署服务。
 
-所有页面对外 URL 带尾斜杠，seo.ts 统一规范化 canonical；文章 JSON-LD 同样带尾斜杠。站点域名从 site.json 读取，postbuild 的 RSS 与 sitemap 使用同一配置。新增静态页面要同时登记 routes.ts 和 prerender；动态文章、项目、系列由内容推导。Workflow 和 Workshop 本轮只移除主入口，仍预渲染原地址。
+所有页面对外 URL 带尾斜杠，seo.ts 统一规范化 canonical；文章 JSON-LD 同样带尾斜杠。站点域名从 site.json 读取，postbuild 的 RSS 与 sitemap 使用同一配置。新增静态页面要同时登记 routes.ts 和 prerender；动态文章、项目、系列由内容推导。`/personal-os/` 是显式聚合入口，但仅在已发布内容存在 `series: personal-os` 时预渲染；入口导航从 Post 数据和 `order` 生成。Workflow 和 Workshop 保留原地址预渲染。
 
 ## 4. 需要保留的约定
 
@@ -105,3 +105,7 @@ pnpm test 27/27、pnpm check、pnpm build 通过；11 个页面预渲染，额�
 验证：`pnpm validate` 通过（1 篇、0 系列、0 精选），`pnpm test` 27/27，`pnpm check` 零错误，`pnpm build` 退出码 0——8 个页面预渲染、内联 8 段 CSS、RSS 1 条、sitemap 7 条、额外生成根 `404.html`；首页 JS gzip 122.67KB、项目详情页 119.15KB。本轮 `pnpm preview` 可用（上一轮超时）：`/projects/lattice/` 返回 200 且含"项目文档 / 查看文档"，缺尾斜杠 301，未知路径 404，`rss.xml` 与 `sitemap-index.xml` 均 200。
 
 负例检查：lattice 未填 `demo`，详情页不出现"在线演示"行；项目列表页不出现"查看文档"；无 featured 时首页只剩 01 区块。375px 无横向滚动、键盘全流程与 Lighthouse 重测仍未做，不能用上述产物检查替代。本地改动尚未部署，也未推送。
+
+### Personal OS 首次发布验证（2026-11-09）
+
+`pnpm test` 27/27 通过，`pnpm build` 通过；构建预渲染 `/personal-os/`、`/posts/personal-task-management/` 与 `/series/personal-os/`，RSS 2 条、sitemap 10 条。生成产物检查确认入口含首篇链接、摘要与更新时间，文章含 TOC，RSS/sitemap 均含新 URL，canonical 带尾斜杠。Personal OS 路由 chunk gzip 约 0.89KB；无新增依赖。`pnpm preview` 已启动，但当前环境的本机 socket 权限阻止浏览器和命令行访问 localhost，因此真实 301/404、浏览器移动端/桌面端、键盘与六套主题视觉检查未完成。没有图片素材引用，本篇不含图片。变更尚未提交或部署。

@@ -4,6 +4,8 @@
 
 > 2026-11-02 定位调整：主导航为 Home / Writing / Projects；首页顺序为个人介绍、代表项目、人工精选写作。沿用现有布局与组件，本轮不新增颜色、字号、间距或主题。以下视觉约束继续生效，但当前 garden.css / garden-themes.css / global.css 存在偏差，tokens.css 和 CSS Modules 尚不存在；不能将下文描述当成已经实现。视觉收敛作为独立待办，见路线图。
 
+> 2026-11-09 Personal OS：主导航增加 Personal OS；入口模块目录使用普通文字、序号与留白，复用现有主题 token，不增加主题、色值或第三方视觉依赖。
+
 > 适用：全站。所有取值以 CSS 自定义属性落地，组件只消费 token，不写字面色值。
 > 决策来源：[ADR-0003](./adr/0003-visual-identity.md)（视觉延续 README 身份）。
 > 落地位置：`app/styles/tokens.css`（唯一允许写色值的地方）与 `app/styles/global.css`；页面与组件各自的布局写在同名 `*.module.css` 里。

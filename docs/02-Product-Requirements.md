@@ -15,6 +15,7 @@
 | /projects/:slug/ | 项目介绍与正文 |
 | /posts/ | 已发布文章，倒序排列，可按标签与关键词筛选 |
 | /posts/:slug/ | 文章正文、目录、系列与相邻文章 |
+| /personal-os/ | Personal OS 独立入口，按 personal-os 系列的 order 展示已发布模块 |
 | /series/:series/ | 系列内已发布文章 |
 | /workshop/、/workflow/ | 兼容原入口，退出首页与主导航 |
 | /404/ | 未找到页面，静态托管另提供 404.html |
@@ -23,7 +24,7 @@
 
 ## 3. 导航
 
-主导航保留 Home / Writing / Projects；右侧保留现有搜索、外观与 GitHub 入口。Workshop 退出主导航，原地址继续访问。页脚保留 GitHub、RSS。
+主导航保留 Home / Writing / Personal OS / Projects；右侧保留现有搜索、外观与 GitHub 入口。Workshop 退出主导航，原地址继续访问。页脚保留 GitHub、RSS。
 
 ## 4. 页面规格
 
@@ -41,6 +42,10 @@
 
 文章类型包括方法论、技术取舍与实践总结。已有文章保持 URL；占位文不会因日期新而进入首页。列表保留浏览全部已发布内容的能力；正文标题从 h2 起，不跳级。文章含摘要、日期、阅读时长、标签；有实质修改才填 updated。
 
+### Personal OS
+
+Personal OS 复用 Post 与 Series，不增加内容实体。`/personal-os/` 从已发布文章中筛选 `series: personal-os`，按正整数 `order` 排序，显示标题、摘要及 `updated`（未填写时使用 `date`）。文章仍使用 `/posts/:slug/`，新增模块无需修改入口页面或路由。Series 展示名与说明在 `content/series.json`。
+
 ## 5. 内容模型
 
 ### 5.1 文件
@@ -49,7 +54,7 @@
 
 ### 5.2 文章字段意图
 
-必填标题、结论摘要、日期与 1–3 个标签。摘要为 20–160 字，标题最多 40 字；标签和 slug 为 kebab-case。可关联项目、系列及顺序。属于系列时必须填正整数 order。draft 控制草稿，featured 控制首页精选。updated 仅表示实质修改。
+必填标题、结论摘要、日期与 1–3 个标签。摘要为 20–160 字，标题最多 40 字；标签和 slug 为 kebab-case。可关联项目、系列及顺序。属于系列时必须填正整数 order；Personal OS 模块使用 `series: personal-os`。draft 控制草稿，featured 控制首页精选。updated 仅表示实质修改。
 
 ### 5.3 字段与发布
 

@@ -20,6 +20,7 @@ const posts = readCollection('posts').filter((post) => isPublished(post, now))
 const projects = readCollection('projects').filter((project) => !project.draft)
 
 const series = [...new Set(posts.flatMap((post) => (post.series ? [post.series] : [])))]
+const hasPersonalOs = posts.some((post) => post.series === 'personal-os')
 
 export default {
   ssr: true,
@@ -30,6 +31,7 @@ export default {
   prerender: [
     '/',
     '/posts',
+    ...(hasPersonalOs ? ['/personal-os'] : []),
     '/projects',
     '/workshop',
     '/workflow',
