@@ -6,7 +6,7 @@
 
 2026-11-02：作者确认两篇 Lattice 文章中的经历与数字并非事实，已删除 lattice-architecture、tauri-state-machine 及空出的 lattice-teardown 系列配置。下文涉及这两篇内容的旧验收、成果与推荐均作废，不作为项目经历引用。当前仅保留 Hello World，无精选文章或系列；Lattice 项目介绍及源码链接保留。
 
-2026-11-09：Personal OS 发布体系与首篇内容已实现并通过本地构建。新增独立入口 `/personal-os/`，从 `series: personal-os` 的已发布 Post 按 `order` 自动生成模块目录；首篇任务管理方法论保留了“仍在实践中验证”的边界说明。README 与 AGENTS.md 精简为个人写作和 AI 执行入口。远端推送与线上部署仍待网络恢复。
+2026-11-09：Personal OS 发布体系与首篇内容已实现并通过本地构建。新增独立入口 `/personal-os/`，从 `series: personal-os` 的已发布 Post 按 `order` 自动生成模块目录；首篇任务管理方法论保留了“仍在实践中验证”的边界说明。README 与 AGENTS.md 精简为个人写作和 AI 执行入口。变更已推送至 `main`，GitHub Actions 部署成功；本机预览服务器 loopback 检查仍受限，移动端、键盘和六套主题的浏览器视觉检查未完成。
 
 | 顺序 | 工作 | 完成标准 |
 |---|---|---|

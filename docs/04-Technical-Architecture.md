@@ -108,4 +108,4 @@ pnpm test 27/27、pnpm check、pnpm build 通过；11 个页面预渲染，额�
 
 ### Personal OS 首次发布验证（2026-11-09）
 
-`pnpm test` 27/27 通过，`pnpm build` 通过；构建预渲染 `/personal-os/`、`/posts/personal-task-management/` 与 `/series/personal-os/`，RSS 2 条、sitemap 10 条。生成产物检查确认入口含首篇链接、摘要与更新时间，文章含 TOC，RSS/sitemap 均含新 URL，canonical 带尾斜杠。Personal OS 路由 chunk gzip 约 0.89KB；无新增依赖。`pnpm preview` 已启动，但当前环境的本机 socket 权限阻止浏览器和命令行访问 localhost，因此真实 301/404、浏览器移动端/桌面端、键盘与六套主题视觉检查未完成。没有图片素材引用，本篇不含图片。变更已在本地提交，但 SSH 与 HTTPS 推送均未成功，尚未线上部署。
+`pnpm test` 27/27 通过，`pnpm build` 通过；构建预渲染 `/personal-os/`、`/posts/personal-task-management/` 与 `/series/personal-os/`，RSS 2 条、sitemap 10 条。生成产物检查确认入口含首篇链接、摘要与更新时间，文章含 TOC，RSS/sitemap 均含新 URL，canonical 带尾斜杠。Personal OS 路由 chunk gzip 约 0.89KB；无新增依赖。GitHub Actions 部署 workflow 已成功，但当前本机环境无法连接预览服务器（端口 4321 显示已占用，loopback 请求失败），因此浏览器移动端/桌面端、键盘与六套主题视觉检查未完成。没有图片素材引用，本篇不含图片。线上页面地址：<https://unraveltao.github.io/personal-os/> 与 <https://unraveltao.github.io/posts/personal-task-management/>。
