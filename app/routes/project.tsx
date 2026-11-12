@@ -13,7 +13,7 @@ export const meta: MetaFunction<{ slug: string }> = ({ params }) => {
   return pageMeta({
     path: `/projects/${project.slug}`,
     title: project.name,
-    description: project.summary,
+    description: project.summary ?? '',
   })
 }
 
@@ -33,9 +33,9 @@ export default function ProjectRoute() {
       </Link>
 
       <header className="page-head">
-        <div className="eyebrow">{statusLabel(project.status).toUpperCase()}</div>
+        {project.status && <div className="eyebrow">{statusLabel(project.status)?.toUpperCase()}</div>}
         <h1>{project.name}</h1>
-        <p>{project.summary}</p>
+        {project.summary && <p>{project.summary}</p>}
       </header>
 
       <div className="project-detail-grid">
@@ -57,22 +57,26 @@ export default function ProjectRoute() {
         </div>
 
         <dl className="detail-info">
-          <div>
-            <dt>当前状态</dt>
-            <dd>
-              <span className="status">{statusLabel(project.status)}</span>
-            </dd>
-          </div>
-          <div>
-            <dt>技术栈</dt>
-            <dd>
-              {project.stack.map((item) => (
-                <span className="tag" key={item}>
-                  {item}
-                </span>
-              ))}
-            </dd>
-          </div>
+          {project.status && statusLabel(project.status) && (
+            <div>
+              <dt>当前状态</dt>
+              <dd>
+                <span className={`status status-${project.status}`}>{statusLabel(project.status)}</span>
+              </dd>
+            </div>
+          )}
+          {project.stack && project.stack.length > 0 && (
+            <div>
+              <dt>技术栈</dt>
+              <dd>
+                {project.stack.map((item) => (
+                  <span className="tag" key={item}>
+                    {item}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          )}
           <div>
             <dt>作者</dt>
             <dd>{SITE_AUTHOR}</dd>

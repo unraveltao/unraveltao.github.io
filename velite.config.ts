@@ -67,9 +67,9 @@ const projects = defineCollection({
   schema: s
     .object({
       name: s.string().min(1).max(24),
-      summary: s.string().min(20).max(80),
-      status: s.enum(['active', 'done', 'archived']).default('active'),
-      stack: s.array(kebab).min(1).max(5),
+      summary: s.string().min(20).max(80).optional(),
+      status: s.enum(['idea', 'active', 'done', 'archived']).optional(),
+      stack: s.array(kebab).min(1).max(5).optional(),
       repo: s.string().url().optional(),
       // 项目自己的文档入口（仓库 README、架构说明……）。不填就不渲染按钮，
       // 与 repo/demo 同一套规则：链接来自内容数据，不在页面里写死项目名。

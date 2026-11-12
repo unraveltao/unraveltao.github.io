@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">GoalPath 目标路径法</title>
+  <desc id="desc">从目标选择路线，拆成可验收任务，通过证据作出决策，并明确下一步；失败时记录原因并调整路线。</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfcff"/>
+      <stop offset="1" stop-color="#eef2fa"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#56647f"/>
+    </marker>
+    <style>
+      text{font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif;fill:#202b42}
+      .muted{fill:#68738a}.label{font-size:15px;font-weight:700;letter-spacing:1.8px}.title{font-size:34px;font-weight:700}.head{font-size:23px;font-weight:700}.body{font-size:17px}.tiny{font-size:15px}
+    </style>
+  </defs>
+  <rect width="1200" height="760" rx="28" fill="url(#paper)"/>
+  <circle cx="1090" cy="94" r="112" fill="#dfe7f7" opacity=".65"/>
+  <circle cx="100" cy="660" r="120" fill="#e4f0ea" opacity=".66"/>
+  <text x="66" y="70" class="label" fill="#4962a4">GOALPATH · V0.1</text>
+  <text x="66" y="122" class="title">每一步都连到目标，也留下证据</text>
+  <text x="66" y="158" class="tiny muted">未通过验收就不打勾；路线可以调整，失败原因要可追溯。</text>
+
+  <g transform="translate(65 255)">
+    <rect width="195" height="150" rx="20" fill="#28344e"/>
+    <text x="24" y="38" font-size="14" font-weight="700" letter-spacing="1.5" fill="#b9c7e3">01 · GOAL</text>
+    <text x="24" y="77" font-size="24" font-weight="700" fill="#fff">目标</text>
+    <text x="24" y="111" font-size="16" fill="#e0e6f2">成果 + 成功标准</text>
+    <text x="24" y="135" font-size="14" fill="#b9c7e3">先说清要实现什么</text>
+  </g>
+  <path d="M262 330h44" stroke="#56647f" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <g transform="translate(320 232)">
+    <rect width="210" height="196" rx="20" fill="#e3e8f8" stroke="#cad3ed" stroke-width="2"/>
+    <text x="24" y="38" class="label" fill="#4962a4">02 · PATH</text>
+    <text x="24" y="77" class="head">候选路线</text>
+    <rect x="24" y="98" width="162" height="32" rx="9" fill="#fff"/>
+    <circle cx="42" cy="114" r="6" fill="#4962a4"/>
+    <text x="58" y="120" class="tiny">主路线</text>
+    <rect x="24" y="142" width="162" height="32" rx="9" fill="#f3f5fb" stroke="#d8deee"/>
+    <circle cx="42" cy="158" r="6" fill="#aab3c8"/>
+    <text x="58" y="164" class="tiny muted">真实不确定时再列备选</text>
+  </g>
+  <path d="M532 330h43" stroke="#56647f" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <g transform="translate(587 255)">
+    <rect width="190" height="150" rx="20" fill="#fff" stroke="#d9dfec" stroke-width="2"/>
+    <text x="23" y="38" class="label" fill="#607090">03 · TASK</text>
+    <text x="23" y="77" class="head">可验收任务</text>
+    <text x="23" y="111" class="tiny muted">输入 · 动作</text>
+    <text x="23" y="135" class="tiny muted">完成条件</text>
+  </g>
+  <path d="M779 330h42" stroke="#56647f" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <g transform="translate(834 255)">
+    <rect width="190" height="150" rx="20" fill="#dff1e8" stroke="#c4e2d1" stroke-width="2"/>
+    <text x="23" y="38" class="label" fill="#30785b">04 · EVIDENCE</text>
+    <text x="23" y="77" class="head">验证证据</text>
+    <text x="23" y="111" class="tiny">测试 · 日志 · 文件</text>
+    <text x="23" y="135" class="tiny muted">缺少证据就继续核验</text>
+  </g>
+  <path d="M1026 330h38" stroke="#56647f" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M1090 275l66 55-66 55-66-55z" fill="#ffe8d9" stroke="#edc8ac" stroke-width="2"/>
+  <text x="1090" y="324" text-anchor="middle" class="label" fill="#a65b43">05</text>
+  <text x="1090" y="346" text-anchor="middle" class="tiny" font-weight="700">决策</text>
+
+  <path d="M1090 388v117H946" fill="none" stroke="#30785b" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="1080" y="478" class="tiny" fill="#30785b">通过</text>
+  <g transform="translate(778 474)">
+    <rect width="166" height="70" rx="16" fill="#30785b"/>
+    <text x="83" y="30" text-anchor="middle" font-size="14" font-weight="700" letter-spacing="1" fill="#d7f2e3">06 · NEXT</text>
+    <text x="83" y="53" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">下一步</text>
+  </g>
+  <path d="M776 509H664V431" fill="none" stroke="#56647f" stroke-width="2.5" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+  <text x="676" y="495" class="tiny muted">继续到下一任务</text>
+
+  <path d="M1090 388v220H938" fill="none" stroke="#a65b43" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="1098" y="590" class="tiny" fill="#a65b43">未通过</text>
+  <g transform="translate(716 570)">
+    <rect width="218" height="76" rx="16" fill="#fff" stroke="#e8c4b8" stroke-width="2"/>
+    <text x="20" y="31" class="tiny" font-weight="700" fill="#a65b43">记录失败原因</text>
+    <text x="20" y="55" class="tiny muted">重试 · 改道 · 暂停</text>
+  </g>
+  <path d="M714 608H423V438" fill="none" stroke="#a65b43" stroke-width="2.5" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+  <text x="443" y="595" class="tiny muted">必要时回到路线选择</text>
+  <text x="600" y="710" text-anchor="middle" class="tiny muted">执行过 ≠ 验收通过 · 每次复盘都要留下下一步或阻塞原因</text>
+</svg>

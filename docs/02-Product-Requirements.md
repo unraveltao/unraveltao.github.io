@@ -34,7 +34,7 @@
 
 ### 项目
 
-每项有名称、摘要、状态、技术栈；详情解释解决的问题、实现方式和取舍。仓库、文档与演示分别读取 repo、docs、demo，有值才展示对应入口，缺项不留占位，也不能用本站 Workshop 代替项目演示。详情页不放装饰性产品窗口图，真实截图由作者提供后放入项目正文；项目列表当前插画仍为装饰。
+每项有名称；摘要、状态、技术栈和仓库信息按已确认资料填写，未知字段留空不显示。状态可为 Idea / Inbox、active、done 或 archived。详情解释解决的问题、实现方式和取舍（有资料时）。仓库、文档与演示分别读取 repo、docs、demo，有值才展示对应入口，缺项不留占位，也不能用本站 Workshop 代替项目演示。详情页不放装饰性产品窗口图，真实截图由作者提供后放入项目正文；项目列表当前插画仍为装饰。
 
 详情正文后展示相关写作：从已发布文章中按 Post.project 与项目 slug 匹配，沿用内容入口的日期倒序，不另维护链接清单；没有相关文章时隐藏整个区块。作者从站点配置读取。Project 没有 date，不进 RSS、标签或 Series。
 
@@ -50,7 +50,7 @@ Personal OS 复用 Post 与 Series，不增加内容实体。`/personal-os/` 从
 
 ### 5.1 文件
 
-文章位于 content/posts/<slug>/index.mdx，项目位于 content/projects/<slug>/index.mdx，图片与内容同目录并用相对路径引用。Series 名称和说明存 content/series.json。无 Page 集合或 content/pages/。
+文章位于 content/posts/<slug>/index.mdx，项目位于 content/projects/<slug>/index.mdx，文章图片默认与内容同目录并用相对路径引用；方法论 SVG 可复用 `public/assets/`。Series 名称和说明存 content/series.json。无 Page 集合或 content/pages/。
 
 ### 5.2 文章字段意图
 
@@ -58,9 +58,9 @@ Personal OS 复用 Post 与 Series，不增加内容实体。`/personal-os/` 从
 
 ### 5.3 字段与发布
 
-字段类型、默认值及单文件限制以 velite.config.ts 为准。项目摘要为 20–80 字，技术栈 1–5 项，状态为 active / done / archived，可填写 repo、docs、demo、order、draft。docs 是项目自有文档的外链入口，不填则详情页不显示该入口。不添加项目日期。
+字段类型、默认值及单文件限制以 velite.config.ts 为准。项目名称必填；已知摘要为 20–80 字、技术栈为 1–5 项，状态可为 idea / active / done / archived；未知字段可留空。可填写 repo、docs、demo、order、draft。docs 是项目自有文档的外链入口，不填则详情页不显示该入口。不添加项目日期。
 
-发布判定以 app/lib/publish.ts 为唯一实现：非草稿且日期已到；开发模式显示未发布文章。项目生产构建排除草稿。
+发布判定以 app/lib/publish.ts 为唯一实现：非草稿且日期不晚于 Asia/Shanghai 当日；开发模式显示未发布文章。项目生产构建排除草稿。
 
 ### 5.4 写作约定
 

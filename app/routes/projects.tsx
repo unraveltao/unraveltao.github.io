@@ -6,8 +6,7 @@ export const meta = () =>
   pageMeta({
     path: '/projects',
     title: '项目',
-    description:
-      '从具体问题出发，记录项目的实现方式、当前状态和关键取舍。',
+    description: '项目、实践与待探索方向；只展示已经确认的信息。',
   })
 
 /** 版式取自参考站 projects()：页头 + 两列 project-grid */
@@ -18,9 +17,9 @@ export default function Projects() {
     <>
       <header className="page-head">
         <div className="eyebrow">项目与实践</div>
-        <h1>做过什么，为什么这样做。</h1>
+        <h1>项目、实践与正在探索的方向。</h1>
         <p>
-          从具体问题出发，记录项目的实现方式、当前状态和关键取舍。
+          已确认的信息会逐步补充；尚未确定的介绍、状态与仓库地址保持空白。
         </p>
       </header>
 

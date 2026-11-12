@@ -31,7 +31,7 @@ export function SearchDialog() {
     }))
     const projects = getProjects().map<Result>((project) => ({
       title: project.name,
-      text: project.summary,
+      text: project.summary ?? '',
       type: 'Project',
       url: `/projects/${project.slug}/`,
     }))

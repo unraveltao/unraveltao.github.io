@@ -71,18 +71,22 @@ export function ProjectFeature({ project }: { project: Project }) {
       <div className="project-feature-info">
         <div className="project-title-row">
           <h3>{project.name}</h3>
-          <span className="status">{statusLabel(project.status)}</span>
+          {project.status && statusLabel(project.status) && (
+            <span className={`status status-${project.status}`}>{statusLabel(project.status)}</span>
+          )}
         </div>
-        <p>{project.summary}</p>
-        <div className="project-meta">
-          {project.stack.slice(0, 2).map((item, index) => (
-            <span key={item}>
-              {index > 0 && ' / '}
-              {item}
-            </span>
-          ))}
-          <Icon name="out" />
-        </div>
+        {project.summary && <p>{project.summary}</p>}
+        {project.stack && project.stack.length > 0 && (
+          <div className="project-meta">
+            {project.stack.slice(0, 2).map((item, index) => (
+              <span key={item}>
+                {index > 0 && ' / '}
+                {item}
+              </span>
+            ))}
+            <Icon name="out" />
+          </div>
+        )}
       </div>
     </Link>
   )
