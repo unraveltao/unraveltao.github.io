@@ -11,7 +11,7 @@
 
 - `velite.config.ts` is the single source of truth for frontmatter fields and validation. A Post requires a title, a 20–160 character summary, a date, and 1–3 kebab-case tags.
 - Personal OS posts use `series: personal-os` and a positive integer `order`. Its navigation is generated from published posts; adding a module must not require page or route changes.
-- Do not use an `h1` in post bodies. Begin at `h2` and do not skip heading levels. Add a language to code fences. Images must use a relative path to the same post directory and include descriptive alt text. Internal links must use trailing slashes.
+- Do not use an `h1` in post bodies. Begin at `h2` and do not skip heading levels. Add a language to code fences. Post images normally use a relative path to the same post directory and include descriptive alt text. Methodology SVGs may live in `public/assets/` and be referenced as `/assets/<name>.svg`. Internal links must use trailing slashes.
 - Published slugs and dates are stable. Do not delete, overwrite, or rewrite existing posts or images unless the task explicitly identifies the content to change.
 - Do not invent personal experiences, project facts, or outcomes. Clearly label unverified methods and results as unverified.
 

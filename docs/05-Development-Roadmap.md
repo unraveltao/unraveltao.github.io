@@ -4,9 +4,9 @@
 
 ## Current maintenance approach
 
-The immediate work is to keep the repository documentation clear, accurate, and consistent in English across the README, `AGENTS.md`, and the technical documents. The existing filenames are already descriptive and follow stable conventions (`README.md`, `AGENTS.md`, numbered English filenames under `docs/`, and numbered ADR filenames); do not rename them without a concrete usability benefit.
+Keep the repository documentation clear, accurate, and consistent in English across the README, `AGENTS.md`, and the technical documents. The existing filenames are already descriptive and follow stable conventions (`README.md`, `AGENTS.md`, numbered English filenames under `docs/`, and numbered ADR filenames); do not rename them without a concrete usability benefit.
 
-After the documentation pass, review a bounded set of UI and small functional improvements. Each change should address an observed problem and have a simple acceptance check. Do not turn this review into a broad redesign or add features just to make the site larger.
+The next planned pass is a bounded review of UI and small functional improvements. Each change should address an observed problem and have a simple acceptance check. Do not turn this review into a broad redesign or add features just to make the site larger.
 
 Once those closeout tasks are complete, the default maintenance scope is posts and documentation. Reopen implementation work for a specific bug, a clear usability problem, or a concrete new need.
 
