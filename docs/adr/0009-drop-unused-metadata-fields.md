@@ -1,9 +1,9 @@
-# 删除从未被消费的 titleEn / summaryEn / cover
+# Remove Unused `titleEn`, `summaryEn`, and `cover` Fields
 
-`posts` 的 `titleEn`、`summaryEn`、`cover` 与 `projects` 的 `cover` 全部删除。理由很直接：**没有任何代码读过它们**——OG 图是单张静态 `public/og.png`，页面里没有一处引用英文标题或封面。留着一个字段的唯一效果，是让人以为"填了有用"，然后写下一个没人看的值。字段应当表达能力，不该表达愿望。
+The `posts` fields `titleEn`, `summaryEn`, and `cover`, and the `projects` field `cover`, were removed because no code consumed them. The site used one static `public/og.png`; no page displayed English titles or cover images. Schema fields should describe working capabilities, not hypothetical ones.
 
-**Considered Options**：留着（现状）——它们已经躺了几个月，每次读 `docs/02` §5.3 都要重新判断一次"这个要不要填"，认知成本按次计费；现在就实现逐篇 OG 让它们生效——需要引入 `satori`（连带字体子集化），与 ADR-0004「零 JS 默认」和 `docs/04` §5 的依赖三问直接冲突，为一个当前只有 4 篇文章的站点付这个成本不成立；把英文摘要改成页面可见字段——那就成了双语正文，已被 ADR-0008 否决。
+**Considered Options**: Keeping the fields would continue to impose a decision every time someone authored content without producing a result. Generating per-post Open Graph images would require a renderer such as `satori` and font processing, adding complexity for a small site. Displaying English summaries would turn the site into partially bilingual content, which ADR-0008 rejected.
 
-**Consequences**：英文读者连一句英文摘要都拿不到，分享预览也只有中文——ADR-0008 的"英文只到元信息层"这层**暂时不存在了**，0008 的核心决策（不做 `/en` 路由、中文为主）仍然生效。将来做逐篇 OG 时，英文标题字段要重新引入，且那时它才有真实的消费方——`docs/06` §5 已记下这个前提。`cover` 则不必回来：逐篇 OG 应当从标题与系列生成，而不是要求每篇文章手工准备一张图。
+**Consequences**: English readers receive no English article summary, and sharing previews remain Chinese. The core decision in ADR-0008 (no `/en` routes and a Chinese-first site) remains active, while its proposed metadata mechanism is removed. If per-post social images are implemented, reintroduce English title data only when it has a real consumer. Do not reintroduce `cover`; generate images from titles and Series instead of requiring manual artwork for every post.
 
-**注意**：这个决定推翻的是 ADR-0008 的**实现手段**，不是它的判断。任何人想把 `titleEn` / `summaryEn` 加回来，请先做出逐篇 OG，再连带改这一条。
+This decision changes the implementation of ADR-0008, not its conclusion. Reintroduce `titleEn` or `summaryEn` only alongside a working per-post Open Graph feature.

@@ -1,7 +1,9 @@
-# 以个人主页与作品集为主，写作只收录重要结论
+# Focus on the Personal Homepage and Portfolio, with Selected Writing
 
-2026-11-02 用户确认：个人主页与作品集为主，技术写作为补充；文本只放重要笔记，例如方法论。部分取代 ADR-0001 的工程叙事优先定位。仍然只有 Post 与 Project，不新增内容类型。
+> Confirmed by the author on 2026-11-02. This partially supersedes the engineering-narrative focus in ADR-0001. The content model remains Post and Project; no additional content entity is introduced.
 
-**Considered Options**：按时间更新的博客会让占位文和普通记录挤占首页；完整数字花园需要维护更多入口；作品集加精选写作能同时展示实践与判断。
+The site prioritizes the personal homepage and portfolio, with technical writing as supporting material. Publish selected notes, such as methods and decisions, rather than treating every update as a chronological blog entry.
 
-**Consequences**：首页优先代表项目，再展示人工标记 featured 的已发布 Post，没有精选时隐藏该区。沿用最多一篇 featured 的约束；文章列表仍可浏览全部已发布内容。Workshop 退出主导航和首页，原地址与 Workflow 保留，避免既有链接失效。代价是需要人工选择代表内容，辅助工具更难被发现。取消文章数量、更新频率作为成功门槛；项目真实性、访问路径和维护成本成为验收重点。现有视觉风格没有在本次决策中获批或重做，ADR-0003 继续有效。
+**Considered Options**: A frequently updated chronological blog can let placeholder and routine posts dominate the homepage. A full digital garden requires more navigation and upkeep. A portfolio with selected writing can show both real work and technical judgment.
+
+**Consequences**: The homepage presents representative projects before published Posts manually marked `featured`; the writing section is hidden when no Post is featured. At most one Post is featured, while the writing index remains available to browse all published Posts. Workshop leaves the homepage and primary navigation, but its URL and the Workflow route remain available. Manual curation is required, and auxiliary tools are less discoverable. Article count and posting frequency are not success criteria. Project accuracy, access paths, and maintenance cost are the acceptance priorities. This decision did not approve or redo the visual design; ADR-0003 remains historical context pending reconciliation with the current UI.

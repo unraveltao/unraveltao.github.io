@@ -1,58 +1,50 @@
-# tests/
+# Content Validation Tests
 
-`pnpm test` 跑这里的 `*.test.mjs`（Node 内置 `node:test`，零依赖）。
+`pnpm test` runs the `*.test.mjs` files in this directory with Node's built-in `node:test`. The suite has no extra test-framework dependency.
 
-## 现在有什么
+## Current coverage
 
-```
+```text
 tests/
 ├── README.md
-└── content-rules.test.mjs   ← scripts/lib/content-rules.mjs 的回归，27 个用例
+└── content-rules.test.mjs
 ```
 
-覆盖 `docs/02` §5.5 的四条跨文件规则（`order` 重复 / `series` 不存在 / `featured` 超一篇 / `updated < date`），外加 `parseScalarFields` 的九种输入（引号、CRLF、缺块、非法 `order` / 布尔 / 日期）。
+`content-rules.test.mjs` covers the pure functions in `scripts/lib/content-rules.mjs`: scalar frontmatter parsing, series existence, duplicate series order, featured-post count, and update dates.
 
-用例全部用**内联对象**，不读磁盘：规则是纯函数，读盘是 `scripts/validate-content.mjs` 的事。这也让单个用例能精确构造"只差一个字段"的两篇文章。
+Tests use inline objects rather than reading the content tree. This keeps each case focused on the rule under test; disk access belongs to `scripts/validate-content.mjs`.
 
-## 为什么测试这么少
+## Why the suite is small
 
-这个项目是静态站：没有服务端逻辑、没有运行时状态、没有 API。绝大部分正确性由三件事保证：
+This is a static site without a server API or persistent runtime state. Most content correctness is checked by:
 
-1. **构建期 schema 校验**（`velite.config.ts`）——字段错了 build 就失败；
-2. **跨文件校验**（`scripts/validate-content.mjs`）——规则 3–6 违反则 build 失败；
-3. **`pnpm build` 本身**——路由、链接、RSS、sitemap 生成失败都会炸。
+1. Velite schema validation, which stops the build on invalid fields.
+2. `scripts/validate-content.mjs`, which checks cross-file rules.
+3. `pnpm build`, which exercises route generation and static output, RSS, and sitemap generation.
 
-所以测试只投入在**上面三条管不到的地方**：规则函数自身的逻辑。测试对象是"闸门有没有坏"，不是"站点对不对"。
+The unit tests focus on pure validation logic that is not fully covered by those build checks. They test the guardrails themselves, not the whole website.
 
-## 一条必须守住的用例
+## Prototype-chain regression
 
-`checkSeriesExists` 曾经用 `key in seriesRegistry` 判断系列是否存在。这走原型链——`series: constructor`、`toString`、`__proto__` 都能**静默通过**校验。现在改成 `Object.hasOwn`，并在测试里锁住了这四个键。
+`checkSeriesExists` must use an own-property check. A previous implementation used `key in registry`, which allowed values such as `constructor`, `toString`, `hasOwnProperty`, and `__proto__` to pass through the prototype chain. `Object.hasOwn` prevents this regression.
 
-**不要"优化"回 `in`。** 那条用例存在的唯一目的就是拦住这次回退。
+Do not change the implementation back to `in`; the regression case exists to prevent that specific bug.
 
-## 工具选择
-
-**Node 内置 `node:test` + `node:assert`。零依赖。**
-
-理由见 `docs/04` §6：这个项目不引入非必要依赖。校验逻辑是纯函数，不需要 vitest 的 mock / snapshot / 浏览器环境。加一个测试框架等于为了跑几十个断言引入一棵依赖树。
+## Test command
 
 ```bash
-pnpm test    # node --test "tests/**/*.test.mjs"
+pnpm test
 ```
 
-glob 必须带引号，交给 Node 自己展开：`node --test tests` 在 Node 22 + Windows 上会把目录当模块入口去 require，报 `MODULE_NOT_FOUND`。
+The package script runs `node --test "tests/**/*.test.mjs"`. Keep the glob quoted so Node expands it consistently on Windows. Running `node --test tests` can treat the directory as a module entry point on Node 22 for Windows and fail with `MODULE_NOT_FOUND`.
 
-## 不测什么
+## What is not tested here
 
-- **视觉**。颜色和间距的正确性靠 `docs/03` 的规格 + 人工在 375px / 1200px 两个断点看一眼，不靠截图比对。
-- **Lighthouse 分数**。它是环境相关的连续值，不是断言目标；达标标准写在 `docs/02` §6。
-- **React Router 框架本身**。构建成功即视为框架工作正常。
-- **构建产物冒烟**（`build/client/` 里的文件是否存在）。价值不如规则层，等构建时间变长再说。
+- Visual appearance: inspect the site at 375px and desktop widths, and check all themes manually.
+- Lighthouse scores: they vary by environment. Product acceptance criteria are in [Product Requirements](../docs/02-Product-Requirements.md).
+- React Router internals: a successful production build is the current integration check.
+- Generated-file existence as a separate smoke test: add this only if build complexity makes the current checks insufficient.
 
-## 何时该补测试
+## When to add coverage
 
-出现下面任一情况，就该把对应逻辑搬进来：
-
-- 一条校验规则被"临时放宽"过一次（说明它会再被放宽）；
-- 同一个 bug 修了第二次；
-- 改动 `app/lib/content.ts` / `app/lib/publish.ts` 的排序或发布过滤逻辑（类型不能保证语义正确），先摘出纯逻辑再测。
+Add focused tests when a validation rule has needed a temporary exception, the same bug has recurred, or publication filtering and project sorting in `app/lib/content.ts` or `app/lib/publish.ts` change. If testing typed logic requires extracting a pure function, prefer that over adding a framework dependency for a small suite.

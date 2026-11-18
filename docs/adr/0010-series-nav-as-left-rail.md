@@ -1,7 +1,7 @@
-# 系列导航进左栏，目录留在右栏
+# Place Series Navigation in the Left Rail and the TOC on the Right
 
-文章页在 ≥1280px 且文章属于一个多于 1 篇的系列时，采用「左 200px 系列导航 | 中 680px 正文 | 右 200px 目录」三栏。系列导航原本是正文之后的一个块，改成常驻左栏，是为了让"这是一组文章、你在第几篇"在整篇阅读过程中始终可见——读者读到一半想知道还有没有下一篇时，不必滚到底部。目录留在右栏不动。
+On viewports at least 1280px wide, a Post that belongs to a Series with more than one Post uses three columns: a 200px series rail, 680px article body, and 200px table of contents. Keeping the series rail visible helps readers see that the article is part of a sequence and where they are in it. The table of contents remains on the right.
 
-**Considered Options**：所有文章页都三栏、非系列文章左栏留空——布局统一，但半数页面白白浪费 200px，且左栏空着比没有更奇怪；把左栏改成"全站章节导航"（像 Watermill 那样列 Learn / Basics）——本站只有四个页面，顶栏已经承担了这件事，再列一遍是重复；1200px 就上三栏——三栏需要 `200 + 48 + 680 + 48 + 200 + 48(padding) = 1224px`，1200px 下 `minmax(0, 680px)` 会把正文悄悄压到 656px，不报错、不横向滚动，只是 680px 的阅读宽度被破坏；用 `display: contents` 在宽屏拆开 `.article__main` 让导航跨列——会把 header 和 prose 变成独立网格行，左栏的 sticky 可移动距离归零，且 `display: contents` 有可访问性历史包袱。
+**Considered Options**: Giving every Post a three-column layout would waste 200px on non-series pages. A site-wide section rail would repeat the primary navigation. Starting the three-column layout at 1200px would compress the 680px article measure because the complete layout needs 1224px. Using `display: contents` to split the article container would disrupt grid rows and sticky behavior and has accessibility history to consider.
 
-**Consequences**：两类文章页正文的起始位置不同（系列文章被左栏推右 248px），从系列文章跳到非系列文章时会有一次横向跳动。1200–1279px 这一档系列文章退回单栏、目录消失——这一档是刻意放弃的，因为挤出来的三栏会让正文宽度不达标。左栏在 DOM 里排在正文**之后**（`<1280px` 时它必须落在正文下方，而 DOM 顺序不能随断点变），所以宽屏下键盘 Tab 会先走完正文才到左栏，与视觉顺序不一致——这条例外记在 `docs/03` §9。左栏只有 200px，中文标题会折到 3–4 行；想加宽就得挤压正文，不值得。
+**Consequences**: The article body begins at different horizontal positions on Series and non-Series pages. At 1200–1279px, Series pages intentionally use a single column and hide the table of contents rather than compress the article measure. Series navigation follows the article in DOM order so it appears below the body on narrow screens; on wide screens keyboard users reach it after the body even though it appears visually on the left. This exception is recorded in [Design System](../03-Design-System.md). The 200px rail may wrap Chinese titles across several lines; widening it would reduce the reading width.

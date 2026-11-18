@@ -1,75 +1,82 @@
-# 页面与内容规则
+# Product Requirements
 
-> 2026-11-02，依据 ADR-0012。字段校验唯一真源为 velite.config.ts，本文件说明使用意图。
+> Updated on 2026-11-19. `velite.config.ts` is the source of truth for field types and validation; this document describes product intent.
 
-## 1. 范围
+## 1. Scope
 
-个人主页、作品集与精选技术写作；只有 Post 和 Project。方法论使用 Post，Series 是文章字段。中文内容为主，不建立双语镜像。当前部分辅助界面保留英文，后续按需统一。
+The site is a personal homepage, project portfolio, and selected technical writing. It has two content entities: Post and Project. Series is metadata on Posts, not a separate entity. Site content remains primarily Chinese; repository and technical documentation are maintained in English. The site does not accept code contributions.
 
-## 2. 页面与 URL
+## 2. Pages and URLs
 
-| URL | 用途 |
+| URL | Purpose |
 |---|---|
-| / | 身份介绍、代表项目、精选写作、GitHub 联系入口 |
-| /projects/ | 全部项目，按 order 再按名称排序 |
-| /projects/:slug/ | 项目介绍与正文 |
-| /posts/ | 已发布文章，倒序排列，可按标签与关键词筛选 |
-| /posts/:slug/ | 文章正文、目录、系列与相邻文章 |
-| /personal-os/ | Personal OS 独立入口，按 personal-os 系列的 order 展示已发布模块 |
-| /series/:series/ | 系列内已发布文章 |
-| /workshop/、/workflow/ | 兼容原入口，退出首页与主导航 |
-| /404/ | 未找到页面，静态托管另提供 404.html |
+| `/` | Introduction, representative project, selected writing, and GitHub contact link |
+| `/projects/` | Projects, sorted by `order` and then name |
+| `/projects/:slug/` | Project details |
+| `/posts/` | Published posts in reverse chronological order, filterable by tags and keywords |
+| `/posts/:slug/` | Post body, table of contents, series navigation, and adjacent posts |
+| `/personal-os/` | Ordered directory of published Posts in the `personal-os` series |
+| `/series/:series/` | Published posts in a series |
+| `/workshop/`, `/workflow/` | Legacy routes retained for existing links, outside the primary navigation |
+| `/404/` | Not-found page; static hosting also receives a root `404.html` |
 
-另生成 RSS、sitemap。没有独立标签页、About 或搜索路由。所有页面链接和 canonical 带尾斜杠；slug 已发布后不变，URL 不含日期。
+The build also generates RSS and a sitemap. There is no separate tag index or About page. Public links and canonical URLs use trailing slashes. Published slugs remain stable; URLs do not contain dates.
 
-## 3. 导航
+## 3. Navigation
 
-主导航保留 Home / Writing / Personal OS / Projects；右侧保留现有搜索、外观与 GitHub 入口。Workshop 退出主导航，原地址继续访问。页脚保留 GitHub、RSS。
+The primary navigation contains Home, Writing, Personal OS, and Projects. Search, appearance controls, and GitHub remain in the utility area. Workshop is not in the primary navigation. The footer links to GitHub and RSS.
 
-## 4. 页面规格
+## 4. Page behavior
 
-### 首页
+### Homepage
 
-顺序为个人介绍与关注方向 → 代表项目 → 精选写作。项目取排序第一项；不新增项目精选字段。写作只展示已发布且 featured 的 Post，沿用最多一篇约束；没有精选时整个写作区隐藏。GitHub 为当前有效联系入口，不展示配置中的示例邮箱。没有文章数量或更新频率门槛。
+Show the personal introduction, the first project by configured order, and manually selected published writing, in that order. Do not add a separate project-featured field. At most one Post may be featured; hide the writing section when none is selected. GitHub is the current contact route. Do not show the example email address. There is no content-count or posting-frequency requirement.
 
-### 项目
+### Projects
 
-每项有名称；摘要、状态、技术栈和仓库信息按已确认资料填写，未知字段留空不显示。状态可为 Idea / Inbox、active、done 或 archived。详情解释解决的问题、实现方式和取舍（有资料时）。仓库、文档与演示分别读取 repo、docs、demo，有值才展示对应入口，缺项不留占位，也不能用本站 Workshop 代替项目演示。详情页不放装饰性产品窗口图，真实截图由作者提供后放入项目正文；项目列表当前插画仍为装饰。
+Every Project has a name. Add summaries, status, stack, and links only when verified information is available; omit unknown optional values. Project status may be Idea, Active, Done, or Archived. Details may explain the problem, implementation, and trade-offs when source material supports them.
 
-详情正文后展示相关写作：从已发布文章中按 Post.project 与项目 slug 匹配，沿用内容入口的日期倒序，不另维护链接清单；没有相关文章时隐藏整个区块。作者从站点配置读取。Project 没有 date，不进 RSS、标签或 Series。
+Render repository, documentation, and demo links independently from `repo`, `docs`, and `demo`. Omit missing links without placeholders; never use the site's Workshop as a substitute demo. Do not use decorative product-window imagery on project details. Real screenshots may be added to project content when supplied by the author. The project list may use decorative illustrations.
 
-### 写作
+Below project details, show published Posts whose `project` matches the project slug, in the same date order as the writing list. Hide the section when there are no matches. Projects have no publication date and do not appear in RSS, tag filters, or series.
 
-文章类型包括方法论、技术取舍与实践总结。已有文章保持 URL；占位文不会因日期新而进入首页。列表保留浏览全部已发布内容的能力；正文标题从 h2 起，不跳级。文章含摘要、日期、阅读时长、标签；有实质修改才填 updated。
+### Writing
+
+Posts may contain methods, technical decisions, and practice-based retrospectives. Preserve existing URLs. A newly published Post does not become a homepage feature automatically. The writing list remains available regardless of homepage selection. Post bodies begin at `h2` and do not skip heading levels. Post pages show summary, date, reading time, and tags. Set `updated` only after a substantive revision.
 
 ### Personal OS
 
-Personal OS 复用 Post 与 Series，不增加内容实体。`/personal-os/` 从已发布文章中筛选 `series: personal-os`，按正整数 `order` 排序，显示标题、摘要及 `updated`（未填写时使用 `date`）。文章仍使用 `/posts/:slug/`，新增模块无需修改入口页面或路由。Series 展示名与说明在 `content/series.json`。
+Personal OS reuses Post and Series. `/personal-os/` selects published Posts with `series: personal-os` and sorts them by positive integer `order`. The directory displays each title, summary, and `updated` date, falling back to `date`. Posts retain their `/posts/:slug/` URLs. Adding a module must not require page or route changes. Series names and descriptions are stored in `content/series.json`.
 
-## 5. 内容模型
+## 5. Content model and authoring
 
-### 5.1 文件
+### 5.1 Files
 
-文章位于 content/posts/<slug>/index.mdx，项目位于 content/projects/<slug>/index.mdx，文章图片默认与内容同目录并用相对路径引用；方法论 SVG 可复用 `public/assets/`。Series 名称和说明存 content/series.json。无 Page 集合或 content/pages/。
+- Posts: `content/posts/<slug>/index.mdx`
+- Projects: `content/projects/<slug>/index.mdx`
+- Series metadata: `content/series.json`
+- Post images: normally beside the post and referenced with a relative path. Reusable method illustrations may live in `public/assets/`.
 
-### 5.2 文章字段意图
+There is no Page collection or `content/pages/` directory.
 
-必填标题、结论摘要、日期与 1–3 个标签。摘要为 20–160 字，标题最多 40 字；标签和 slug 为 kebab-case。可关联项目、系列及顺序。属于系列时必须填正整数 order；Personal OS 模块使用 `series: personal-os`。draft 控制草稿，featured 控制首页精选。updated 仅表示实质修改。
+### 5.2 Post fields
 
-### 5.3 字段与发布
+A Post requires a title, a conclusion-oriented summary, a date, and 1–3 kebab-case tags. The title is at most 40 characters and the summary is 20–160 characters. Slugs and tags use lowercase letters, digits, and hyphens. Optional fields include project, series, order, draft, featured, and updated. A Post in a series requires a positive integer `order`. Personal OS modules use `series: personal-os`. `updated` records a substantive change, not every edit.
 
-字段类型、默认值及单文件限制以 velite.config.ts 为准。项目名称必填；已知摘要为 20–80 字、技术栈为 1–5 项，状态可为 idea / active / done / archived；未知字段可留空。可填写 repo、docs、demo、order、draft。docs 是项目自有文档的外链入口，不填则详情页不显示该入口。不添加项目日期。
+### 5.3 Project fields and publishing
 
-发布判定以 app/lib/publish.ts 为唯一实现：非草稿且日期不晚于 Asia/Shanghai 当日；开发模式显示未发布文章。项目生产构建排除草稿。
+The Project name is required. Summary, stack, status, repository, documentation, demo, order, and draft are optional; when supplied, summary is 20–80 characters, stack contains 1–5 kebab-case values, and status is `idea`, `active`, `done`, or `archived`. Projects have no date.
 
-### 5.4 写作约定
+Field types, defaults, and validation are defined in `velite.config.ts`. Post publication uses only `app/lib/publish.ts`: a Post is published when it is not a draft and its date is no later than the current date in Asia/Shanghai. Development mode exposes drafts and future-dated Posts for preview. Production builds exclude draft Projects.
 
-代码块标语言，图片有 alt，外链完整 https 地址，站内链接根相对且带尾斜杠。中文不用斜体。结论放进 summary，项目事实来自真实材料。
+### 5.4 Writing conventions
 
-### 5.5 校验
+Label code fences with their language. Give images descriptive alt text. Use complete HTTPS URLs for external links and root-relative, trailing-slash URLs for internal links. Avoid italic emphasis in Chinese prose. Put the main conclusion in the summary. Base project claims on verified source material.
 
-Schema 校验失败即终止构建。跨文件规则包括系列顺序重复、系列不存在、非草稿精选超过一篇、updated 早于 date；由 scripts/lib/content-rules.mjs 和回归测试维护。已知缺口：自定义 slug 重复、正文标题层级、图片完整性尚未全部自动校验；详见维护说明与路线图，不以文档存在代替实现。
+### 5.5 Validation
 
-## 6. 质量验收
+Velite schema failures stop the build. Cross-file checks cover duplicate series order, unknown series, more than one published featured Post, and `updated` earlier than `date`; they are maintained in `scripts/lib/content-rules.mjs` with regression tests. Custom slug collisions, body heading hierarchy, internal-link trailing slashes, and image references are not all checked automatically in the current baseline. Complex MDX syntax, whether an image matches its alt text, factual accuracy, and typos require human review.
 
-pnpm test 与 pnpm build 通过；375px 无横向滚动，键盘能完成导航与主要交互。首屏 JS gzip 不超过 130KB；当前测量记录见维护说明，Lighthouse 待重测。正文可读、链接和 canonical 正确，RSS 不含项目或未发布内容，静态预览缺尾斜杠返回 301、未知路径返回 404。
+## 6. Quality criteria
+
+`pnpm test` and `pnpm build` must pass. At 375px, pages must not scroll horizontally; keyboard users must be able to operate navigation and primary interactions. First-screen JavaScript must remain below 130KB gzip; measurement history is in [Technical Architecture](04-Technical-Architecture.md), and Lighthouse scores need a fresh measurement. Verify readable content, correct links and canonicals, RSS exclusion of Projects and unpublished content, a 301 for missing trailing slashes, and a 404 for unknown paths in the static preview.

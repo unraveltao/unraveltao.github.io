@@ -1,5 +1,5 @@
-# 视觉延续 Profile README 的身份语言
+# Continue the Visual Language of the Profile README
 
-站点沿用 README 已确立的语言：纸白底、单一强调色 `#0F6E56`、等宽字体承担元信息、零卡片零阴影。另起一套视觉会让"README → 博客"的跳转像两个人写的，而这套语言本身在浅色和深色下都成立。
+The original site continued the language of the Profile README: paper-white backgrounds, one accent color (`#0F6E56`), monospaced metadata, and no cards or shadows. A separate visual identity would make the transition from the README to the site feel disconnected.
 
-**Consequences**：强调色在深色主题下必须提亮到 `#4EC3A3`——`#0F6E56` 在 `#121211` 上的对比度只有 3.05:1，正文达不到 AA。这意味着颜色 token 必须按主题成对定义，不能只有一个 accent 变量。
+**Consequences**: The accent must be brighter in dark contexts: `#0F6E56` on `#121211` has only 3.05:1 contrast, below the AA requirement for normal text. Theme-specific tokens must therefore be defined as pairs rather than using one unchanged accent value. The current six-theme implementation has since diverged from some of this original specification; see [Design System](../03-Design-System.md).

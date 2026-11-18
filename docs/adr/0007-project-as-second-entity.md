@@ -1,7 +1,7 @@
-# 引入 Project 作为第二种内容实体
+# Add Project as a Second Content Entity
 
-站点增加 `/projects` 展示做过的项目。Project 是独立的 content collection（`content/projects/<slug>/index.mdx`），有自己的 schema，不再是 Post 上的一个字符串字段。这**部分取代 [ADR-0005](./0005-post-only-content-model.md)**。
+The site adds `/projects/` to present completed or ongoing work. Project is an independent collection stored at `content/projects/<slug>/index.mdx` with its own schema. This partially supersedes [ADR-0005](./0005-post-only-content-model.md).
 
-**Considered Options**：把 `kind: project` 加在 Post 上（一套 schema 两种语义）——会让 `status` `stack` `repo` 这些字段永远有一半为空，且项目会混进 RSS、标签计数和 `/posts` 列表；复用 series 把项目当系列页——系列是"文章的排序"，没有状态、技术栈、外部链接这些项目独有的维度。
+**Considered Options**: A `kind: project` field on Post would combine two meanings in one schema, leave fields such as `status`, `stack`, and `repo` empty on many records, and place projects in RSS, tag counts, and the post list. Treating projects as a Series would not represent their status, technology stack, or external links.
 
-**Consequences**：内容实体从一种变成两种，路由、导航、sitemap、OG 都要多考虑一条分支。但项目**不进 RSS、不进标签**，所以分叉成本比 ADR-0005 担心的"乘法"要小。另一个代价：只有 `lattice` 一个项目时，`/projects` 会显得单薄——接受这一点，因为"做过什么"是访客（尤其招聘方）最想知道的事，比一个空着的栏目有用。
+**Consequences**: Routes, navigation, sitemap, and social metadata now account for two entities. Projects remain outside RSS and tag filters, limiting the branching cost. A small portfolio can look sparse when it contains only one Project; this is accepted because visitors need to see real work.
