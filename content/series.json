@@ -2,5 +2,9 @@
   "personal-os": {
     "name": "Personal OS",
     "description": "把长期成长方向连接到项目实践与每日行动的一套个人方法论，持续根据真实效果迭代。"
+  },
+  "restarting-software": {
+    "description": "记录我从重新接触 AI Agent 出发，调整学习方式、理解软件开发，并把经验转成可复用实践的过程。",
+    "name": "重新开始做软件"
   }
 }
