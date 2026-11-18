@@ -1,7 +1,7 @@
-# 内容以 MDX 存仓库，commit 即发布
+# Store MDX in the Repository and Publish Through Git
 
-文章是 `content/` 下的 `.mdx` 文件，frontmatter 由 schema 校验，推到 main 即触发构建发布。没有 CMS、没有数据库、没有后台：写作流程必须能被 git 审阅、被编辑器与 agent 直接读写，这是选 MDX 而不是 headless CMS 的唯一理由。
+Posts are `.mdx` files under `content/`. Velite validates their frontmatter at build time, and pushing to `main` triggers deployment. There is no CMS, database, or administration backend. Git review and direct editing by the maintainer and agents are the main reasons for keeping content in the repository.
 
-**Considered Options**：Sanity / Notion 同步在手机写作和协作上更强，但引入外部服务、预览链路和 schema 漂移；本站在单人维护、低频更新的前提下，收益抵不上多出来的故障面。
+**Considered Options**: Sanity or synchronized Notion content could improve phone-based writing and collaboration, but would add an external service, a preview path, and possible schema drift. For a low-frequency, single-maintainer site, the benefits do not justify the extra failure modes.
 
-**Consequences**：手机上写作只能走 GitHub 网页编辑器或本地 clone；图片必须进仓库，体积增长后需要换成对象存储。
+**Consequences**: Writing on a phone requires the GitHub web editor or a local clone. Images are stored in the repository; if their size becomes a problem, external object storage may need consideration.

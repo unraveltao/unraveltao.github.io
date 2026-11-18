@@ -1,17 +1,32 @@
-# unraveltao — 个人主页与作品集
+# unraveltao — Personal Site and Portfolio
 
-静态个人网站：展示项目、精选写作和 Personal OS。文章使用 Markdown / MDX，push 到 `main` 后由 GitHub Actions 构建并部署到 GitHub Pages。
+**Live site:** [unraveltao.github.io](https://unraveltao.github.io/)
 
-## 启动与预览
+This repository contains the source for my personal website: a portfolio of selected projects and a small collection of technical writing. I use it to explain what I build, what I learn from those projects, and the reasoning behind important technical decisions.
 
-要求 Node.js 22、pnpm 9。
+## Explore the site
+
+- **Writing:** browse published articles, methods, and project notes.
+- **Personal OS:** read the evolving practices I use to connect long-term goals with daily work.
+- **Projects:** see selected software projects and their available source or documentation links.
+- **RSS:** subscribe to new posts at [`/rss.xml`](https://unraveltao.github.io/rss.xml).
+
+The site is personally maintained and does not accept code contributions. The repository is published for transparency and reference; it is not presented as a supported starter template. For the intended reading experience, visit the live site.
+
+## Technology
+
+The site is a static website built with Vite, React Router, and Velite. Content lives in the repository, is validated during the build, and is deployed to GitHub Pages by GitHub Actions when `main` is updated.
+
+## Run locally
+
+Requirements: Node.js 22 and pnpm 9.
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-开发地址为 <http://localhost:5173>。验收构建并模拟 GitHub Pages 的尾斜杠与 404 行为：
+The development server runs at <http://localhost:5173>.
 
 ```bash
 pnpm test
@@ -19,39 +34,10 @@ pnpm build
 pnpm preview
 ```
 
-## 新增文章
+These commands run content checks and tests, build the static site, and preview the output with GitHub Pages-style trailing-slash and 404 behavior.
 
-1. 新建 `content/posts/<稳定的英文slug>/index.mdx`。
-2. 写入标题、20–160 字摘要、日期和 1–3 个 kebab-case 标签。
-3. 正文从 `##` 开始；代码块标注语言，站内链接使用带尾斜杠的根相对路径。
-4. 图片放在文章目录，以相对路径引用并填写 `alt`。
-5. 本地预览，运行上面的测试和构建命令。
+## Content and maintenance
 
-最小 frontmatter 示例：
+Posts are stored in `content/posts/<slug>/index.mdx`; projects are stored in `content/projects/<slug>/index.mdx`. The content schema in `velite.config.ts` is the source of truth for frontmatter fields. Published post slugs and dates are stable.
 
-```md
----
-title: "文章标题"
-summary: "用一句明确结论概括文章，长度 20–160 字。"
-date: 2024-01-01
-tags: [writing]
----
-
-## 第一节
-```
-
-字段以根目录 `velite.config.ts` 为准。已发布文章的 slug 和日期不要修改；除非作者明确要求，不删除或覆盖文章。
-
-## 发布 Personal OS 模块
-
-在 `content/posts/<slug>/index.mdx` 新增文章，frontmatter 添加 `series: personal-os` 和正整数 `order`。Personal OS 入口 `/personal-os/` 会按 `order` 自动列出已发布模块及其摘要、更新时间；无需改页面或路由。文章正文仍使用 `/posts/<slug>/` 地址。
-
-`updated` 仅在实质性修改时填写；首次发布可省略，入口会显示文章日期。更新记录写在文章正文中，并明确区分已观察到的效果与待验证内容。
-
-## 图片
-
-文章图片与 `index.mdx` 放在同一目录，例如 `diagram.png`，引用 `![流程示意图](./diagram.png)`。不要把文章图片集中到另一个目录；不要省略描述性 `alt`。
-
-## 推送发布
-
-检查 `git status`，只暂存本次相关文件，再提交并推送 `main`。推送后查看 GitHub Actions 的 Pages 部署结果。GitHub HTTPS 连接异常时按 [AGENTS.md](AGENTS.md) 中仓库现行 SSH 远程说明操作。
+See [AGENTS.md](AGENTS.md) for repository boundaries and safe change rules. The [project documentation index](docs/00-Project-Overview.md) links to product requirements, design notes, architecture, and decisions. The [development roadmap](docs/05-Development-Roadmap.md) records only current and conditional follow-up work.

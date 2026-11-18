@@ -1,5 +1,5 @@
-# 只有一种内容类型：Post
+# Start with Posts as the Only Content Entity
 
-站内唯一的内容实体是 Post。Note 不进 v1；Series 由 frontmatter 的 `series` + `order` 派生，Project 退化为 Post 上的一个字段。每多一个内容类型，导航、列表、RSS、sitemap、OG 图、结构化数据都要分叉一遍——这是乘法成本，不是加法。
+The initial content model had one entity: Post. Notes were excluded from the first version, Series were derived from the `series` and `order` fields, and Projects were initially considered a Post field. Every additional entity would create branching behavior across navigation, lists, RSS, sitemap, social metadata, and structured data.
 
-**Consequences**：短想法只能写成 Post 或者干脆不发；将来若要加 Note，需要在路由层做一次迁移（`/posts` 与 `/notes` 并列），但已有的内容文件本身不用动，所以这个决定是可逆的、只是要还一次债。
+**Consequences**: Short thoughts either become Posts or remain unpublished. Adding Notes later would require a route split such as `/posts/` and `/notes/`, although the existing post files could remain unchanged. [ADR-0007](./0007-project-as-second-entity.md) later introduced Project as a second entity.

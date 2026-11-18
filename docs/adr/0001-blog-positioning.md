@@ -1,7 +1,9 @@
-# 博客定位：工程叙事优先的混合型个人站
+# Prioritize Engineering Narratives
 
-这个站只服务两件事：让同行看懂 `lattice` 这类工作是怎么被设计出来的，让招聘方在五分钟内判断技术判断力。因此主线是"项目深潜 + 设计取舍"，随笔与读书笔记是副线，纯入门教程不进主线——那类内容拼不过已有生态，也证明不了判断力。
+> Partially superseded by [ADR-0012](./0012-portfolio-and-selected-writing.md). This file records the original rationale.
 
-**Considered Options**：纯写作站（阅读体验优先）能长期养读者，但与已有的工程形象脱节；教程/知识库站（SEO 导向）需要持续高产，单人维护会很快断更。
+The site was originally intended to help peers understand how work such as `lattice` was designed and to help hiring teams assess technical judgment. Its editorial focus was project deep dives and design trade-offs; personal essays and reading notes were secondary, and introductory tutorials were not part of the main line.
 
-**Consequences**：每篇文章需要一个可被引用的结论，而不是过程流水账；首页不能只按时间倒序，必须有一条"精选/置顶"轨来承载代表作。
+**Considered Options**: A writing-first site could build a readership but would be disconnected from the author's engineering work. A tutorial or knowledge-base site would depend on sustained, high-volume publishing, which is difficult for one maintainer.
+
+**Consequences**: Each post needed a reusable conclusion rather than a chronological work log. The homepage needed a curated featured section instead of only a reverse-chronological feed. ADR-0012 later narrowed the site toward a portfolio and selected writing.

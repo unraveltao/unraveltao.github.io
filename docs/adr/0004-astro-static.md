@@ -1,9 +1,9 @@
-# 用 Astro 静态输出，不用 Next.js
+# Use Astro Static Output Instead of Next.js
 
-> **状态：已被 [ADR-0011](./0011-vite-react-router.md) 取代（2026-10-31）。** 下面保留的是当时的理由，原文未改。框架现在是 Vite + React Router 7，"零 JS 默认"这条收益被明确放弃并记了代价。本文仍然值得读——它解释了为什么 2026 年上半年的所有取舍都偏向"少 JS"。
+> Superseded by [ADR-0011](./0011-vite-react-router.md) on 2026-10-31. The rationale below is historical and explains the preference for minimal JavaScript before the framework migration.
 
-站点用 Astro 5 的 Content Collections 构建，`output: 'static'`，产物只有 HTML/CSS 和极少量 JS，没有常驻服务端。选它是因为内容型站点的"默认零 JS"是真实收益，而 content schema（zod）在构建期就拦住 frontmatter 错误——这正好补上了没有 CMS 之后缺失的字段校验。Next.js 的静态导出会把 ISR、Server Actions、Route Handler 全部关掉，等于用更重的框架换更少的能力。
+The site used Astro 5 Content Collections with `output: 'static'`, producing HTML and CSS with little client-side JavaScript. Default-zero-JavaScript rendering suited a content site, while the Zod schema caught frontmatter errors during the build. Next.js static export would disable features such as ISR, Server Actions, and Route Handlers, trading a heavier framework for fewer capabilities.
 
-**Considered Options**：Eleventy / Hugo 更轻，但 MDX 组件、TS 类型和图片处理链都更弱；Next.js 只在"团队只想维护 React 一套心智模型"时成立。
+**Considered Options**: Eleventy and Hugo were lighter but had weaker support for the desired MDX components, TypeScript, and image pipeline. Next.js made sense only if maintaining a single React mental model outweighed the static-site benefits.
 
-**Consequences**：任何需要服务端的能力（搜索 API、评论后端、草稿预览）都只能走第三方服务或构建期生成；`.astro` 文件不是 React 组件，写交互岛需要单独适应。
+**Consequences**: Server-dependent features such as API search, comment backends, and draft previews would require a third-party service or build-time generation. Astro components were not React components, so interactive islands required learning a separate model. The stack later changed; see ADR-0011 for the current trade-off.

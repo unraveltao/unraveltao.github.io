@@ -1,96 +1,83 @@
-# 决策日志
+# Decision Log
 
-> **只追加，不改写。** 一条决策一旦记下，理由就冻结了；后来推翻了就再记一条"取代 000x"，而不是回去改原文。
-> 单条决策的完整记录在 [`adr/`](./adr/) 目录，本文件是索引 + 结论摘要。
-> 最后更新：2026-11-02
+> Append new decisions; do not rewrite their rationale after the fact. If a decision changes, add a new ADR that supersedes the old one. Full records live in [`adr/`](./adr/); this file is the index and a concise summary.
+>
+> Last updated: 2026-11-19.
 
-## 1. 为什么需要这个文件
+## 1. Why keep a decision log
 
-这个项目里几乎每个"看起来可以随便选"的地方，背后都有一次排除。半年后回头看代码，最容易发生的不是"不会写"，而是**不知道为什么这么写**，然后以"优化"的名义把它改回去。
+Many implementation choices look interchangeable when viewed without their original constraints. Recording the reason and the trade-off helps prevent a future “cleanup” from restoring an option that was deliberately rejected. For example, CSS is inlined into the static output even though this increases HTML size and prevents cross-page CSS caching; the earlier measurement showed that the stylesheet request delayed first rendering. Preserve the decision until new evidence justifies revisiting it.
 
-最典型的例子：全站 CSS 内联。它看起来像性能反模式（每页 HTML 多 7.5KB、CSS 不能跨页缓存），但改之前 Lighthouse 只有 92——唯一的 CSS 请求是全页最长的依赖链，样式到得比文档晚，第一次布局被推到 FCP 之后。**记下来，是为了让它别被改回去。**
+## 2. Decision index
 
-## 2. 索引
-
-| # | 决策 | 一句话结论 | 状态 |
-|---|---|---|---|
-| [0001](./adr/0001-blog-positioning.md) | 博客定位 | 工程叙事优先，纯教程不进主线 | 生效中；定位部分被 0012 取代 |
-| [0002](./adr/0002-mdx-in-repo.md) | 内容存储 | MDX 存仓库，commit 即发布，拒绝 CMS | 生效中 |
-| [0003](./adr/0003-visual-identity.md) | 视觉身份 | 延续 Profile README 的语言：纸白 + 单一强调色 + 零卡片 | 生效中 |
-| [0004](./adr/0004-astro-static.md) | 框架选型 | Astro 静态输出，不用 Next.js | 被 0011 取代 |
-| [0005](./adr/0005-post-only-content-model.md) | 内容模型 | 只有一种内容类型：Post | 被 0007 部分取代 |
-| [0006](./adr/0006-github-pages.md) | 部署 | GitHub Pages 用户站点，仓库名即域名 | 生效中 |
-| [0007](./adr/0007-project-as-second-entity.md) | 内容模型 | 引入 Project 作为第二种内容实体 | 生效中 |
-| [0008](./adr/0008-chinese-primary-english-metadata.md) | 语言 | 中文为主，英文只到元信息层 | 被 0009 部分取代 |
-| [0009](./adr/0009-drop-unused-metadata-fields.md) | 内容字段 | 删除未被消费的 `titleEn` / `summaryEn` / `cover` | 生效中 |
-| [0010](./adr/0010-series-nav-as-left-rail.md) | 文章页布局 | 系列导航进左栏，目录留右栏，仅系列文章三栏 | 生效中 |
-| [0011](./adr/0011-vite-react-router.md) | 框架选型 | Vite + React Router 7 + Velite，取代 0004 | 生效中 |
-| [0012](./adr/0012-portfolio-and-selected-writing.md) | 站点定位 | 个人主页与作品集为主，写作只收录重要结论；部分取代 0001 | 生效中 |
-
-## 3. 摘要与代价
-
-每一条都记了"代价"，因为**没有代价的决策不值得记**。
-
-| # | 核心权衡 | 付出的代价 |
+| ADR | Decision | Current status |
 |---|---|---|
-| 0001 | 判断力 > 流量 | 不能靠教程吃 SEO；首页必须有精选轨，不能纯时间倒序 |
-| 0002 | 可被 git 审阅 > 写作便利 | 手机写作只能走 GitHub 网页版；图片进仓库，体积会涨 |
-| 0003 | 身份一致性 > 视觉自由度 | 强调色必须按主题成对定义（`#0F6E56` 在深底上只有 3.05:1） |
-| 0004 | 零 JS 默认 > 生态熟悉度 | 搜索/评论/草稿预览只能走第三方或构建期；`.astro` 不是 React |
-| 0005 | 乘法成本 > 表达力 | 短想法只能写成 Post 或干脆不发；加 Note 要还一次路由迁移的债 |
-| 0006 | 零配置 > URL 自由度 | 改仓库名 = 改 URL 且无跳转；必须全站带尾斜杠 |
-| 0007 | 访客要看到"做过什么" | 内容实体从一种变两种；只有 1 个项目时栏目显得单薄 |
-| 0008 | 中文读者的阅读体验 > 国际覆盖 | 英文读者读不到全文；元信息层已由 0009 删除，连英文摘要都没有 |
-| 0009 | 字段表达能力 > 字段表达愿望 | 将来做逐篇 OG 时要重新引入英文标题字段；`cover` 不再回来 |
-| 0010 | 系列结构要看得见 > 全站布局统一 | 非系列文章没有左栏，两类页面正文起始位置不同；1200–1279px 系列文章退回单栏、目录消失；左栏视觉在前但 DOM 在后 |
-| 0011 | 熟悉度 > 零 JS 默认 | 首屏 JS 从 0 涨到约 122KB（gzip）；正文渲染成 HTML 字符串，文章里暂时不能嵌 React 组件 |
-| 0012 | 可信的项目与判断 > 内容量与更新频率 | 首页代表内容要人工挑选；Workshop 退出入口后更难被发现；"写了多少篇"不再能自证进度 |
+| [0001](./adr/0001-blog-positioning.md) | Engineering narratives as the original editorial focus | Partially superseded by 0012 |
+| [0002](./adr/0002-mdx-in-repo.md) | Store MDX in the repository and publish through Git | Active |
+| [0003](./adr/0003-visual-identity.md) | Continue the visual language of the original Profile README | Active as historical direction; current UI needs reconciliation |
+| [0004](./adr/0004-astro-static.md) | Astro static output instead of Next.js | Superseded by 0011 |
+| [0005](./adr/0005-post-only-content-model.md) | Begin with Posts as the only content entity | Partially superseded by 0007 |
+| [0006](./adr/0006-github-pages.md) | Deploy the user site to GitHub Pages | Active |
+| [0007](./adr/0007-project-as-second-entity.md) | Add Project as a second content entity | Active |
+| [0008](./adr/0008-chinese-primary-english-metadata.md) | Keep the site Chinese-first and avoid translated route trees | Partially superseded by 0009; still active for site content |
+| [0009](./adr/0009-drop-unused-metadata-fields.md) | Remove unused English metadata and cover fields | Active |
+| [0010](./adr/0010-series-nav-as-left-rail.md) | Place series navigation in the left rail on wide screens | Active; verify during UI review |
+| [0011](./adr/0011-vite-react-router.md) | Use Vite, React Router 7, and Velite | Active |
+| [0012](./adr/0012-portfolio-and-selected-writing.md) | Focus the site on the portfolio and selected writing | Active |
 
-## 4. 被否决的提案
+## 3. Core trade-offs
 
-记在这里，是为了不再讨论第二次。每一条都真的被提过、评估过。
+| ADR | Chosen priority | Accepted cost |
+|---|---|---|
+| 0001 | Demonstrate judgment rather than maximize traffic | The editorial line is narrower than a tutorial library |
+| 0002 | Keep content reviewable in Git | Writing from a phone is less convenient; images increase repository size |
+| 0003 | Preserve a recognizable visual identity | Theme-specific colors and current implementation must be reconciled |
+| 0004 | Prefer zero JavaScript by default (historical choice) | Superseded when the stack changed; retained as context |
+| 0005 | Avoid multiplying content-specific routes and feeds | Short ideas either become Posts or remain unpublished |
+| 0006 | Keep hosting and root-relative URLs simple | The repository name is tied to the public URL; GitHub Pages redirects to trailing-slash paths |
+| 0007 | Let visitors see real projects | A small portfolio may have only a few entries |
+| 0008 | Prioritize the primary Chinese-reading audience | There are no translated English routes or parallel article bodies |
+| 0009 | Keep schema fields tied to implemented behavior | Per-post social images would need a new title source if introduced |
+| 0010 | Keep a series visible while reading it | Wide-screen and keyboard navigation have a deliberate layout trade-off |
+| 0011 | Reduce maintenance cost by using the maintainer's familiar React stack | First-screen JavaScript increased to about 122KB gzip in the migration baseline; article bodies are rendered HTML, not hydrated React components |
+| 0012 | Present credible projects and selected judgment | Homepage curation is manual; less prominent tools are harder to discover |
 
-| 提案 | 否决理由 |
+## 4. Rejected or deferred proposals
+
+| Proposal | Reason |
 |---|---|
-| **把文章推送管线并入本仓库** | 推送需要浏览器登录态、定时器、失败重试，是常驻进程；本站是纯静态、首屏 0 个 script 请求。合并等于给站点加后端，推翻 ADR-0004 / 0006 与全部性能预算。**它是另一个项目**，与本站只可能共享文章文本 |
-| **四套视觉预设**（minimal / developer / editorial / dashboard） | 4 篇文章的站点付 4 倍视觉验收成本；且 `dashboard` 本质是卡片 + 高密度，与 ADR-0003「零卡片零阴影单一强调色」直接冲突。保留为天花板（见 `preset` 词条） |
-| **全站中英双语**（`/en` 镜像） | 每篇两份正文，长期不可持续；且当前 0 篇有英文内容，先做只会得到一批空壳路由。降级为 ADR-0008 的元信息方案 |
-| **保留 Astro，只把组件换成 `.tsx`（islands）** | 技术上最省：静态渲染 `.tsx` 不产生客户端 JS。但它没解决动因——页面级逻辑仍是 `getStaticPaths` / `Astro.props` / scoped `<style>`，改一个页面照样要查文档。见 [ADR-0011](./adr/0011-vite-react-router.md) |
-| **评论 / 站内搜索 / 阅读统计** | 分别需要第三方 iframe、+10KB JS、外部请求。触发条件见 roadmap §4 |
+| Add an external publishing pipeline to this repository | Browser sessions, scheduling, retries, and a resident process would add a backend-like operational surface to a static site. Treat it as a separate project; content text may be shared. |
+| Add four visual presets (`minimal`, `developer`, `editorial`, `dashboard`) | They multiply visual verification work and may conflict with the existing design direction. The implemented six themes are not the same feature as presets. |
+| Create a full `/en` mirror | Every post would need a second maintained body, routes, language controls, and feed behavior. There is no current translated-content requirement. |
+| Return to Astro or switch to an SPA-only React app | ADR-0011 records the maintenance and static-rendering trade-offs behind the current framework choice. |
+| Add analytics, search indexing, or comments without a reader need | Each adds external requests, scripts, an iframe, or ongoing maintenance. See the conditional triggers in the [Maintenance Plan](05-Development-Roadmap.md). |
 
-## 5. 尚未决策
+## 5. Open questions
 
-| 项 | 为什么还没定 | 阻塞什么 |
+| Question | Current position | Revisit when |
 |---|---|---|
-| 逐篇 OG 图实现方式 | 引入 `satori` 会破坏"零第三方依赖"，手写静态图不可扩展 | 无（当前共用 `public/og.png`）；**做之前要先按 0009 重新引入英文标题字段** |
-| 搜索方案 | 文章数 < 30，一屏可扫，搜索是负收益 | 无（触发条件见 roadmap §4） |
-| 评论方案 | 与"零后端"直接冲突，且尚无讨论需求 | 无 |
+| Per-post Open Graph images | The site shares `public/og.png`; no per-post generator exists. | Distinct previews have demonstrated value and the added build or asset maintenance is acceptable. |
+| Markdown in place of MDX | Posts currently use `.mdx` paths and the content pipeline is configured for them. | A source audit shows MDX-only syntax is unused and Markdown would materially simplify authoring. |
+| Search or comments | Not planned. | Readers show a concrete need. |
 
-> 站名曾长期挂在"未决"里，现已落地为 `unraveltao`（`app/lib/site.ts` 的 `SITE_NAME`）。它是单一配置项，将来要换只改一处。
+## 6. Recording a new decision
 
-## 6. 新增一条决策的流程
+1. Confirm that the choice has a meaningful trade-off; routine implementation details do not need an ADR.
+2. Add `docs/adr/<next-four-digit-number>-<kebab-case-title>.md`, following the existing format.
+3. Add one row to the index above.
+4. If the new decision supersedes an old one, update only the old entry's status; preserve its original rationale.
+5. Update affected requirements, design, and architecture documents, and reference the ADR where useful.
 
-1. 确认它**有代价**——没有取舍的选择不用记。
-2. 在 `adr/` 下新建 `<下一个四位编号>-<kebab-标题>.md`（当前最新是 0012），用现有格式：标题 → 一段理由 → **Considered Options** → **Consequences**。
-3. 在上面的索引表追加一行。
-4. 如果它推翻了旧决策，旧条目的"状态"改为 `被 <新编号> 取代`，**原文不动**。
-5. 同步更新受影响的文档（`02` 需求 / `03` 设计系统 / `04` 架构），并在文首注明决策编号。
-
-## 7. 格式约定
+Use this short format:
 
 ```markdown
-# 决策标题（一句话，陈述句）
+# Decision title in one declarative sentence
 
-一段说清"选了什么 + 为什么是它"。不超过 120 字。
+Explain the decision and why it fits the constraints.
 
-**Considered Options**：被排除的选项，以及它们各自在哪一点上不成立。
+**Considered Options**: List the alternatives and the reason each was rejected.
 
-**Consequences**：这个决定带来什么代价、限制了什么、将来要还什么债。
+**Consequences**: Record costs, limitations, and future work created by the decision.
 ```
 
-`Consequences` 是最重要的部分。写不出代价，说明这个决策还没想清楚。
-
-
-## 8. 2026-11-02：定位收敛（ADR-0012）
-
-[0012：个人主页与作品集 + 精选写作](./adr/0012-portfolio-and-selected-writing.md) 已生效，部分取代 0001 的工程叙事优先定位。首页先展示代表项目，再展示已有 featured 标记的文章；不以篇数或更新频率衡量成功。Workshop 退出主导航与首页，旧 URL 保留。0003 的视觉约束不变，当前样式偏差另行处理。代价是人工策展与辅助工具可发现性降低。以上历史条目原文保留。
+If the consequences cannot be stated, the decision may not be ready to record.

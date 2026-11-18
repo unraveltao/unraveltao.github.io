@@ -1,24 +1,24 @@
-# 项目定位与边界
+# Project Positioning and Scope
 
-> 2026-11-02，依据 ADR-0012。
+> Updated on 2026-11-02 under ADR-0012.
 
-个人主页与作品集为主，精选技术写作为补充。让访客理解作者关注什么、做过什么，以及如何作出判断。
+The site is primarily a personal homepage and portfolio, supported by selected technical writing. It should help visitors understand what I care about, what I have built, and how I make decisions.
 
-## 目标
+## Goals
 
-- 首页清楚介绍身份与关注方向，并能进入代表项目和精选文章。
-- 项目解释问题、实现、当前状态与关键取舍；截图、演示和成果只使用真实材料。
-- 文章收录有实践或推理支撑的方法论、关键设计取舍与总结；不追求数量和更新频率。
-- 写作与项目维护继续使用仓库文件，无后端、数据库或 CMS。
+- Introduce my background and interests, then link to representative projects and selected writing.
+- Explain each project using verified information about its problem, implementation, status, and important trade-offs. Use only real screenshots, demos, and outcomes.
+- Publish methods, technical decisions, and retrospectives when they have a clear conclusion supported by practice or reasoning. Do not optimize for article count or posting frequency.
+- Keep writing and project maintenance in repository files. Do not add a backend, database, or CMS.
 
-## 内容取舍
+## Content selection
 
-收录前确认：有明确结论、有事实或推理支撑、过一段时间仍值得引用。普通学习摘录与零散记录留在个人笔记工具中。方法论仍是 Post，不增加第三种内容实体。
+Before publishing, check that a post has a clear conclusion, evidence or reasoning behind it, and lasting reference value. Keep routine study notes and fragments in personal note-taking tools. Methods remain Posts; do not introduce another content entity.
 
-## 成功标准
+## Success criteria
 
-访客几分钟内能理解你是谁、看到可信项目，并找到体现判断的文章；维护者能按 README 完成写作、检查与部署。取消三篇文章上线门槛和三个月更新要求。技术与无障碍验收见产品需求。
+Visitors should be able to understand the site's owner, find credible project information, and locate writing that demonstrates technical judgment within a few minutes. The maintainer should be able to write, validate, and deploy by following the README. There is no minimum article count or update schedule. Technical and accessibility acceptance criteria are defined in [Product Requirements](02-Product-Requirements.md).
 
-## 范围
+## Scope
 
-站点只负责对外展示；外部平台推送属于另一个项目。个人介绍先放首页，不新开 About。保留 RSS、系列、项目与写作。Workshop、Workflow 保留旧 URL，但不作为主入口；新工具只有具备展示价值或反复使用需求时再评估。内容增长后再考虑分页、订阅或评论，不为可能的需求提前建设。
+The site presents public information; publishing to external platforms is a separate project. Keep the personal introduction on the homepage rather than adding an About route. Preserve RSS, series, projects, and writing. Keep the legacy Workshop and Workflow URLs accessible, but do not make them primary entry points. Evaluate new tools only when they have clear display value or are needed repeatedly. Consider pagination, subscriptions, or comments only when actual content or reader needs justify them.

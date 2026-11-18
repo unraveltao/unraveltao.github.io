@@ -1,227 +1,168 @@
-# 设计系统
+# Design System
 
-> 2026-11-02 项目详情补充：正文后以普通标题、链接列表与摘要展示相关写作，复用 article-body 排版；不增加卡片、色块或新样式。移除详情中的装饰窗口图，真实截图放入正文。仓库、文档与演示链接各按 repo / docs / demo 字段显示，缺项不渲染，也不新增样式档位。
+> **Status:** This document preserves the visual specification recorded on 2026-10-31. It is an historical design target, not a verified description of the current UI. The implementation uses six themes and styles spread across `app/styles/garden.css`, `app/styles/garden-themes.css`, and `app/styles/global.css`; those files do not match every token and component rule below. Reconcile the specification with the site during the planned UI review before treating any value here as current.
+>
+> The original visual identity decision is [ADR-0003](./adr/0003-visual-identity.md). Updates recorded on 2026-11-02 and 2026-11-09 are retained in the relevant sections below.
 
-> 2026-11-02 定位调整：主导航为 Home / Writing / Projects；首页顺序为个人介绍、代表项目、人工精选写作。沿用现有布局与组件，本轮不新增颜色、字号、间距或主题。以下视觉约束继续生效，但当前 garden.css / garden-themes.css / global.css 存在偏差，tokens.css 和 CSS Modules 尚不存在；不能将下文描述当成已经实现。视觉收敛作为独立待办，见路线图。
+## 1. Design principles
 
-> 2026-11-09 Personal OS：主导航增加 Personal OS；入口模块目录使用普通文字、序号与留白，复用现有主题 token，不增加主题、色值或第三方视觉依赖。
+1. **Use typography for hierarchy:** distinguish content with type size, weight, contrast, and whitespace rather than cards, filled blocks, or shadows.
+2. **Use one accent color** for interactive elements and key conclusions; avoid decorative color.
+3. **Prefer square corners.** Rounded corners are limited to inline code and images (2px); other surfaces use no radius.
+4. **Prioritize Chinese reading rhythm** when choosing line height, line length, and punctuation; Latin text should remain comfortable as well.
 
-> 适用：全站。所有取值以 CSS 自定义属性落地，组件只消费 token，不写字面色值。
-> 决策来源：[ADR-0003](./adr/0003-visual-identity.md)（视觉延续 README 身份）。
-> 落地位置：`app/styles/tokens.css`（唯一允许写色值的地方）与 `app/styles/global.css`；页面与组件各自的布局写在同名 `*.module.css` 里。
-> 最后更新：2026-10-31
+## 2. Historical color tokens
 
-## 1. 四条原则
+These values belong to the 2026-10-31 specification and do not describe all six current themes.
 
-1. **文字承担全部层级**——用字号、字重、灰度、留白分级，不用色块、卡片、阴影。
-2. **一个强调色，只给可点击的东西和关键结论**。装饰性着色一律禁止。
-3. **直角优先**。圆角只出现在行内代码与图片（2px），其余为 0。
-4. **中文优先排版**。行高、行宽、标点处理按中文阅读节奏定，英文是"顺带好看"。
+### Light
 
-## 2. 色彩
-
-### Light（默认）
-
-| Token | 值 | 用途 | 对比度 |
+| Token | Value | Use | Contrast |
 |---|---|---|---|
-| `--bg` | `#FFFFFF` | 页面底色 | — |
-| `--surface` | `#F7F7F2` | 行内代码、代码块、引用块底 | — |
-| `--ink-900` | `#1A1A17` | 正文、标题 | 17.4:1 on `--bg` |
-| `--ink-600` | `#57574F` | 次要文字、导语、摘要 | 7.0:1 |
-| `--ink-400` | `#6E6E66` | 日期、标签、页脚等元信息 | 5.1:1 |
-| `--line` | `#E6E6DF` | 1px 分隔线、表格线 | — |
-| `--accent` | `#0F6E56` | 链接、当前项、强调结论 | 6.2:1 |
-| `--accent-strong` | `#0A5340` | 链接 hover / active | 8.4:1 |
-| `--accent-wash` | `#EAF3F0` | 文本选区、TOC 当前项底 | — |
+| `--bg` | `#FFFFFF` | Page background | — |
+| `--surface` | `#F7F7F2` | Inline code, code blocks, quotes | — |
+| `--ink-900` | `#1A1A17` | Body and headings | 17.4:1 on `--bg` |
+| `--ink-600` | `#57574F` | Secondary text, leads, summaries | 7.0:1 |
+| `--ink-400` | `#6E6E66` | Dates, tags, footer metadata | 5.1:1 |
+| `--line` | `#E6E6DF` | Dividers and table rules | — |
+| `--accent` | `#0F6E56` | Links, current items, conclusions | 6.2:1 |
+| `--accent-strong` | `#0A5340` | Link hover and active states | 8.4:1 |
+| `--accent-wash` | `#EAF3F0` | Text selection and active TOC item | — |
 
 ### Dark
 
-| Token | 值 | 用途 | 对比度 |
+| Token | Value | Use | Contrast |
 |---|---|---|---|
-| `--bg` | `#121211` | 页面底色 | — |
-| `--surface` | `#1B1B19` | 代码块、引用块底 | — |
-| `--ink-900` | `#EDEDE7` | 正文、标题 | 14.8:1 |
-| `--ink-600` | `#A6A69C` | 次要文字 | 7.2:1 |
-| `--ink-400` | `#8C8C82` | 元信息 | 5.6:1 |
-| `--line` | `#2A2A26` | 分隔线 | — |
-| `--accent` | `#4EC3A3` | 链接、当前项 | 8.7:1 |
-| `--accent-strong` | `#6FD8BB` | hover / active | 10.9:1 |
-| `--accent-wash` | `#17322A` | 选区、TOC 当前项底 | — |
+| `--bg` | `#121211` | Page background | — |
+| `--surface` | `#1B1B19` | Code blocks and quotes | — |
+| `--ink-900` | `#EDEDE7` | Body and headings | 14.8:1 |
+| `--ink-600` | `#A6A69C` | Secondary text | 7.2:1 |
+| `--ink-400` | `#8C8C82` | Metadata | 5.6:1 |
+| `--line` | `#2A2A26` | Dividers | — |
+| `--accent` | `#4EC3A3` | Links and current items | 8.7:1 |
+| `--accent-strong` | `#6FD8BB` | Hover and active states | 10.9:1 |
+| `--accent-wash` | `#17322A` | Selection and active TOC item | — |
 
-**硬约束**：`#0F6E56` 永远不出现在深色主题里。深色下的 accent 是另一支色，不是同一个色加透明度。
+The original specification prohibited `#0F6E56` in the dark theme because its contrast on `#121211` was 3.05:1. Dark themes should use a sufficiently bright accent.
 
-### 主题切换
+## 3. Original theme behavior
 
-- 默认跟随 `prefers-color-scheme`；用户手动切换后写 `localStorage['theme'] = 'light' | 'dark'`，并覆盖系统偏好。
-- 在 `<html>` 上挂 `data-theme`，token 用 `:root[data-theme='dark']` 覆盖，不用两套 class。
-- `<head>` 内联一段同步脚本读 localStorage 设置 `data-theme`，避免首屏闪白。
-- 切换控件是文字按钮（`light` / `dark`），不是图标开关——图标在极简界面里是额外的视觉噪音。
-- 按钮的 `aria-label` 必须**包含可见的那两个词**：`light 主题，切换到深色` / `dark 主题，切换到浅色`。只写「切换深浅色主题」会踩 WCAG 2.5.3（Label in Name）——读屏用户说「点击 dark」，而按钮的无障碍名里没有 `dark` 这个词，语音控制就对不上。
+The 2026-10-31 specification described a light/dark switch: follow `prefers-color-scheme` by default, store a manual choice as `localStorage['theme'] = 'light' | 'dark'`, and apply it with `data-theme` on `<html>`. A synchronous script in `<head>` was intended to prevent a flash of the wrong theme. The switch was specified as a text button labeled `light` or `dark`, with an accessible name containing the visible word to satisfy WCAG 2.5.3 (Label in Name).
 
-## 3. 字体
+**Current implementation differs:** the theme identifiers are `spring`, `summer`, `autumn`, `winter`, `geeker`, and `hacker`, defined in `app/lib/theme.ts`. Keep this six-theme behavior when making routine UI changes unless a new direction is explicitly agreed.
 
-```
+## 4. Typography (historical specification)
+
+```css
 --font-sans: "Inter var", -apple-system, "Segoe UI", "PingFang SC",
              "Noto Sans SC", "Microsoft YaHei", sans-serif;
 --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
              Consolas, "Noto Sans Mono CJK SC", monospace;
 ```
 
-- Inter 与 JetBrains Mono **自托管 woff2，只取 latin 子集**（各 ~30KB）；CJK 一律走系统字体，不下载中文字体包（几 MB 换不回来）。
-- `font-display: swap`，`font-feature-settings: "tnum"` 用于日期与数字列。
-- **中文不用斜体**。需要强调时用 `--accent` 或 600 字重，`<em>` 在中文段落里降级为强调色。
+- Self-host Inter and JetBrains Mono as WOFF2 files using only the Latin subsets (about 30KB each); use system fonts for CJK rather than downloading multi-megabyte Chinese font files.
+- Use `font-display: swap`; use `font-feature-settings: "tnum"` for dates and numeric columns.
+- Avoid italic emphasis in Chinese prose. Use the accent color or weight 600; the original specification styled `<em>` in Chinese paragraphs with the accent color.
 
-## 4. 字号阶梯
+## 5. Type scale and reading measure
 
-模块化比例 1.25，基准 17px（中文正文下限，不用 16）。
+The historical scale used a 1.25 modular ratio and a 17px body baseline.
 
-| Token | 桌面 | 移动 | 行高 | 字重 | 用途 |
-|---|---|---|---|---|---|
-| `--text-display` | 42px | 32px | 1.15 / 1.2 | 600 | 文章标题、站名 |
-| `--text-h2` | 33px | 27px | 1.3 | 600 | 正文 h2 |
-| `--text-h3` | 27px | 22px | 1.4 | 600 | 正文 h3 |
-| `--text-h4` | 21px | 19px | 1.5 | 600 | 正文 h4、列表项标题 |
-| `--text-lead` | 19px | 18px | 1.7 | 400 | 文章导语、首页定位句 |
-| `--text-body` | 17px | 17px | **1.75** | 400 | 正文 |
-| `--text-small` | 15px | 15px | 1.6 | 400 | 图注、脚注 |
-| `--text-meta` | 13px | 13px | 1.5 | 500 | 日期、标签、导航（等宽，`letter-spacing: .06em`） |
+| Token | Desktop | Mobile | Line height | Weight | Intended use |
+|---|---:|---:|---:|---:|---|
+| `--text-display` | 42px | 32px | 1.15 / 1.2 | 600 | Post title and site name |
+| `--text-h2` | 33px | 27px | 1.3 | 600 | Post `h2` |
+| `--text-h3` | 27px | 22px | 1.4 | 600 | Post `h3` |
+| `--text-h4` | 21px | 19px | 1.5 | 600 | Post `h4` and list title |
+| `--text-lead` | 19px | 18px | 1.7 | 400 | Lead and homepage introduction |
+| `--text-body` | 17px | 17px | 1.75 | 400 | Body |
+| `--text-small` | 15px | 15px | 1.6 | 400 | Captions and footnotes |
+| `--text-meta` | 13px | 13px | 1.5 | 500 | Dates, tags, navigation |
 
-标题字距 `letter-spacing: -0.01em`；等宽元信息用 `text-transform: uppercase`（仅拉丁）。
+The original spec used `letter-spacing: -0.01em` for headings and uppercase Latin metadata with `letter-spacing: .06em`.
 
-## 5. 排版度量
+- Reading measure: `--measure: 680px`, estimated at about 40 Chinese characters per line at 17px.
+- Left-align body text; do not justify Chinese paragraphs.
+- Paragraph spacing: `1.25em`; do not indent the first line.
+- Headings have more space above than below (`margin-top: 2.5em; margin-bottom: .8em`).
+- Use `text-wrap: pretty` for headings and leads; reserve `balance` for display headings.
+- Use full-width Chinese punctuation. Add thin spacing around code and numbers where needed if `text-spacing` is unavailable.
 
-- **行宽 `--measure: 680px`**。17px 中文一行约 40 字，落在舒适区（30–40 字）上沿；再宽眼睛回行会丢行。
-- 正文左对齐，**两端对齐禁用**（中文会出现大片字间空隙）。
-- 段落间距 `1.25em`，段首不缩进（网页阅读不用书籍缩进）。
-- 标题上间距 > 下间距（`margin-top: 2.5em; margin-bottom: .8em`），让标题归属下文。
-- `text-wrap: pretty` 给标题和导语，`text-wrap: balance` 只给 display 级标题。
-- 中文标点用全角，代码与数字前后由 `text-spacing` 不可用则手工加细空格（`.125em`）。
+## 6. Spacing, borders, and motion
 
-## 6. 间距 / 圆角 / 描边 / 阴影
+- Spacing scale: `4 8 12 16 24 32 48 64 96 128` (4px base).
+- Vertical rhythm: 64px between small sections and 96px between major sections; halve these values on mobile.
+- Historical radii: `--radius: 0`, `--radius-sm: 2px` for inline code and images, `--radius-window: 6px` for code windows.
+- Use `1px solid var(--line)` for borders. The specification rejected shadows, glass effects, and gradients.
+- Images use `max-width: 100%`, square or 2px corners, optional `--line` border, and required alt text.
+- Motion duration: 160ms with `cubic-bezier(.2, 0, 0, 1)`. Animate only `opacity`, `transform`, `color`, and `border-color`; avoid animating `height` and `filter`.
+- Do not animate page navigation. Respect `prefers-reduced-motion: reduce` by removing motion.
 
-- 间距阶梯（4 基准）：`4 8 12 16 24 32 48 64 96 128`。
-- 区块垂直节奏：小节之间 64，大区块之间 96，移动端折半。
-- 圆角：`--radius: 0`；`--radius-sm: 2px`（行内代码、图片）；`--radius-window: 6px`（仅代码块窗口）。
-- 描边：只用 `1px solid var(--line)`。**没有阴影，没有毛玻璃，没有渐变。**
-- 图片：`max-width: 100%`，直角或 2px，`--line` 描边可选；必须有 `alt`。
+## 7. Historical component specifications
 
-## 7. 动效
+The following component measurements were proposals, not a verified audit of the current site.
 
-- 时长 `160ms`，缓动 `cubic-bezier(.2, 0, 0, 1)`。
-- 只允许动 `opacity`、`transform`、`color`、`border-color`。不动 `height`、`filter`。
-- 页面切换不做过渡动画（静态站，别伪装成 SPA）。
-- `@media (prefers-reduced-motion: reduce)` 下全部归零。
+### Navigation
 
-## 8. 组件规格
+- 64px tall with a 1px bottom rule that appears only after scrolling.
+- Site name on the left; 3–4 metadata-sized links on the right with 24px spacing.
+- Use the accent for the current link and secondary text color for other links. No underline animation.
 
-### 顶栏 Nav
-- 高度 64px，底部 1px `--line`，**滚动后才出现**（首屏无边框）。
-- 左侧站名 `--text-meta` 600 字重；右侧链接 3–4 个，`--text-meta`，间距 24px。
-- 当前页链接用 `--accent`，其余 `--ink-600`。不做下划线动画。
+### Post and Project list rows
 
-### 文章列表项（首页 / 归档 / 标签页共用）
-- 结构：`日期（等宽 13px，--ink-400）` + `标题（--text-h4，--ink-900）` + `一句话摘要（--text-small，--ink-600，最多 2 行）`。
-- 行间距 40px；**项与项之间不加分隔线**，靠留白分组；跨年份时插入一条 `--line` 细线 + 年份标签。
-- hover：标题转 `--accent`，`160ms`。整行可点，不加背景色。
+- Post row: date, title, and a one-sentence summary (maximum two lines).
+- Project row: status and stack, project name, and a one-sentence summary. Show no more than three stack labels, separated by `·`.
+- Use 40px between rows and whitespace instead of dividers. A small portfolio should not add empty slots or a “more” placeholder.
+- Hover changes the title to the accent color over 160ms. The entire row is clickable without a filled background.
+- A historical archive design proposed year dividers; the current product requirements specify a flat, reverse-chronological list.
 
-### 项目列表项（`/projects`）
-- 结构与文章列表项**完全一致**，只换元信息的内容：`状态 · 技术栈（等宽 13px，--ink-400）` → `项目名（--text-h4）` → `一句话（--text-small，--ink-600）`。
-- 技术栈最多显示 3 个，用 `·` 分隔。
-- 状态是纯文字，**不用色点、不用彩色标签**——状态不是"告警等级"，不需要颜色。
-- 行间距 40px，项间不加分隔线。项目少（1–3 个）时**不留空位、不加"更多"**。
+### Post header and body
 
-### 文章页头
-- 标题 `--text-display`；其下 `--text-meta` 一行：日期 · 阅读时长 · 标签（用 `·` 分隔，不用标签胶囊）。
-- 导语 `--text-lead`，`--ink-600`，与标题间距 16px。
-- 头与正文之间 48px，只在此处出现一条 `--line`（可选）。
+- Post title uses the display style; date, reading time, and tags share one metadata line separated by `·`.
+- Lead text uses the lead size and secondary text color, 16px below the title. Leave 48px before the body; an optional divider may appear there.
+- Links use the accent, a 1px underline, and 3px offset. Hover thickens the underline to 2px without changing its color.
+- Unordered lists use an en dash marker; ordered lists use monospaced numbers.
+- Quotes use a 2px left rule, 16px inset, secondary text color, and no italic style.
+- Inline code uses the surface color, 2px radius, 0.9em monospace, and 4px horizontal padding without a border.
+- Code blocks use a macOS-style title bar with three 10px dots (`#FF5F57`, `#FEBC2E`, `#28C840`) and an uppercase language label. The code area scrolls horizontally without wrapping. The original spec allowed these three dot colors as a deliberate exception to its limited-palette rule. Syntax highlighting uses low-saturation `min-light` and `min-dark` themes.
+- Tables use horizontal rules only: a stronger rule under the header and `--line` between rows. Images may have a caption below them, aligned with the image.
 
-### 正文 Prose
-- 链接：`--accent`，`text-decoration-thickness: 1px`，`text-underline-offset: 3px`；hover 只把厚度变 2px，**不变色**。
-- 列表：`ul` 用 `–` 短横（`::marker` 着色 `--ink-400`）；`ol` 用等宽数字。
-- 引用块：左侧 2px `--line`，左内边距 16px，文字 `--ink-600`，**不用斜体**。
-- 行内代码：`--surface` 底 + `2px` 圆角 + 0.9em 等宽 + 左右 4px 内边距，**不加描边**。
-- 代码块：**macOS 窗口样式**。顶部标题栏（左侧三个 10px 圆点 `#FF5F57 / #FEBC2E / #28C840`，右侧语言标签 `--text-meta` 等宽大写、`--ink-400`），标题栏下方 1px `--line`，整块圆角 `--radius-window`（6px），代码区横向滚动、不折行。
-- 这是全站**唯一允许出现第三个色相**的地方：三个圆点是可识别的窗口隐喻，属于刻意例外，不要推广到别处。
-- 语法高亮用低饱和的 `min-light` / `min-dark`，色相控制在 5 个以内。
-- 表格：只有横线（表头下 1px `--ink-400`，行间 `--line`），无竖线无底色。
-- 图片：下方图注 `--text-small` `--ink-400`，居中或左对齐跟随图片宽度。
+### Table of contents and series navigation
 
-### 目录 TOC
-- 仅 ≥1200px 显示，右栏 200px，与正文间距 48px，`position: sticky` 顶距 96px。
-- `--text-meta`，`--ink-400`；当前项 `--accent` + 左侧 2px `--accent` 竖条（`padding-left: 12px`）。
-- 层级只显示 h2 / h3，h3 缩进 12px。
+- TOC: show at widths of at least 1200px in a sticky 200px right rail, 48px from the body and 96px from the top. Show `h2` and `h3`; indent `h3` by 12px. The active item uses the accent and a 2px left rule.
+- Series rail: show only for a Post in a Series containing more than one Post. At widths of at least 1280px, use a sticky 200px left rail, 48px from the 680px body and 96px from the top. Below 1280px, place it after the body and before adjacent-post links, with a top rule.
+- The rail heading identifies the current position and Series name. Number entries; use no card background or border. Chinese titles may wrap over several lines in the 200px rail.
+- The accepted layout and its keyboard-order trade-off are recorded in [ADR-0010](./adr/0010-series-nav-as-left-rail.md).
 
-### 系列导航（左栏）
-- 只在**属于 series 且该系列超过 1 篇**的文章页出现；不满足就整块不渲染，也不留空左栏。
-- ≥1280px 时占据左栏 200px，与正文间距 48px，`position: sticky` 顶距 96px，上内边距 `--s24`（与目录同款，两者内容基线对齐）。
-- <1280px 时退回正文之后、上下篇之前，用 1px `--line` 上边框 + `--s16` 上边距与正文分隔（与上下篇同规格）。
-- 结构：一行 `--text-meta` `--ink-400` 的「本系列 n / m · 系列名」，下面是无序列表；序号 `--text-meta` `--ink-400`，当前项 `--ink-900` + `font-weight: 600`。
-- **不加底色、不加边框**——它是导航，不是卡片。
-- 宽度只有 200px，中文标题会折行 3–4 行，这是预期行为，不要为此加宽左栏（会挤压 680px 正文）。
+### Tags, adjacent links, and footer
 
-### 标签
-- 纯文字 + `#` 前缀（等宽），`--ink-600`；hover `--accent`。
-- **不做胶囊底色**——圆角色块会立刻把页面拉向 SaaS 风，破坏 ADR-0003。
+- Tags are plain text with a monospaced `#` prefix; hover uses the accent. Do not use pill backgrounds.
+- Adjacent-post navigation uses “← Previous / Next →” text links, with whitespace or `·` between them; no page-number control.
+- The historical footer proposal placed copyright, RSS, repository, and email links on one metadata line, 96px below the content with a top rule. The current README and product requirements identify GitHub and RSS as public footer links.
 
-### 分页 / 上下篇
-- 只有"← 上一篇 / 下一篇 →"文字链接，`--text-meta`，中间用 `·` 或留白隔开。不做页码器。
+### Focus states
 
-### 页脚
-- 一行：版权 · RSS · 源码仓库 · 邮箱，`--text-meta` `--ink-400`，上边距 96px，顶部 1px `--line`。
+Use a visible `:focus-visible` outline, historically specified as `2px solid var(--accent)` with a 2px offset. Do not remove outlines without an equivalent visible replacement.
 
-### 焦点态
-- `:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }`
-- 禁止 `outline: none`，除非同时给出等效可见替代。
+## 8. Accessibility baseline
 
-## 9. 无障碍底线
+- Text contrast should be at least 4.5:1, including 13px metadata; target at least 7:1 for body text.
+- Keep mobile body text at 17px or larger. Interactive targets should be at least 44×44px; full-row links satisfy this when implemented as specified.
+- Complete all interactions by keyboard. Keep Tab order consistent with reading order, except for the series rail trade-off documented in ADR-0010.
+- Use one page-level `h1`, do not skip heading levels, and provide `nav`, `main`, `article`, and `footer` landmarks where appropriate.
+- Meaningful images need descriptive alt text; decorative images use empty alt text.
 
-- 所有文字对比度 ≥ 4.5:1（13px 的元信息也算「小字」，不能套用 3:1 的宽松档），正文目标 ≥ 7:1。
-- 移动端正文不小于 17px；可点区域不小于 44×44（列表整行可点已满足）。
-- 所有交互可用键盘完成，Tab 顺序与**阅读顺序**一致。
-  - 例外：文章页左栏的系列导航视觉上在正文之前，DOM 里排在正文之后。这是有意的——`<1280px` 时它必须落在正文下方，而 DOM 顺序不能随断点变化。代价是宽屏下 Tab 要先走完正文才到左栏（见 ADR-0010）。
-- 语义结构：每页一个 `<h1>`，标题层级不跳级；`<nav>` / `<main>` / `<article>` / `<footer>` 齐备。
-- 图片 `alt` 必填；纯装饰图 `alt=""`。
+## 9. Information-architecture decisions recorded with this specification
 
-## 10. 曾经未决，现已确定
+These decisions are reflected in current product documentation; the paths below identify the implementation at the time of the 2026-11-02 review.
 
-信息架构定稿后，这三项都已落地：
-
-| 项 | 结论 | 落地位置 |
+| Topic | Decision recorded | Historical implementation reference |
 |---|---|---|
-| 首页精选写作区的位置 | 排在代表项目之后；没有 featured 文章时整块不渲染，不留空位 | `app/routes/home.tsx`（样式在 `app/styles/garden.css`） |
-| 列表页年份分组 | 不做。当前是标签筛选 + 关键词过滤的扁平列表，按日期倒序 | `app/routes/posts.tsx` |
-| 搜索 | 顶栏 `Ctrl` / `⌘ + K` 打开原生 `<dialog>`，前端过滤已发布文章与项目；样式沿用外观面板那一套 | `app/components/SearchDialog.tsx` |
-| 视觉预设（minimal / developer / editorial / dashboard） | **不做**。保留为天花板：若将来实现，只换 token、不换布局，且必须与 `theme`（明暗）分属两个变量层 | [ADR-0003](./adr/0003-visual-identity.md)、[06 §4](./06-Decision-Log.md) |
+| Homepage featured writing | Place after the representative project; hide the section when no Post is featured | `app/routes/home.tsx` |
+| Writing list grouping | Do not group by year; use a flat list filtered by tag and keyword, sorted by date | `app/routes/posts.tsx` |
+| Search | Open a native `<dialog>` with Ctrl/⌘+K; filter published Posts and Projects | `app/components/SearchDialog.tsx` |
+| Visual presets | Do not implement `minimal`, `developer`, `editorial`, or `dashboard` presets. If reconsidered, presets must be separate from the six themes and may change tokens, not layout, unless a new decision says otherwise. | [ADR-0003](./adr/0003-visual-identity.md), [Decision Log](./06-Decision-Log.md) |
 
-## 11. 页面骨架（文章页）
+## 10. UI-change workflow
 
-这是**布局示意，不是规格**——具体取值以 §2–§8 的 token 与组件规格为准。
-
-### ≥1280px，且文章属于 series
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│ 站名                          writing  tags  about           │  ← 64px，滚动后才出现下边框
-├──────────────────────────────────────────────────────────────┤
-│  本系列 1 / 2 · lattice 拆解    在 Tauri 里把状态机拆出来  ┌──────┐│
-│  01 lattice 的模块边界        2026-11-02 · 12 min · #tauri │ 目录 ││
-│  02 把状态机从 UI 里抽出来     一句话导语，--ink-600        │ 01…  ││
-│                              ──────────────────────────    └──────┘│
-│                              正文 680px，17px / 1.75              │
-│                                                                   │
-│                              ← 上一篇              下一篇 →       │
-├──────────────────────────────────────────────────────────────┤
-│ © 2026 · rss · github · mail                                 │
-└──────────────────────────────────────────────────────────────┘
-    ← 200px 左栏 →   ←──── 680px ────→   ← 200px 右栏 →
-```
-
-三栏关系：正文固定 `--measure: 680px` 居中，系列导航在左、目录在右，各 200px，间距 48px，两者都是 `position: sticky` 顶距 96px。整块 `max-width` 1224px（200 + 48 + 680 + 48 + 200 + 48 padding）。
-
-### ≥1200px，非系列文章
-
-没有左栏，退回「正文 680px + 右目录 200px」两栏，`max-width` 976px。与改动前完全一致。
-
-### <1280px
-
-系列导航回到正文之后、上下篇之前；<1200px 时目录一并消失，全部单栏居中。
+For the upcoming UI review, first record the specific user-facing problem and the intended outcome. Update this document only for lasting visual rules or specifications; small local adjustments do not need an ADR. Discuss changes to the theme model, a UI framework, or the overall visual direction before implementation. After a visual change, inspect narrow and desktop layouts, keyboard operation, visible focus, and all six themes. A successful build alone is not visual acceptance.
