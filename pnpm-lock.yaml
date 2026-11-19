@@ -13,7 +13,7 @@ importers:
         version: 7.18.5(react-router@7.18.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@5.9.3)
       isbot:
         specifier: ^5
-        version: 5.2.2
+        version: 5.2.3
       react:
         specifier: ^19
         version: 19.3.1
@@ -1142,8 +1142,8 @@ packages:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
     engines: {node: '>=12'}
 
-  isbot@5.2.2:
-    resolution: {integrity: sha512-iQcBXcd+Rv/pkubRyGh2utW2j1oPG5hZY6TUhVPpqK4G+o3IbxpJNx04hgksjc/N7GK5pEorUxDeg31cFgEk/w==}
+  isbot@5.2.3:
+    resolution: {integrity: sha512-e8gGz3VzAuImtTMnB5PqNRRWGAswObTc+X+X5a8PttKT78VSSFec98w9ZwUoy6jJdlvJkVdLiN+WMgA8TewoZg==}
     engines: {node: '>=18'}
 
   js-tokens@4.0.0:
@@ -2112,7 +2112,7 @@ snapshots:
       dedent: 1.7.2
       es-module-lexer: 1.7.0
       exit-hook: 2.2.1
-      isbot: 5.2.2
+      isbot: 5.2.3
       jsesc: 3.0.2
       lodash: 4.18.1
       p-map: 7.1.1
@@ -2612,7 +2612,7 @@ snapshots:
 
   is-plain-obj@4.1.0: {}
 
-  isbot@5.2.2: {}
+  isbot@5.2.3: {}
 
   js-tokens@4.0.0: {}
 
