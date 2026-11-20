@@ -42,7 +42,7 @@ Below project details, show published Posts whose `project` matches the project 
 
 ### Writing
 
-Posts may contain methods, technical decisions, and practice-based retrospectives. Preserve existing URLs. A newly published Post does not become a homepage feature automatically. The writing list remains available regardless of homepage selection and orders posts newest first on a vertical timeline. Each row connects its date to the title, summary, and reading time with a fine left rail and a small node; do not add year groups, category filters, or tag chips. Post bodies begin at `h2` and do not skip heading levels. Article pages show summary, date, and reading time; tag metadata remains in frontmatter but is not shown in the interface for now. Set `updated` only after a substantive revision.
+Posts may contain methods, technical decisions, and practice-based retrospectives. Preserve existing URLs. A newly published Post does not become a homepage feature automatically. The writing list remains available regardless of homepage selection and orders posts newest first on a vertical timeline. Each row connects its date and a small sequence number to the title, summary, and reading time with a fine left rail and node. Keep a little space between the number and node. Use only a short underline below article content; separators must not cross the timeline rail. Do not add year groups, category filters, or tag chips. Post bodies begin at `h2` and do not skip heading levels. Article pages show summary, date, and reading time; tag metadata remains in frontmatter but is not shown in the interface for now. Set `updated` only after a substantive revision.
 
 ### Personal OS
 
