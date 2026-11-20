@@ -676,3 +676,62 @@ main {
     margin-top: 14px;
   }
 }
+
+
+/* Keep each date, index, and timeline node centered on the same row axis. */
+.writing-timeline .writing-row-timeline time {
+  align-self: center;
+  padding-top: 0;
+  line-height: 1;
+}
+
+.writing-timeline-index {
+  align-self: center;
+  padding-top: 0;
+  line-height: 1;
+}
+
+/* Compact, accessible controls for the paginated writing archive. */
+.writing-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  color: var(--muted);
+  font: 12px/1 var(--mono);
+}
+
+.writing-pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: inherit;
+}
+
+.writing-pagination button:not(:disabled):hover {
+  color: var(--accent);
+}
+
+.writing-pagination button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.writing-pagination span {
+  min-width: 52px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.writing-pagination-previous {
+  transform: rotate(180deg);
+}
+
+.pagination-preview-note {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font: 10px/1.5 var(--mono);
+}
