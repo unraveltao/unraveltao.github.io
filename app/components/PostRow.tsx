@@ -34,7 +34,7 @@ export function PostRow({
           </div>
         )}
       </div>
-      <Icon name="arrow" />
+      <Icon name="arrow" className="writing-row-open" />
     </Link>
   )
 }
