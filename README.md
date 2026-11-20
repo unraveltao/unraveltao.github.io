@@ -13,6 +13,14 @@ This repository contains the source for my personal website: a portfolio of sele
 
 The site is personally maintained and does not accept code contributions. The repository is published for transparency and reference; it is not presented as a supported starter template. For the intended reading experience, visit the live site.
 
+## Contributors
+
+This site is maintained by [Iron Tom](https://github.com/unraveltao). Codex helps with selected engineering tasks; changes are reviewed before publication.
+
+| Maintainer | AI collaborator |
+| --- | --- |
+| [Iron Tom](https://github.com/unraveltao) | [<img src="https://avatars.githubusercontent.com/u/267193182?s=80&v=4" alt="Codex GitHub avatar" width="48" height="48"> Codex](https://github.com/codex) |
+
 ## Technology
 
 The site is a static website built with Vite, React Router, and Velite. Content lives in the repository, is validated during the build, and is deployed to GitHub Pages by GitHub Actions when `main` is updated.
