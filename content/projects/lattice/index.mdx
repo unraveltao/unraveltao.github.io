@@ -1,0 +1,21 @@
+---
+name: Lattice
+summary: "A Windows desktop platform for web widgets, plugins, permissions, and agent workflows."
+status: active
+stack: [rust, tauri, react, typescript]
+repo: https://github.com/unraveltao/Lattice
+docs: https://github.com/unraveltao/Lattice/blob/main/docs/ARCHITECTURE.md
+order: 1
+---
+
+Lattice is a Windows desktop platform for web-based widgets. Widgets run in sandboxes, while the Rust and Tauri host manages native windows, installation, updates, and permissioned access to desktop capabilities.
+
+## Engineering focus
+
+- Keep built-in and third-party widgets on the same extension path.
+- Isolate widget code and expose system capabilities through a permission-checked bridge.
+- Build agent-assisted workflows with explicit access controls.
+
+## Project status
+
+Lattice is in active development. Check the [GitHub Releases](https://github.com/unraveltao/Lattice/releases) page for verified releases and downloads.
