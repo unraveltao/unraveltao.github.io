@@ -9,12 +9,23 @@ function formatDate(iso: string): string {
   return DATE.format(new Date(`${iso.slice(0, 10)}T00:00:00Z`))
 }
 
-/** A writing row with its date, title, summary, and reading time. */
-export function PostRow({ post, compact = false }: { post: Post; compact?: boolean }) {
+/** A writing row with an optional chronological timeline marker. */
+export function PostRow({
+  post,
+  compact = false,
+  timeline = false,
+}: {
+  post: Post
+  compact?: boolean
+  timeline?: boolean
+}) {
+  const className = `writing-row${compact ? ' writing-row-compact' : ''}${timeline ? ' writing-row-timeline' : ''}`
+
   return (
-    <Link className="writing-row" to={`/posts/${post.slug}/`}>
+    <Link className={className} to={`/posts/${post.slug}/`}>
       <time dateTime={post.date.slice(0, 10)}>{formatDate(post.date)}</time>
-      <div>
+      {timeline && <span className="writing-timeline-marker" aria-hidden="true" />}
+      <div className={timeline ? 'writing-row-content' : undefined}>
         <h3>{post.title}</h3>
         <p>{post.summary}</p>
         {!compact && (
