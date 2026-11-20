@@ -53,8 +53,8 @@ export default function Posts() {
 
         {results.length > 0 ? (
           <div className="writing-list writing-timeline">
-            {results.map((post) => (
-              <PostRow key={post.slug} post={post} timeline />
+            {results.map((post, index) => (
+              <PostRow key={post.slug} post={post} timeline timelineIndex={index + 1} />
             ))}
           </div>
         ) : (
