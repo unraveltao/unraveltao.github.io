@@ -496,3 +496,95 @@ main {
 .preview-geeker .preview-type {
   font: 23px var(--mono);
 }
+
+
+/* Writing archive: a quiet left rail connects dates to their article rows. */
+.writing-timeline {
+  --timeline-date-width: 88px;
+  --timeline-node-width: 12px;
+  --timeline-gap: 16px;
+  position: relative;
+}
+
+.writing-timeline::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: calc(var(--timeline-date-width) + var(--timeline-gap) + 6px);
+  width: 1px;
+  background: var(--border);
+  pointer-events: none;
+}
+
+.writing-timeline .writing-row-timeline {
+  position: relative;
+  grid-template-columns: var(--timeline-date-width) var(--timeline-node-width) minmax(0, 1fr) 20px;
+  gap: var(--timeline-gap);
+  padding: 22px 0;
+  border-top: 1px solid var(--border);
+}
+
+.writing-timeline .writing-row-timeline time {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  padding-top: 4px;
+}
+
+.writing-timeline-marker {
+  z-index: 1;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.writing-timeline .writing-row-content {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.writing-timeline .writing-row-open {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.writing-timeline .writing-row-timeline:hover .writing-timeline-marker {
+  background: var(--accent);
+}
+
+@media (max-width: 760px) {
+  .writing-timeline {
+    --timeline-date-width: 52px;
+    --timeline-node-width: 10px;
+    --timeline-gap: 9px;
+  }
+
+  .writing-timeline::before {
+    left: calc(var(--timeline-date-width) + var(--timeline-gap) + 5px);
+  }
+
+  .writing-timeline .writing-row-timeline {
+    grid-template-columns: var(--timeline-date-width) var(--timeline-node-width) minmax(0, 1fr) 16px;
+    padding: 19px 0;
+  }
+
+  .writing-timeline .writing-row-timeline time {
+    font-size: 8px;
+  }
+
+  .writing-timeline .writing-row-timeline h3 {
+    font-size: 19px;
+  }
+
+  .writing-timeline .writing-row-timeline p {
+    font-size: 11px;
+  }
+}
