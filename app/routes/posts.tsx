@@ -11,7 +11,7 @@ export const meta = () =>
     description: 'Selected notes on methods, technical decisions, and lessons from practice.',
   })
 
-/** A focused writing index with search and a simple chronological list. */
+/** A focused writing index with search and a reverse-chronological timeline. */
 export default function Posts() {
   const posts = getPublishedPosts()
   const [query, setQuery] = useState('')
@@ -52,9 +52,9 @@ export default function Posts() {
         </div>
 
         {results.length > 0 ? (
-          <div className="writing-list">
+          <div className="writing-list writing-timeline">
             {results.map((post) => (
-              <PostRow key={post.slug} post={post} />
+              <PostRow key={post.slug} post={post} timeline />
             ))}
           </div>
         ) : (
