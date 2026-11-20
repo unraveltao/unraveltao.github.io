@@ -61,7 +61,7 @@ export default function Posts() {
       if (page === 1) next.delete('page')
       else next.set('page', String(page))
       return next
-    }, { preventScrollReset: true })
+    })
   }
 
   function updateQuery(value: string) {
