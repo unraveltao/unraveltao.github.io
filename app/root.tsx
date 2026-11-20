@@ -29,7 +29,7 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     // suppressHydrationWarning：<head> 里的内联脚本在 hydration 之前就给 <html>
     // 加了 data-theme，React 对不上这个属性会报警并把它抹掉（主题因此回退到 Spring）
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -43,7 +43,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="sitemap" href="/sitemap-index.xml" />
         <meta property="og:site_name" content={SITE_NAME} />
-        <meta property="og:locale" content="zh_CN" />
+        <meta property="og:locale" content="en_US" />
         <meta name="twitter:card" content="summary_large_image" />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
