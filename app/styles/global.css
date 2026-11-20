@@ -635,7 +635,7 @@ main {
 .writing-timeline .writing-row-content::after {
   content: "";
   display: block;
-  width: 34px;
+  width: min(100%, 52rem);
   height: 1px;
   margin-top: 18px;
   background: var(--border);
@@ -671,7 +671,7 @@ main {
   }
 
   .writing-timeline .writing-row-content::after {
-    width: 24px;
+    width: 100%;
     margin-top: 14px;
   }
 }
