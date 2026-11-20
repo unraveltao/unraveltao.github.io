@@ -19,7 +19,7 @@ export const meta = () =>
 function makePaginationPreview(posts: ReturnType<typeof getPublishedPosts>) {
   if (posts.length === 0) return posts
   return Array.from({ length: 30 }, (_, index) => {
-    const source = posts[index % posts.length]
+    const source = posts[index % posts.length]!
     const date = new Date(Date.UTC(2026, 10, 20 - index)).toISOString().slice(0, 10)
     return {
       ...source,
