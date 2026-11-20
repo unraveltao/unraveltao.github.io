@@ -588,3 +588,90 @@ main {
     font-size: 11px;
   }
 }
+
+
+/* Timeline details: number the nodes and keep separators within article content. */
+.writing-timeline {
+  --timeline-index-width: 24px;
+}
+
+.writing-timeline::before {
+  left: calc(var(--timeline-date-width) + var(--timeline-gap) + var(--timeline-index-width) + var(--timeline-gap) + 6px);
+  top: 32px;
+  bottom: 32px;
+}
+
+.writing-timeline .writing-row-timeline {
+  grid-template-columns: var(--timeline-date-width) var(--timeline-index-width) var(--timeline-node-width) minmax(0, 1fr) 20px;
+  border-top: 0;
+  padding: 23px 0;
+}
+
+.writing-timeline-index {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  color: var(--muted);
+  font: 9px var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.writing-timeline .writing-timeline-marker {
+  grid-column: 3;
+}
+
+.writing-timeline .writing-row-content {
+  grid-column: 4;
+  grid-row: 1;
+  padding-bottom: 12px;
+}
+
+.writing-timeline .writing-row-open {
+  grid-column: 5;
+  grid-row: 1;
+}
+
+.writing-timeline .writing-row-content::after {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 1px;
+  margin-top: 18px;
+  background: var(--border);
+}
+
+.writing-timeline .writing-row-timeline:last-child .writing-row-content::after {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .writing-timeline {
+    --timeline-index-width: 18px;
+    --timeline-gap: 8px;
+  }
+
+  .writing-timeline::before {
+    left: calc(var(--timeline-date-width) + var(--timeline-gap) + var(--timeline-index-width) + var(--timeline-gap) + 5px);
+    top: 28px;
+    bottom: 28px;
+  }
+
+  .writing-timeline .writing-row-timeline {
+    grid-template-columns: var(--timeline-date-width) var(--timeline-index-width) var(--timeline-node-width) minmax(0, 1fr) 16px;
+    padding: 19px 0;
+  }
+
+  .writing-timeline-index {
+    font-size: 8px;
+  }
+
+  .writing-timeline .writing-row-content {
+    padding-bottom: 10px;
+  }
+
+  .writing-timeline .writing-row-content::after {
+    width: 24px;
+    margin-top: 14px;
+  }
+}
