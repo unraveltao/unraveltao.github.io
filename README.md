@@ -1,17 +1,28 @@
-# unraveltao — Personal Site and Portfolio
+<div align="center">
 
-**Live site:** [unraveltao.github.io](https://unraveltao.github.io/)
+# unraveltao
 
-This repository contains the source for my personal website: a portfolio of selected projects and a small collection of technical writing. I use it to explain what I build, what I learn from those projects, and the reasoning behind important technical decisions.
+### Personal Site and Portfolio
+
+*A place to share what I build, learn, and think about.*
+
+[Visit the site](https://unraveltao.github.io/) · [Browse writing](https://unraveltao.github.io/posts/) · [Explore projects](https://unraveltao.github.io/projects/)
+
+</div>
+
+## About Me
+
+I’m an independent developer interested in software engineering, open source, and AI agents. I build projects to understand how things work and share technical notes and reflections along the way.
+
+This repository contains the source for my personal website: a portfolio of selected projects and a collection of technical writing. I use it to explain what I build, what I learn from those projects, and the reasoning behind important technical decisions.
 
 ## Explore the site
 
 - **Writing:** browse published articles, methods, and project notes.
-- **Personal OS:** read the evolving practices I use to connect long-term goals with daily work.
 - **Projects:** see selected software projects and their available source or documentation links.
 - **RSS:** subscribe to new posts at [`/rss.xml`](https://unraveltao.github.io/rss.xml).
 
-The site is personally maintained and does not accept code contributions. The repository is published for transparency and reference; it is not presented as a supported starter template. For the intended reading experience, visit the live site.
+This is a personal website and does not accept code contributions. The repository is public for transparency and reference; it is not a supported starter template. For the intended reading experience, visit the live site.
 
 ## Contributors
 
@@ -23,7 +34,7 @@ This site is maintained by [Iron Tom](https://github.com/unraveltao). Codex help
 
 ## Technology
 
-The site is a static website built with Vite, React Router, and Velite. Content lives in the repository, is validated during the build, and is deployed to GitHub Pages by GitHub Actions when `main` is updated.
+The site is built with Vite, React Router, and Velite. Content lives in the repository and is validated during the build. When `main` is updated, GitHub Actions runs checks, builds the site, and deploys it to GitHub Pages. Vercel creates preview deployments for changes so they can be reviewed before merging.
 
 ## Run locally
 
@@ -42,7 +53,7 @@ pnpm build
 pnpm preview
 ```
 
-These commands run content checks and tests, build the static site, and preview the output with GitHub Pages-style trailing-slash and 404 behavior.
+These commands validate content and run tests, build the static site, and preview the output with GitHub Pages-style trailing-slash and 404 behavior.
 
 ## Content and maintenance
 
