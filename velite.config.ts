@@ -2,6 +2,7 @@ import { defineCollection, defineConfig, s, type MarkdownOptions } from 'velite'
 import rehypeShiki from '@shikijs/rehype'
 import rehypeSlug from 'rehype-slug'
 import rehypeCodeWindow from './app/lib/rehype-code-window.mjs'
+import postCategories from './content/post-categories.json'
 
 /**
  * 内容层的唯一真源：schema 只在这里定义，页面与文档都不复制字段列表。
@@ -11,6 +12,8 @@ import rehypeCodeWindow from './app/lib/rehype-code-window.mjs'
 const kebab = s
   .string()
   .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, '必须是 kebab-case（小写字母、数字、连字符）')
+
+const postCategorySlugs = Object.keys(postCategories) as [keyof typeof postCategories, ...(keyof typeof postCategories)[]]
 
 // shiki 先跑（产出带 token 的 <pre>），code-window 再把它包进 macOS 窗口
 // 写成元组字面量而不是先声明变量：Pluggable 是 [plugin, options] 的元组类型，
@@ -40,6 +43,7 @@ const posts = defineCollection({
       summary: s.string().min(20).max(160),
       date: s.isodate(),
       updated: s.isodate().optional(),
+      category: s.enum(postCategorySlugs),
       slug: kebab.optional(),
       path: s.path(),
       tags: s.array(kebab).min(1).max(3),

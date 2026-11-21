@@ -1,0 +1,22 @@
+{
+  "thinking": {
+    "name": "Thinking",
+    "description": "Ideas, perspectives, and principles that shape decisions.",
+    "order": 1
+  },
+  "review": {
+    "name": "Review",
+    "description": "Reflections on real practice and what can change.",
+    "order": 2
+  },
+  "skill": {
+    "name": "Skill",
+    "description": "Reusable methods, workflows, and practical notes.",
+    "order": 3
+  },
+  "log": {
+    "name": "Log",
+    "description": "Progress and decisions across projects and learning.",
+    "order": 4
+  }
+}

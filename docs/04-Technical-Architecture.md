@@ -16,8 +16,9 @@
 | `app/lib/theme.ts` | Theme list, persistence, and initialization behavior |
 | `app/lib/reading-preferences.ts` | Reading typography options, persistence, and synchronous initialization |
 | `app/lib/contact-links.ts` | Author-approved contact methods and external account URLs |
+| `app/lib/post-categories.ts` | Ordered category names and labels derived from `content/post-categories.json` |
 | `app/styles/` | Existing global and theme styles |
-| `content/` | Post, Project, and Series data |
+| `content/` | Post, Project, Series, and registered Post category data |
 | `velite.config.ts` | Post and Project schemas and Markdown processing |
 | `react-router.config.ts` | Static prerender route list |
 | `vite.config.ts` | Development content rebuilds and path aliases |
@@ -30,7 +31,7 @@ Keep the directory structure shallow. Keep page-private logic with its page unti
 
 ## 2. Content and rendering
 
-The content model has two entities: Post and Project. Series are derived from Post metadata. Velite validates and emits build-time JSON and rendered HTML. Pages read content only through `app/lib/content.ts`; do not duplicate publication filtering in routes or components.
+The content model has two entities: Post and Project. A Post's required category is registered in `content/post-categories.json`; the Personal OS category pages use it to group writing. Series are derived from separate Post metadata. Velite validates and emits build-time JSON and rendered HTML. Pages read content only through `app/lib/content.ts`; do not duplicate publication filtering in routes or components.
 
 `pnpm build` runs Velite, cross-file validation, React Router type generation, TypeScript, prerendering, and postbuild processing. Any failure stops the build. `pnpm test` runs the Node built-in test suite for pure validation rules. The deployment workflow runs on pushes to `main` and can also be triggered manually.
 
@@ -40,7 +41,7 @@ Published Posts are selected by `app/lib/publish.ts`: not drafts, with a date no
 
 GitHub Actions uses Node.js 22 and pnpm 9 to build and deploy `build/client/` to GitHub Pages. No separate deployment service is required.
 
-All public URLs use trailing slashes. `app/lib/seo.ts` normalizes canonical URLs; article structured data follows the same convention. The site URL comes from `app/lib/site.json`; RSS and sitemap generation use that configuration. When adding a static route, register it in both `app/routes.ts` and the prerender list in `react-router.config.ts`. Posts, Projects, and Series pages are generated from content. `/personal-os/` is prerendered only when at least one published `personal-os` post exists. `/contact/` is a static page backed by `app/lib/contact-links.ts`; it does not add a content entity. Legacy Workshop and Workflow routes remain available.
+All public URLs use trailing slashes. `app/lib/seo.ts` normalizes canonical URLs; article structured data follows the same convention. The site URL comes from `app/lib/site.json`; RSS and sitemap generation use that configuration. When adding a static route, register it in both `app/routes.ts` and the prerender list in `react-router.config.ts`. Posts, Projects, and Series pages are generated from content. `/personal-os/` and one `/personal-os/:category/` page per entry in `content/post-categories.json` are prerendered; each detail page filters published Posts through their required category metadata. `/contact/` is a static page backed by `app/lib/contact-links.ts`; it does not add a content entity. Legacy Workshop and Workflow routes remain available.
 
 The local preview command is `pnpm preview`, backed by `scripts/serve.mjs`. It models missing-slash redirects and not-found behavior; do not substitute `vite preview` when checking those hosting behaviors.
 

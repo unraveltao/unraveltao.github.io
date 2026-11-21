@@ -29,10 +29,24 @@
 }
 
 .personal-os-card {
+  display: block;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.personal-os-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.personal-os-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .personal-os-card-art {
@@ -83,6 +97,97 @@
   margin: 0;
   font-size: 1.35rem;
   font-weight: 600;
+}
+
+.personal-os-card-action {
+  display: block;
+}
+
+.personal-os-card-action {
+  margin-top: 15px;
+  color: var(--accent);
+  font: 10px var(--mono);
+}
+
+.personal-os-card[data-category='thinking'] .personal-os-card-word { color: var(--category-thinking); }
+.personal-os-card[data-category='skill'] .personal-os-card-word { color: var(--category-skill); }
+.personal-os-card[data-category='review'] .personal-os-card-word { color: var(--category-review); }
+.personal-os-card[data-category='log'] .personal-os-card-word { color: var(--category-log); }
+
+.post-category-label {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font: 10px/1.4 var(--mono);
+  margin-bottom: 7px;
+}
+
+.article-properties .post-category-label { margin-bottom: 0; }
+
+.post-category-label[data-category='thinking'] {
+  background: var(--category-thinking-soft);
+  color: var(--category-thinking);
+}
+
+.post-category-label[data-category='skill'] {
+  background: var(--category-skill-soft);
+  color: var(--category-skill);
+}
+
+.post-category-label[data-category='review'] {
+  background: var(--category-review-soft);
+  color: var(--category-review);
+}
+
+.post-category-label[data-category='log'] {
+  background: var(--category-log-soft);
+  color: var(--category-log);
+}
+
+.writing-row-content > .post-category-label {
+  margin-bottom: 8px;
+}
+
+.article-properties {
+  margin: 24px 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.article-properties > div {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 18px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-properties dt {
+  color: var(--muted);
+  font: 10px/1.6 var(--mono);
+}
+
+.article-properties dd {
+  min-width: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+.article-property-summary {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.personal-os-category-head[data-category='thinking'] h1 { color: var(--category-thinking); }
+.personal-os-category-head[data-category='skill'] h1 { color: var(--category-skill); }
+.personal-os-category-head[data-category='review'] h1 { color: var(--category-review); }
+.personal-os-category-head[data-category='log'] h1 { color: var(--category-log); }
+
+.personal-os-category-count {
+  color: var(--muted);
+  font: 10px var(--mono);
 }
 
 .personal-os-card-body p {
@@ -1081,6 +1186,11 @@ main {
 
   .contact-group-heading h2 {
     margin-bottom: 13px;
+  }
+
+  .article-properties > div {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px;
   }
 }
 
