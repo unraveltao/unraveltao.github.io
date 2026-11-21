@@ -29,7 +29,7 @@ export default function ProjectRoute() {
   return (
     <>
       <Link className="back-link" to="/projects/">
-        <Icon name="arrow" /> 全部项目
+        <Icon name="arrow" /> All projects
       </Link>
 
       <header className="page-head">
@@ -43,7 +43,7 @@ export default function ProjectRoute() {
           <article className="article-body" dangerouslySetInnerHTML={{ __html: project.html }} />
           {relatedPosts.length > 0 && (
             <section className="article-body" aria-labelledby="related-writing">
-              <h2 id="related-writing">相关写作</h2>
+              <h2 id="related-writing">Related writing</h2>
               <ul>
                 {relatedPosts.map((post) => (
                   <li key={post.slug}>
@@ -59,7 +59,7 @@ export default function ProjectRoute() {
         <dl className="detail-info">
           {project.status && statusLabel(project.status) && (
             <div>
-              <dt>当前状态</dt>
+              <dt>Status</dt>
               <dd>
                 <span className={`status status-${project.status}`}>{statusLabel(project.status)}</span>
               </dd>
@@ -67,7 +67,7 @@ export default function ProjectRoute() {
           )}
           {project.stack && project.stack.length > 0 && (
             <div>
-              <dt>技术栈</dt>
+              <dt>Technology</dt>
               <dd>
                 {project.stack.map((item) => (
                   <span className="tag" key={item}>
@@ -78,36 +78,36 @@ export default function ProjectRoute() {
             </div>
           )}
           <div>
-            <dt>作者</dt>
+            <dt>Author</dt>
             <dd>{SITE_AUTHOR}</dd>
           </div>
           {/* 三个外链各自独立：缺哪个就不渲染哪一行，不拿本站页面去补位 */}
           {project.repo && (
             <div>
-              <dt>项目源码</dt>
+              <dt>Source code</dt>
               <dd>
                 <a className="button" href={project.repo} target="_blank" rel="noopener noreferrer">
-                  查看仓库 <Icon name="out" />
+                  View repository <Icon name="out" />
                 </a>
               </dd>
             </div>
           )}
           {project.docs && (
             <div>
-              <dt>项目文档</dt>
+              <dt>Documentation</dt>
               <dd>
                 <a className="text-link" href={project.docs} target="_blank" rel="noopener noreferrer">
-                  查看文档 <Icon name="out" />
+                  View documentation <Icon name="out" />
                 </a>
               </dd>
             </div>
           )}
           {project.demo && (
             <div>
-              <dt>在线演示</dt>
+              <dt>Live demo</dt>
               <dd>
                 <a className="text-link" href={project.demo} target="_blank" rel="noopener noreferrer">
-                  查看演示 <Icon name="out" />
+                  View demo <Icon name="out" />
                 </a>
               </dd>
             </div>

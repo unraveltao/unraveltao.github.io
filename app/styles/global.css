@@ -496,3 +496,242 @@ main {
 .preview-geeker .preview-type {
   font: 23px var(--mono);
 }
+
+
+/* Writing archive: a quiet left rail connects dates to their article rows. */
+.writing-timeline {
+  --timeline-date-width: 88px;
+  --timeline-node-width: 12px;
+  --timeline-gap: 16px;
+  position: relative;
+}
+
+.writing-timeline::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: calc(var(--timeline-date-width) + var(--timeline-gap) + 6px);
+  width: 1px;
+  background: var(--border);
+  pointer-events: none;
+}
+
+.writing-timeline .writing-row-timeline {
+  position: relative;
+  grid-template-columns: var(--timeline-date-width) var(--timeline-node-width) minmax(0, 1fr) 20px;
+  gap: var(--timeline-gap);
+  padding: 22px 0;
+  border-top: 1px solid var(--border);
+}
+
+.writing-timeline .writing-row-timeline time {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  padding-top: 4px;
+}
+
+.writing-timeline-marker {
+  z-index: 1;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.writing-timeline .writing-row-content {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.writing-timeline .writing-row-open {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.writing-timeline .writing-row-timeline:hover .writing-timeline-marker {
+  background: var(--accent);
+}
+
+@media (max-width: 760px) {
+  .writing-timeline {
+    --timeline-date-width: 52px;
+    --timeline-node-width: 10px;
+    --timeline-gap: 9px;
+  }
+
+  .writing-timeline::before {
+    left: calc(var(--timeline-date-width) + var(--timeline-gap) + 5px);
+  }
+
+  .writing-timeline .writing-row-timeline {
+    grid-template-columns: var(--timeline-date-width) var(--timeline-node-width) minmax(0, 1fr) 16px;
+    padding: 19px 0;
+  }
+
+  .writing-timeline .writing-row-timeline time {
+    font-size: 8px;
+  }
+
+  .writing-timeline .writing-row-timeline h3 {
+    font-size: 19px;
+  }
+
+  .writing-timeline .writing-row-timeline p {
+    font-size: 11px;
+  }
+}
+
+
+/* Timeline details: number the nodes and keep separators within article content. */
+.writing-timeline {
+  --timeline-index-width: 24px;
+}
+
+.writing-timeline::before {
+  left: calc(var(--timeline-date-width) + var(--timeline-gap) + var(--timeline-index-width) + var(--timeline-gap) + 6px);
+  top: 32px;
+  bottom: 32px;
+}
+
+.writing-timeline .writing-row-timeline {
+  grid-template-columns: var(--timeline-date-width) var(--timeline-index-width) var(--timeline-node-width) minmax(0, 1fr) 20px;
+  border-top: 0;
+  padding: 23px 0;
+}
+
+.writing-timeline-index {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
+  padding-top: 4px;
+  color: var(--muted);
+  font: 9px var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.writing-timeline .writing-timeline-marker {
+  grid-column: 3;
+}
+
+.writing-timeline .writing-row-content {
+  grid-column: 4;
+  grid-row: 1;
+  padding-bottom: 12px;
+}
+
+.writing-timeline .writing-row-open {
+  grid-column: 5;
+  grid-row: 1;
+}
+
+.writing-timeline .writing-row-content::after {
+  content: "";
+  display: block;
+  width: min(100%, 52rem);
+  height: 1px;
+  margin-top: 18px;
+  background: var(--border);
+}
+
+.writing-timeline .writing-row-timeline:last-child .writing-row-content::after {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .writing-timeline {
+    --timeline-index-width: 18px;
+    --timeline-gap: 8px;
+  }
+
+  .writing-timeline::before {
+    left: calc(var(--timeline-date-width) + var(--timeline-gap) + var(--timeline-index-width) + var(--timeline-gap) + 5px);
+    top: 28px;
+    bottom: 28px;
+  }
+
+  .writing-timeline .writing-row-timeline {
+    grid-template-columns: var(--timeline-date-width) var(--timeline-index-width) var(--timeline-node-width) minmax(0, 1fr) 16px;
+    padding: 19px 0;
+  }
+
+  .writing-timeline-index {
+    font-size: 8px;
+  }
+
+  .writing-timeline .writing-row-content {
+    padding-bottom: 10px;
+  }
+
+  .writing-timeline .writing-row-content::after {
+    width: 100%;
+    margin-top: 14px;
+  }
+}
+
+
+/* Keep each date, index, and timeline node centered on the same row axis. */
+.writing-timeline .writing-row-timeline time {
+  align-self: center;
+  padding-top: 0;
+  line-height: 1;
+}
+
+.writing-timeline-index {
+  align-self: center;
+  padding-top: 0;
+  line-height: 1;
+}
+
+/* Compact, accessible controls for the paginated writing archive. */
+.writing-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  color: var(--muted);
+  font: 12px/1 var(--mono);
+}
+
+.writing-pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: inherit;
+}
+
+.writing-pagination button:not(:disabled):hover {
+  color: var(--accent);
+}
+
+.writing-pagination button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.writing-pagination span {
+  min-width: 52px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.writing-pagination-previous {
+  transform: rotate(180deg);
+}
+
+.pagination-preview-note {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font: 10px/1.5 var(--mono);
+}

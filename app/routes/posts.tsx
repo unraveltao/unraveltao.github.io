@@ -1,68 +1,87 @@
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { Icon } from '~/components/Icon'
 import { PostRow } from '~/components/PostRow'
 import { getPublishedPosts } from '~/lib/content'
 import { pageMeta } from '~/lib/seo'
 
+const PAGE_SIZE = 20
+const PREVIEW_PARAM = 'pagination-preview'
+
 export const meta = () =>
   pageMeta({
     path: '/posts',
-    title: '写作',
-    description:
-      '精选方法论、技术取舍与实践总结，只收录值得长期引用的结论。',
+    title: 'Writing',
+    description: 'Selected notes on methods, technical decisions, and lessons from practice.',
   })
 
-/**
- * 版式取自参考站 writing()：页头 → 标签筛选 + 搜索框 → 结果计数 + 列表。
- * 筛选与搜索都在客户端做，数据量是几十篇，不需要更复杂的索引。
- */
-export default function Posts() {
-  const posts = getPublishedPosts()
-  const [tag, setTag] = useState('All')
-  const [query, setQuery] = useState('')
+/** Temporary fixtures for reviewing the 20-post page break; remove after preview approval. */
+function makePaginationPreview(posts: ReturnType<typeof getPublishedPosts>) {
+  if (posts.length === 0) return posts
+  return Array.from({ length: 30 }, (_, index) => {
+    const source = posts[index % posts.length]!
+    const date = new Date(Date.UTC(2026, 10, 20 - index)).toISOString().slice(0, 10)
+    return {
+      ...source,
+      date,
+      title: `Pagination preview article ${String(index + 1).padStart(2, '0')}`,
+      summary: 'Temporary sample entry for checking the 20-post pagination layout.',
+    }
+  })
+}
 
-  const tags = useMemo(() => ['All', ...new Set(posts.flatMap((post) => post.tags))], [posts])
+/** A focused writing index with search and a reverse-chronological timeline. */
+export default function Posts() {
+  const publishedPosts = getPublishedPosts()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [query, setQuery] = useState('')
+  const previewEnabled = searchParams.get(PREVIEW_PARAM) === '30'
+
+  const posts = useMemo(
+    () => (previewEnabled ? makePaginationPreview(publishedPosts) : publishedPosts),
+    [previewEnabled, publishedPosts],
+  )
 
   const results = useMemo(() => {
     const keyword = query.trim().toLowerCase()
-    return posts.filter((post) => {
-      if (tag !== 'All' && !post.tags.includes(tag)) return false
-      if (!keyword) return true
-      return `${post.title} ${post.summary} ${post.tags.join(' ')} ${post.raw}`.toLowerCase().includes(keyword)
-    })
-  }, [posts, tag, query])
+    if (!keyword) return posts
+    return posts.filter((post) =>
+      `${post.title} ${post.summary} ${post.tags.join(' ')} ${post.raw}`.toLowerCase().includes(keyword),
+    )
+  }, [posts, query])
 
-  const reset = () => {
-    setTag('All')
-    setQuery('')
+  const pageCount = Math.ceil(results.length / PAGE_SIZE)
+  const requestedPage = Math.max(1, Number(searchParams.get('page')) || 1)
+  const currentPage = Math.min(requestedPage, Math.max(1, pageCount))
+  const pageResults = results.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+
+  function goToPage(page: number) {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+      if (page === 1) next.delete('page')
+      else next.set('page', String(page))
+      return next
+    })
+  }
+
+  function updateQuery(value: string) {
+    setQuery(value)
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+      next.delete('page')
+      return next
+    }, { preventScrollReset: true })
   }
 
   return (
     <>
       <header className="page-head">
-        <div className="eyebrow">精选技术写作</div>
-        <h1>值得留下的方法与判断。</h1>
-        <p>
-          方法论、关键技术取舍与实践总结。有明确的结论，也有支撑结论的过程。
-        </p>
+        <div className="eyebrow">SELECTED WRITING</div>
+        <h1>Methods and ideas worth keeping.</h1>
+        <p>Notes on software, technical decisions, and lessons from practice.</p>
       </header>
 
       <div className="writing-controls">
-        <div className="filter-chips" role="group" aria-label="Filter writing by tag">
-          {tags.map((item) => (
-            <button
-              key={item}
-              type="button"
-              className="filter-chip"
-              data-filter={item}
-              aria-pressed={tag === item}
-              onClick={() => setTag(item)}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-
         <label className="search-field">
           <Icon name="search" />
           <span className="sr-only">Search writing</span>
@@ -70,29 +89,58 @@ export default function Posts() {
             type="search"
             placeholder="Find a note…"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => updateQuery(event.target.value)}
           />
         </label>
       </div>
 
       <div id="writing-results">
+        {previewEnabled && (
+          <p className="pagination-preview-note" role="status">
+            Temporary preview data: 30 entries, with 20 shown per page.
+          </p>
+        )}
         <div className="result-count" role="status">
           {results.length} {results.length === 1 ? 'note' : 'notes'}
           {query.trim() ? ' found' : ''}
+          {pageCount > 1 ? ` · ${PAGE_SIZE} per page` : ''}
         </div>
 
         {results.length > 0 ? (
-          <div className="writing-list">
-            {results.map((post) => (
-              <PostRow key={post.slug} post={post} />
-            ))}
-          </div>
+          <>
+            <div className="writing-list writing-timeline">
+              {pageResults.map((post, index) => (
+                <PostRow key={`${post.slug}-${index}`} post={post} timeline timelineIndex={index + 1} />
+              ))}
+            </div>
+            {pageCount > 1 && (
+              <nav className="writing-pagination" aria-label="Writing pages">
+                <button
+                  type="button"
+                  aria-label="Previous page"
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <Icon name="arrow" className="writing-pagination-previous" />
+                </button>
+                <span aria-live="polite">{currentPage} / {pageCount}</span>
+                <button
+                  type="button"
+                  aria-label="Next page"
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === pageCount}
+                >
+                  <Icon name="arrow" />
+                </button>
+              </nav>
+            )}
+          </>
         ) : (
           <div className="empty-state">
             <h2>No notes in this corner yet.</h2>
             <p>Try another phrase or explore all the notes.</p>
-            <button type="button" className="button" onClick={reset}>
-              Clear filters <Icon name="arrow" />
+            <button type="button" className="button" onClick={() => updateQuery('')}>
+              Clear search <Icon name="arrow" />
             </button>
           </div>
         )}

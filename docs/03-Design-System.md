@@ -166,3 +166,8 @@ These decisions are reflected in current product documentation; the paths below 
 ## 10. UI-change workflow
 
 For the upcoming UI review, first record the specific user-facing problem and the intended outcome. Update this document only for lasting visual rules or specifications; small local adjustments do not need an ADR. Discuss changes to the theme model, a UI framework, or the overall visual direction before implementation. After a visual change, inspect narrow and desktop layouts, keyboard operation, visible focus, and all six themes. A successful build alone is not visual acceptance.
+
+
+## 11. Current writing timeline (2026-11-21)
+
+The Writing archive uses a reverse-chronological vertical timeline. A fine theme-aware line and small muted nodes sit between the date rail and the article text. Place a small sequence number immediately before each node with a little breathing room, aligned horizontally with the date; each row shows its date, title, summary, and reading time. Use an underline below article content that is long enough to cover the longest title, but keep it within the article column and never let it cross the timeline rail. Show 20 Posts per page; display simple previous/next arrows and the current page over the total only when multiple pages exist. Keep the presentation editorial and quiet: no year dividers, filled cards, category chips, or decorative icons. The whole row remains a keyboard-accessible link with visible focus. On narrow screens, reduce the date and node gutters while preserving the same order and alignment.

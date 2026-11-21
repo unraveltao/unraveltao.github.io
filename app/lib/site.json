@@ -1,9 +1,9 @@
 {
   "name": "unraveltao",
   "url": "https://unraveltao.github.io",
-  "titleTagline": "项目与精选写作",
-  "tagline": "这里展示我的项目，也记录重要的方法论、技术取舍与实践总结。",
-  "description": "unraveltao 的个人主页与作品集：真实项目、精选技术写作，以及值得长期复用的方法。",
+  "titleTagline": "Projects and selected writing",
+  "tagline": "I build projects and document the methods, technical decisions, and lessons that matter.",
+  "description": "The personal site and portfolio of unraveltao, featuring selected projects and technical writing.",
   "author": "unraveltao",
   "email": "hi@example.com",
   "repo": "https://github.com/unraveltao"

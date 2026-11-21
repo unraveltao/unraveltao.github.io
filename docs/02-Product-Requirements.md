@@ -42,7 +42,7 @@ Below project details, show published Posts whose `project` matches the project 
 
 ### Writing
 
-Posts may contain methods, technical decisions, and practice-based retrospectives. Preserve existing URLs. A newly published Post does not become a homepage feature automatically. The writing list remains available regardless of homepage selection. Post bodies begin at `h2` and do not skip heading levels. Post pages show summary, date, reading time, and tags. Set `updated` only after a substantive revision.
+Posts may contain methods, technical decisions, and practice-based retrospectives. Preserve existing URLs. A newly published Post does not become a homepage feature automatically. The writing list remains available regardless of homepage selection and orders posts newest first on a vertical timeline. Each row connects its date and a small sequence number to the title, summary, and reading time with a fine left rail and node. Keep a little space between the number and node. Use an underline below article content that is long enough to cover the longest title, while remaining inside the article column. Show at most 20 Posts per page; when there are more results, provide previous/next arrows and a compact current/total page indicator, and number rows 01–20 on each page. Do not add year groups, category filters, or tag chips. Post bodies begin at `h2` and do not skip heading levels. Article pages show summary, date, and reading time; tag metadata remains in frontmatter but is not shown in the interface for now. Set `updated` only after a substantive revision.
 
 ### Personal OS
 

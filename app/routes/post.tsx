@@ -85,7 +85,7 @@ export default function PostRoute() {
       </Link>
 
       <header className="page-head article-head">
-        <div className="eyebrow">{post.tags.join(' / ')}</div>
+        <div className="eyebrow">WRITING</div>
         <h1>{post.title}</h1>
         <p>{post.summary}</p>
         <div className="row-meta">
@@ -102,7 +102,7 @@ export default function PostRoute() {
           <article className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
           <div className="article-bottom">
             <Link className="text-link" to="/posts/">
-              <Icon name="arrow" /> Back to the notes
+              <Icon name="arrow" /> Back to writing
             </Link>
             <Link className="text-link" to="/workshop/">
               Write something new <Icon name="out" />
