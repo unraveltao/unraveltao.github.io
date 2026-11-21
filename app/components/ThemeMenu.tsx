@@ -149,7 +149,7 @@ export function ThemeMenu() {
 
   const pages = [
     { id: 'themes', label: 'Theme' },
-    { id: 'reading', label: 'Typography' },
+    { id: 'reading', label: 'Reading' },
     { id: 'contact', label: 'Contact' },
     { id: 'support', label: 'Support' },
   ] as const
@@ -298,34 +298,33 @@ export function ThemeMenu() {
           {page === 'contact' && (
             <section className="personal-panel-page" aria-labelledby="contact-panel-title">
               <div className="appearance-page-heading">
-                <span className="appearance-eyebrow">联系与其他平台</span>
-                <h2 id="contact-panel-title">在这里找到我</h2>
+                <span className="appearance-eyebrow">CONTACT & ELSEWHERE</span>
+                <h2 id="contact-panel-title">Find me online</h2>
               </div>
               <ContactDetails headingLevel={3} />
-              <a className="contact-full-page-link" href="/contact/">查看完整联系方式 <span aria-hidden="true">↗</span></a>
+              <a className="contact-full-page-link" href="/contact/">View all contact details <span aria-hidden="true">↗</span></a>
             </section>
           )}
 
           {page === 'support' && (
             <section className="personal-panel-page support-panel-page" aria-labelledby="support-panel-title">
               <div className="appearance-page-heading">
-                <span className="appearance-eyebrow">赞赏支持</span>
-                <h2 id="support-panel-title">支持我的创作</h2>
+                <span className="appearance-eyebrow">SUPPORT MY WORK</span>
+                <h2 id="support-panel-title">Support my work</h2>
               </div>
               <figure className="support-qr-figure">
-                <a className="support-qr-open" href="/assets/support-qr.png" target="_blank" rel="noopener noreferrer" aria-label="打开清晰版微信赞赏码">
+                <a className="support-qr-open" href="/assets/support-qr.png" target="_blank" rel="noopener noreferrer" aria-label="Open the full-size WeChat support QR code">
                   <img
                     className="support-qr"
                     src="/assets/support-qr.png"
-                    alt="微信赞赏二维码"
+                    alt="WeChat support QR code"
                     width="460"
                     height="460"
                   />
                 </a>
-                <figcaption>微信赞赏码 · 扫码支持创作</figcaption>
+                <figcaption>WeChat support · Scan to support my work</figcaption>
               </figure>
               <blockquote className="support-pledge">
-                <span lang="zh-Hans">代码开源，乞讨闭源。</span>
                 <span lang="en">Open-source code. Closed-source begging.</span>
               </blockquote>
             </section>
@@ -341,3 +340,4 @@ export function ThemeMenu() {
     </div>
   )
 }
+
