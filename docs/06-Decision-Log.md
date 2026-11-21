@@ -2,7 +2,7 @@
 
 > Append new decisions; do not rewrite their rationale after the fact. If a decision changes, add a new ADR that supersedes the old one. Full records live in [`adr/`](./adr/); this file is the index and a concise summary.
 >
-> Last updated: 2026-11-19.
+> Last updated: 2026-11-22.
 
 ## 1. Why keep a decision log
 
@@ -13,7 +13,7 @@ Many implementation choices look interchangeable when viewed without their origi
 | ADR | Decision | Current status |
 |---|---|---|
 | [0001](./adr/0001-blog-positioning.md) | Engineering narratives as the original editorial focus | Partially superseded by 0012 |
-| [0002](./adr/0002-mdx-in-repo.md) | Store MDX in the repository and publish through Git | Active |
+| [0002](./adr/0002-mdx-in-repo.md) | Store MDX in the repository and publish through Git | Superseded by 0014 |
 | [0003](./adr/0003-visual-identity.md) | Continue the visual language of the original Profile README | Active as historical direction; current UI needs reconciliation |
 | [0004](./adr/0004-astro-static.md) | Astro static output instead of Next.js | Superseded by 0011 |
 | [0005](./adr/0005-post-only-content-model.md) | Begin with Posts as the only content entity | Partially superseded by 0007 |
@@ -24,6 +24,8 @@ Many implementation choices look interchangeable when viewed without their origi
 | [0010](./adr/0010-series-nav-as-left-rail.md) | Place series navigation in the left rail on wide screens | Active; verify during UI review |
 | [0011](./adr/0011-vite-react-router.md) | Use Vite, React Router 7, and Velite | Active |
 | [0012](./adr/0012-portfolio-and-selected-writing.md) | Focus the site on the portfolio and selected writing | Active |
+| [0013](./adr/0013-post-types-and-writing-index.md) | Use four explicit Post categories separate from topic tags | Active |
+| [0014](./adr/0014-markdown-posts.md) | Prefer plain Markdown for Post authoring | Active |
 
 ## 3. Core trade-offs
 
@@ -41,6 +43,8 @@ Many implementation choices look interchangeable when viewed without their origi
 | 0010 | Keep a series visible while reading it | Wide-screen and keyboard navigation have a deliberate layout trade-off |
 | 0011 | Reduce maintenance cost by using the maintainer's familiar React stack | First-screen JavaScript increased to about 122KB gzip in the migration baseline; article bodies are rendered HTML, not hydrated React components |
 | 0012 | Present credible projects and selected judgment | Homepage curation is manual; less prominent tools are harder to discover |
+| 0013 | Make editorial form explicit and separate from topic tags | Authors choose from a small, fixed category taxonomy |
+| 0014 | Use standard Markdown for ordinary Posts | Interactive MDX components are unavailable; `.mdx` remains supported for compatibility |
 
 ## 4. Rejected or deferred proposals
 
@@ -57,7 +61,6 @@ Many implementation choices look interchangeable when viewed without their origi
 | Question | Current position | Revisit when |
 |---|---|---|
 | Per-post Open Graph images | The site shares `public/og.png`; no per-post generator exists. | Distinct previews have demonstrated value and the added build or asset maintenance is acceptable. |
-| Markdown in place of MDX | Posts currently use `.mdx` paths and the content pipeline is configured for them. | A source audit shows MDX-only syntax is unused and Markdown would materially simplify authoring. |
 | Search or comments | Not planned. | Readers show a concrete need. |
 
 ## 6. Recording a new decision
@@ -81,3 +84,4 @@ Explain the decision and why it fits the constraints.
 ```
 
 If the consequences cannot be stated, the decision may not be ready to record.
+

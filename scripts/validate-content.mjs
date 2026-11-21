@@ -23,15 +23,25 @@ async function loadPosts() {
 
   for (const dir of dirs) {
     if (!dir.isDirectory()) continue;
-    const file = join(POSTS_DIR, dir.name, 'index.mdx');
-    let raw;
-    try {
-      raw = await readFile(file, 'utf8');
-    } catch {
-      continue; // 没有 index.mdx 的目录不是文章
+    const candidates = ['index.md', 'index.mdx'];
+    const found = [];
+    for (const name of candidates) {
+      try {
+        found.push({ name, raw: await readFile(join(POSTS_DIR, dir.name, name), 'utf8') });
+      } catch (err) {
+        if (err.code !== 'ENOENT') throw err;
+      }
     }
 
-    const rel = `content/posts/${dir.name}/index.mdx`;
+    if (found.length === 0) continue;
+    const files = found.map(({ name }) => `content/posts/${dir.name}/${name}`);
+    if (found.length > 1) {
+      parseErrors.push({ files, message: 'Use one Post source file: index.md or index.mdx, not both.' });
+      continue;
+    }
+
+    const [{ name, raw }] = found;
+    const rel = `content/posts/${dir.name}/${name}`;
     try {
       posts.push({ slug: dir.name, file: rel, data: parseScalarFields(raw) });
     } catch (err) {
@@ -79,3 +89,4 @@ main().catch((err) => {
   console.error(`\n✗ 内容校验无法完成：\n${err.message}\n`);
   process.exit(1);
 });
+

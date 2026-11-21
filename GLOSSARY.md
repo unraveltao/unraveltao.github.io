@@ -8,6 +8,8 @@ This site is a personally maintained portfolio and selected-writing site. See [A
 
 **Series** — An ordered group of Posts, represented by the `series` and `order` fields. It is metadata, not a third content entity.
 
+**Category** — One author-selected editorial type for a Post: Thinking, Review, Skill, or Log. Categories organize the Personal OS pages; tags describe topics.
+
 **Tag** — A flat, uncolored string used to filter Posts. Tags do not have descriptions, icons, or a hierarchy.
 
 **Featured** — A published Post selected for the homepage. At most one Post may be featured; when none is selected, the section is hidden.
@@ -17,6 +19,8 @@ This site is a personally maintained portfolio and selected-writing site. See [A
 **Published** — A non-draft Post whose publication date has arrived in the Asia/Shanghai timezone. Only published content is exposed on production pages and feeds.
 
 **Project** — The site's second content entity, describing a project with a name and optional verified summary, status, stack, repository, documentation, or demo links. A Project is neither a Post category nor part of a Series.
+
+**Markdown Post** — A Post authored at `content/posts/<slug>/index.md` with YAML frontmatter. The content pipeline also accepts legacy `index.mdx` files during migration; Projects remain `.mdx`.
 
 ## Interface terms
 
@@ -32,4 +36,5 @@ This site is a personally maintained portfolio and selected-writing site. See [A
 
 ## Language policy
 
-The public site and its Posts remain primarily Chinese. Repository documentation, including the README and `AGENTS.md`, is written in English. The site currently has a single content locale, `zh-CN`, and no English title or summary fields.
+Article prose uses the author's chosen language and remains primarily Chinese. Technical documentation and `AGENTS.md` are in English; the README is bilingual. The site has a single content locale, `zh-CN`, and no parallel English title or summary fields.
+

@@ -1,10 +1,10 @@
 # Product Requirements
 
-> Updated on 2026-11-19. `velite.config.ts` is the source of truth for field types and validation; this document describes product intent.
+> Updated on 2026-11-22. `velite.config.ts` is the source of truth for field types and validation; this document describes product intent.
 
 ## 1. Scope
 
-The site is a personal homepage, project portfolio, and selected technical writing. It has two content entities: Post and Project. Series is metadata on Posts, not a separate entity. Site content remains primarily Chinese; repository and technical documentation are maintained in English. The site does not accept code contributions.
+The site is a personal homepage, project portfolio, and selected technical writing. It has two content entities: Post and Project. Series is metadata on Posts, not a separate entity. Article prose remains primarily Chinese; some interface copy is in English. Technical documentation is maintained in English and the README is bilingual. The site does not accept code contributions.
 
 ## 2. Pages and URLs
 
@@ -13,11 +13,11 @@ The site is a personal homepage, project portfolio, and selected technical writi
 | `/` | Introduction, representative project, selected writing, and GitHub contact link |
 | `/projects/` | Projects, sorted by `order` and then name |
 | `/projects/:slug/` | Project details |
-| `/posts/` | Published posts in reverse chronological order, filterable by tags and keywords |
-| `/posts/:slug/` | Post body, table of contents, series navigation, and adjacent posts |
+| `/posts/` | Published posts in reverse chronological order with category, title, publication date, and summary |
+| `/posts/:slug/` | Category, title, publication date, summary, Post body, table of contents, and optional series navigation |
 | `/personal-os/` | Directory of the four registered Post categories |
 | `/personal-os/:category/` | Published Posts filtered to one registered category |
-| `/contact/` | Public contact methods and links to the author's other platforms |
+| `/contact/` | Public contact methods and links to the author's other platforms, presented in English |
 | `/series/:series/` | Published posts in a series |
 | `/workshop/`, `/workflow/` | Legacy routes retained for existing links, outside the primary navigation |
 | `/404/` | Not-found page; static hosting also receives a root `404.html` |
@@ -52,17 +52,17 @@ Posts may contain methods, technical decisions, and practice-based retrospective
 
 ### Appearance and reading typography
 
-The header gear opens a compact four-tab personal menu labeled in English: Theme, Typography, Contact, and Support. Show only the selected tab's contents so long controls do not stack into one tall panel. Theme retains the six existing color themes. Typography provides font family (site default, sans, serif), text size, line spacing, and reading width. These preferences apply to long-form Post and Project bodies; navigation, theme colors, article heading hierarchy, and code typography remain stable. Changes apply immediately, persist on the current device, and include a restore-defaults action. Defaults preserve each theme's current body typography. Contact shares the approved links with `/contact/`. Support shows the owner-provided appreciation QR at its original square proportions without masking or cropping the code area, offers a full-size image link, and displays the owner's open-source/closed-source slogan in Chinese and English as live text. Do not include screenshot framing or image-embedded slogans. Tab labels and all four page titles use the same compact visual system and remain keyboard operable.
+The header gear opens a compact four-tab personal menu labeled in English: Theme, Reading, Contact, and Support. Show only the selected tab's contents so long controls do not stack into one tall panel. Theme retains the six existing color themes. Reading provides font family (site default, sans, serif), text size, line spacing, and reading width. These preferences apply to long-form Post and Project bodies; navigation, theme colors, article heading hierarchy, and code typography remain stable. Changes apply immediately, persist on the current device, and include a restore-defaults action. Defaults preserve each theme's current body typography. Contact shares the approved links with `/contact/`. Support shows the owner-provided appreciation QR at its original square proportions without masking or cropping the code area, offers a full-size image link, and displays the English slogan as live text. Do not include screenshot framing or image-embedded slogans. Tab labels and all four page titles use the same compact visual system and remain keyboard operable.
 
 ### Contact and other platforms
 
-`/contact/` presents its public contact methods and content-platform accounts in Chinese, grouped separately. The gear menu's Contact tab uses the same shared component and link data. Link data is maintained in `app/lib/contact-links.ts`; do not publish example values or infer personal details from account metadata. Until approved values are added, show a short pending message in each group. Email links open a message composer; visitors attach files themselves. The footer links to this page. Do not add a new content collection for these static links. The gear menu's Support tab shows only the owner-provided appreciation QR; preserve its square scan area and do not invent payment links or account details.
+`/contact/` presents public contact methods and content-platform accounts in English, grouped separately. The gear menu's Contact tab uses the same shared component and link data. Link data is maintained in `app/lib/contact-links.ts`; do not publish example values or infer personal details from account metadata. Until approved values are added, show a short pending message in each group. Email links open a message composer; visitors attach files themselves. The footer links to this page. Do not add a new content collection for these static links. The Support tab displays the owner-provided appreciation QR and English text; preserve its square scan area and do not invent payment links or account details.
 
 ## 5. Content model and authoring
 
 ### 5.1 Files
 
-- Posts: `content/posts/<slug>/index.mdx`
+- Posts: `content/posts/<slug>/index.md` (preferred); legacy `index.mdx` is supported
 - Projects: `content/projects/<slug>/index.mdx`
 - Series metadata: `content/series.json`
 - Post images: normally beside the post and referenced with a relative path. Reusable method illustrations may live in `public/assets/`.
@@ -85,8 +85,9 @@ Label code fences with their language. Give images descriptive alt text. Use com
 
 ### 5.5 Validation
 
-Velite schema failures stop the build. Cross-file checks cover duplicate series order, unknown series, more than one published featured Post, and `updated` earlier than `date`; they are maintained in `scripts/lib/content-rules.mjs` with regression tests. Custom slug collisions, body heading hierarchy, internal-link trailing slashes, and image references are not all checked automatically in the current baseline. Complex MDX syntax, whether an image matches its alt text, factual accuracy, and typos require human review.
+Velite schema failures stop the build. Cross-file checks cover duplicate series order, unknown series, more than one published featured Post, and `updated` earlier than `date`; they are maintained in `scripts/lib/content-rules.mjs` with regression tests. The content validator accepts one source file per Post (`index.md` or `index.mdx`) and reports duplicate files. Custom slug collisions, body heading hierarchy, internal-link trailing slashes, and image references are not all checked automatically in the current baseline. Legacy MDX syntax, whether an image matches its alt text, factual accuracy, and typos require human review.
 
 ## 6. Quality criteria
 
 `pnpm test` and `pnpm build` must pass. At 375px, pages must not scroll horizontally; keyboard users must be able to operate navigation and primary interactions. First-screen JavaScript must remain below 130KB gzip; measurement history is in [Technical Architecture](04-Technical-Architecture.md), and Lighthouse scores need a fresh measurement. Verify readable content, correct links and canonicals, RSS exclusion of Projects and unpublished content, a 301 for missing trailing slashes, and a 404 for unknown paths in the static preview.
+

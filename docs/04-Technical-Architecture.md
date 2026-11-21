@@ -1,6 +1,6 @@
 # Technical Architecture and Maintenance
 
-> Updated on 2026-11-19. Daily commands are in the [README](../README.md); product behavior is in [Product Requirements](02-Product-Requirements.md); historical decisions are indexed in [Decision Log](06-Decision-Log.md).
+> Updated on 2026-11-22. Daily commands are in the [README](../README.md); product behavior is in [Product Requirements](02-Product-Requirements.md); historical decisions are indexed in [Decision Log](06-Decision-Log.md).
 
 ## 1. Architecture map
 
@@ -31,7 +31,7 @@ Keep the directory structure shallow. Keep page-private logic with its page unti
 
 ## 2. Content and rendering
 
-The content model has two entities: Post and Project. A Post's required category is registered in `content/post-categories.json`; the Personal OS category pages use it to group writing. Series are derived from separate Post metadata. Velite validates and emits build-time JSON and rendered HTML. Pages read content only through `app/lib/content.ts`; do not duplicate publication filtering in routes or components.
+The content model has two entities: Post and Project. Posts are stored as `content/posts/<slug>/index.md`; the loader also accepts legacy `index.mdx` Posts, but a directory must not contain both. Projects remain at `content/projects/<slug>/index.mdx`. A Post's required category is registered in `content/post-categories.json`; Personal OS category pages use it to group writing. Series are derived from separate Post metadata. Velite validates frontmatter and emits build-time JSON and rendered HTML. Pages read content only through `app/lib/content.ts`; do not duplicate publication filtering in routes or components.
 
 `pnpm build` runs Velite, cross-file validation, React Router type generation, TypeScript, prerendering, and postbuild processing. Any failure stops the build. `pnpm test` runs the Node built-in test suite for pure validation rules. The deployment workflow runs on pushes to `main` and can also be triggered manually.
 
@@ -56,13 +56,13 @@ The local preview command is `pnpm preview`, backed by `scripts/serve.mjs`. It m
 
 ## 5. Content maintenance
 
-Posts and Projects are authored in the repository. `velite.config.ts` owns their schema. Post images normally live beside their post and require alt text. Do not change a published Post's slug or date. Set `updated` only for substantive revisions. Projects have no date and do not appear in RSS. RSS contains the full text of up to 20 published Posts.
+Posts and Projects are authored in the repository. `velite.config.ts` owns their schema. Write new Posts in plain Markdown with YAML frontmatter; `.mdx` is a compatibility path for existing Posts. The content validator rejects having both `index.md` and `index.mdx` in one Post directory. Projects currently use `index.mdx`. Post images normally live beside their post and require alt text. Do not change a published Post's slug or date. Set `updated` only for substantive revisions. Projects have no date and do not appear in RSS. RSS contains the full text of up to 20 published Posts.
 
 The homepage uses Project ordering and the `featured` Post flag rather than maintaining a second curation list. Ordinary Posts do not need to be featured. Project details associate writing through `Post.project`; repository, documentation, and demo links render independently when present.
 
 ## 6. Visual themes and performance
 
-The implemented theme list is defined in `app/lib/theme.ts`: `spring`, `summer`, `autumn`, `winter`, `geeker`, and `hacker`. Theme styles are currently spread across `app/styles/garden.css`, `app/styles/garden-themes.css`, and `app/styles/global.css`. The design document still contains historical and aspirational specifications that do not fully match the implementation; treat it as guidance, not proof of current styling. Reconcile it against the rendered site during the planned UI cleanup.
+The implemented theme list is defined in `app/lib/theme.ts`: `spring`, `summer`, `autumn`, `winter`, `geeker`, and `hacker`. Theme styles are currently spread across `app/styles/garden.css`, `app/styles/garden-themes.css`, and `app/styles/global.css`. Some design-document sections are historical or aspirational; treat them as guidance, not proof of current styling. Use the implementation and reviewed preview as the source of truth for behavior.
 
 Reading typography remains separate from the six color themes. `app/lib/reading-preferences.ts` validates the local-storage value and supplies defaults to the synchronous head initializer and React provider; the provider restores the HTML data attributes after hydration and applies user changes immediately. CSS scopes these attributes to long-form `.article-body` content. Keep the existing synchronous theme initialization and hydration-time restoration intact.
 
@@ -72,7 +72,7 @@ Do not add a dependency without checking whether the platform or build step can 
 
 ## 7. Known limitations
 
-- Human review is still needed for factual accuracy, typos, image meaning versus alt text, and complex MDX.
+- Human review is still needed for factual accuracy, typos, image meaning versus alt text, and legacy MDX syntax.
 - Workshop's export fields and heading conventions are not a direct match for the Post schema; do not treat its output as a publish-ready Post without conversion.
 - All posts share `public/og.png`; there is no post scaffold, formatter, or lint command.
 - The 130KB gzip budget is documented but not enforced automatically.
@@ -92,3 +92,5 @@ The figures below describe specific past revisions. They are retained as history
 - **2026-11-09 — Personal OS entry:** The `/personal-os/` directory and first method post passed content validation and a production build. The generated entry, post, RSS, sitemap, and trailing-slash canonicals were inspected. Mobile/desktop browser appearance, keyboard behavior, and all-theme visual checks were not completed in that environment.
 - **2026-11-18 — software-learning series:** Six posts and the `restarting-software` Series were added as content. The current `main` revision includes their publication; this note records the content change, not a new architecture decision.
 - **2026-11-22 — Reading preferences and contact page:** Added a static `/contact/` route with account data maintained outside content collections, plus persisted reading typography settings independent of the six color themes.
+- **2026-11-22 — Markdown-first Posts:** Migrated the published Hello World Post to `index.md`, kept `.mdx` as a compatibility extension, and made the schema and validator accept exactly one of the two formats.
+
