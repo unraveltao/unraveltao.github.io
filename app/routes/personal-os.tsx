@@ -5,29 +5,29 @@ export const meta: MetaFunction = () =>
   pageMeta({
     path: '/personal-os',
     title: 'Personal OS',
-    description: 'A personal index for ideas, reviews, reusable skills, and ongoing logs.',
+    description: 'A personal index for ideas, reflections, reusable methods, and ongoing project and learning logs.',
   })
 
 const columns = [
   {
     name: 'Think',
     number: '01',
-    description: '想法、观点与原则，记录我如何理解问题并作出判断。',
+    description: 'Ideas, perspectives, and principles that shape how I understand problems and make decisions.',
   },
   {
     name: 'Review',
     number: '02',
-    description: '回看一段实践或阶段，整理实际结果、经验与调整。',
+    description: 'Reflections on real practice: what happened, what I learned, and what I may change.',
   },
   {
     name: 'Skill',
     number: '03',
-    description: '沉淀可复用的方法、流程与工具实践。',
+    description: 'Reusable methods, workflows, and practical notes on tools.',
   },
   {
     name: 'Log',
     number: '04',
-    description: '记录项目、学习与实验的推进过程、决策和阶段进展。',
+    description: 'Progress, decisions, and milestones across projects, learning, and experiments.',
   },
 ]
 
@@ -37,9 +37,10 @@ export default function PersonalOs() {
     <>
       <header className="page-head">
         <div className="eyebrow">PERSONAL OS</div>
-        <h1>把长期方向，落到每天的行动。</h1>
+        <h1>Turn long-term direction into daily action.</h1>
         <p>
-          四个栏目分别收纳想法与原则、实践复盘、可复用方法，以及项目和学习过程记录。
+          Four columns for ideas and principles, reflections on practice, reusable methods, and
+          progress across projects and learning.
         </p>
       </header>
 
