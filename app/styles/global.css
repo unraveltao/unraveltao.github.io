@@ -13,6 +13,13 @@
 @import './garden.css';
 @import './garden-themes.css';
 
+/* Keep the homepage introduction above the fold on desktop. */
+@media (min-width: 761px) {
+  .hero {
+    min-height: calc(100svh - 116px);
+  }
+}
+
 /* Personal OS 的模块目录沿用文章列表的文字层级，并按 order 展示阅读顺序。 */
 /* Personal OS columns use the same calm, illustrated card language as Projects. */
 .personal-os-grid {
@@ -429,13 +436,20 @@ main {
 
 /* --- 结构：逐条对应 garden-themes.css 里 hacker 的那组覆盖 --- */
 :root[data-theme='geeker'] .hero h1 {
-  font-size: clamp(36px, 3.7vw, 52px);
-  line-height: 1.15;
-  letter-spacing: -2.6px;
+  font-size: clamp(50px, 4.8vw, 67px);
+  line-height: 1.05;
+  letter-spacing: -2.5px;
 }
 
 :root[data-theme='geeker'] .hero h1 em {
   font-style: normal;
+}
+
+@media (max-width: 760px) {
+  :root[data-theme='geeker'] .hero h1 {
+    font-size: 44px;
+    letter-spacing: -1.4px;
+  }
 }
 
 :root[data-theme='geeker'] .monogram {
@@ -776,4 +790,18 @@ main {
   margin: 0 0 10px;
   color: var(--muted);
   font: 10px/1.5 var(--mono);
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  :root[data-theme='geeker'] .hero h1,
+  :root[data-theme='hacker'] .hero h1 {
+    font-size: 56px;
+  }
+}
+
+@media (min-width: 1500px) {
+  :root[data-theme='geeker'] .hero h1,
+  :root[data-theme='hacker'] .hero h1 {
+    font-size: 76px;
+  }
 }

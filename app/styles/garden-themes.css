@@ -30,6 +30,9 @@
   --season-sun:#edc46c;
   --season-sea:#91c6d3;
   --season-sand:#ecdcbb;
+  --season-coast:#788d68;
+  --season-cliff:#d4c19c;
+  --season-vein:#526e5c;
   color-scheme:light}
 :root[data-theme=autumn] {
   --bg:#faf3e9;
@@ -95,6 +98,13 @@
 .theme-trigger>.icon {
   width:16px;
   height:16px}
+.theme-trigger-indicator {
+  width:8px;
+  height:8px;
+  flex:0 0 8px;
+  border:1px solid var(--border);
+  border-radius:50%;
+  background:var(--accent)}
 .theme-trigger .theme-chevron {
   width:12px;
   height:12px;
@@ -288,6 +298,229 @@
 :root[data-theme=spring] .garden-art .season-scene,:root[data-theme=light] .garden-art .season-scene {
   width:81%;
   height:84%}
+:root[data-theme=spring] .garden-art .spring-orbit,:root[data-theme=light] .garden-art .spring-orbit {
+  stroke-dasharray:2 7;
+  animation:spring-orbit-drift 32s linear infinite}
+:root[data-theme=spring] .garden-art .spring-node,:root[data-theme=light] .garden-art .spring-node {
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:spring-node-breathe 4.8s ease-in-out infinite}
+:root[data-theme=spring] .garden-art .spring-node-two,:root[data-theme=light] .garden-art .spring-node-two {
+  animation-delay:-1.2s}
+:root[data-theme=spring] .garden-art .spring-node-three,:root[data-theme=light] .garden-art .spring-node-three {
+  animation-delay:-2.4s}
+:root[data-theme=spring] .garden-art .spring-breeze-line,:root[data-theme=light] .garden-art .spring-breeze-line {
+  stroke-dasharray:18 82;
+  animation:spring-breeze-flow 6.4s ease-in-out infinite}
+:root[data-theme=spring] .garden-art .spring-breeze-two,:root[data-theme=light] .garden-art .spring-breeze-two {
+  animation-delay:-2.1s}
+:root[data-theme=spring] .garden-art .spring-breeze-three,:root[data-theme=light] .garden-art .spring-breeze-three {
+  animation-delay:-4s}
+:root[data-theme=spring] .garden-art .spring-stem,:root[data-theme=light] .garden-art .spring-stem {
+  transform-box:fill-box;
+  transform-origin:50% 100%;
+  animation:spring-stem-sway 7.5s ease-in-out infinite}
+:root[data-theme=spring] .garden-art .spring-sun {
+  animation:spring-sun-cycle 60s linear infinite}
+:root[data-theme=spring] .garden-art .spring-cycle-scene {
+  width:100%;
+  height:100%}
+:root[data-theme=light] .garden-art .spring-sun {
+  transform-box:fill-box;
+  transform-origin:center;
+  animation:spring-sun-glow 8s ease-in-out infinite}
+:root[data-theme=spring] .garden-art {
+  animation:spring-day-night-background 60s linear infinite}
+:root[data-theme=spring] .garden-art:before {
+  animation:spring-day-night-dots 60s linear infinite}
+:root[data-theme=spring] .garden-art .spring-daylight {
+  animation:spring-daylight-cycle 60s linear infinite}
+:root[data-theme=spring] .garden-art .spring-ground {
+  animation:spring-ground-night 60s linear infinite}
+:root[data-theme=spring] .garden-art .season-scene {
+  animation:spring-night-fade 60s linear infinite}
+:root[data-theme=spring] .garden-art .spring-stars {
+  animation:spring-stars-appear 60s linear infinite}
+:root[data-theme=spring] .garden-art .spring-stars,:root[data-theme=spring] .garden-art .spring-moon {
+  filter:brightness(1.75)}
+:root[data-theme=spring] .garden-art .spring-moon {
+  animation:spring-moon-appear 60s linear infinite}
+:root[data-theme=spring] .garden-art .spring-static-sun {
+  display:none}
+:root[data-theme=spring] .garden-art .art-caption,:root[data-theme=spring] .garden-art .art-mark {
+  animation:spring-night-label 60s linear infinite}
+:root[data-theme=summer] .garden-art {
+  animation:summer-day-night-background 60s linear infinite}
+:root[data-theme=summer] .garden-art:before {
+  animation:summer-day-night-dots 60s linear infinite}
+:root[data-theme=summer] .garden-art .summer-cycle-scene {
+  width:100%;
+  height:100%}
+:root[data-theme=summer] .garden-art .summer-sun {
+  animation:summer-sun-day 60s linear infinite}
+:root[data-theme=summer] .garden-art .summer-birds {
+  animation:summer-birds-day 60s linear infinite}
+:root[data-theme=summer] .garden-art .summer-bird-wing {
+  transform-box:fill-box;
+  transform-origin:100% 100%;
+  animation:summer-bird-flap 760ms ease-in-out infinite alternate}
+:root[data-theme=summer] .garden-art .summer-bird-wing-right {
+  transform-origin:0% 100%;
+  animation-delay:-380ms}
+:root[data-theme=summer] .garden-art .summer-bird:nth-of-type(2) .summer-bird-wing {
+  animation-delay:-240ms}
+:root[data-theme=summer] .garden-art .summer-bird:nth-of-type(2) .summer-bird-wing-right {
+  animation-delay:-620ms}
+:root[data-theme=summer] .garden-art .summer-bird:nth-of-type(3) .summer-bird-wing {
+  animation-delay:-520ms}
+:root[data-theme=summer] .garden-art .summer-bird:nth-of-type(3) .summer-bird-wing-right {
+  animation-delay:-140ms}
+:root[data-theme=summer] .garden-art .summer-stars {
+  animation:summer-stars-night 60s linear infinite}
+:root[data-theme=summer] .garden-art .summer-night-overlay {
+  animation:summer-night-fade 60s linear infinite}
+:root[data-theme=summer] .garden-art .summer-moon {
+  animation:summer-moon-night 60s linear infinite}
+:root[data-theme=summer] .garden-art .summer-static-sun {
+  display:none}
+:root[data-theme=summer] .garden-art .summer-orbit {
+  animation:summer-orbit-drift 28s linear infinite}
+:root[data-theme=summer] .garden-art .art-caption,:root[data-theme=summer] .garden-art .art-mark {
+  animation:summer-night-label 60s linear infinite}
+:root[data-theme=autumn] .garden-art .autumn-tree {
+  transform-box:fill-box;
+  transform-origin:50% 100%;
+  animation:autumn-tree-sway 7s ease-in-out infinite}
+:root[data-theme=autumn] .garden-art .autumn-tree-right {
+  animation-delay:-3.5s;
+  animation-duration:8.5s}
+:root[data-theme=autumn] .garden-art .autumn-breeze {
+  animation:autumn-wind-drift 6s ease-in-out infinite}
+:root[data-theme=autumn] .garden-art .autumn-fall-rotation {
+  transform-box:fill-box;
+  transform-origin:50% 50%;
+  animation:autumn-leaf-tumble 3.8s ease-in-out infinite}
+:root[data-theme=autumn] .garden-art .autumn-fall-two .autumn-fall-rotation {
+  animation-delay:-1.7s;
+  animation-duration:4.6s}
+:root[data-theme=autumn] .garden-art .autumn-fall-three .autumn-fall-rotation {
+  animation-delay:-2.8s;
+  animation-duration:4.2s}
+:root[data-theme=winter] .garden-art .winter-sun {
+  animation:winter-sun-set 60s linear infinite}
+:root[data-theme=winter] .garden-art .winter-moon {
+  animation:winter-moon-rise 60s linear infinite}
+:root[data-theme=spring] .garden-art .spring-leaf,:root[data-theme=light] .garden-art .spring-leaf {
+  transform-box:fill-box;
+  transform-origin:50% 100%;
+  animation:spring-leaf-sway 7s ease-in-out infinite}
+:root[data-theme=spring] .garden-art .spring-leaf-right,:root[data-theme=light] .garden-art .spring-leaf-right {
+  animation-delay:-3.5s}
+@keyframes spring-orbit-drift {
+  to {stroke-dashoffset:-72}}
+@keyframes spring-node-breathe {
+  0%,100% {opacity:.72; transform:scale(.88)}
+  50% {opacity:1; transform:scale(1.18)}}
+@keyframes spring-leaf-sway {
+  0%,100% {transform:rotate(-2deg)}
+  50% {transform:rotate(3deg)}}
+@keyframes spring-breeze-flow {
+  0% {stroke-dashoffset:100;opacity:0}
+  30% {opacity:.2}
+  100% {stroke-dashoffset:-80;opacity:0}}
+@keyframes spring-stem-sway {
+  0%,100% {transform:rotate(-1deg)}
+  50% {transform:rotate(1.5deg)}}
+@keyframes spring-sun-cycle {
+  0%,45% {opacity:1}
+  50%,100% {opacity:0}}
+@keyframes spring-sun-glow {
+  0%,100% {opacity:.64;transform:scale(.98)}
+  50% {opacity:.82;transform:scale(1.03)}}
+@keyframes spring-moon-appear {
+  0%,46% {opacity:0}
+  52%,94% {opacity:1}
+  100% {opacity:0}}
+@keyframes spring-stars-appear {
+  0%,43% {opacity:0}
+  58%,91% {opacity:.86}
+  100% {opacity:0}}
+@keyframes spring-night-fade {
+  0%,43% {filter:brightness(1) saturate(1)}
+  56%,92% {filter:brightness(.58) saturate(.72)}
+  100% {filter:brightness(1) saturate(1)}}
+@keyframes spring-daylight-cycle {
+  0%,38% {opacity:.12}
+  50%,82% {opacity:.025}
+  100% {opacity:.12}}
+@keyframes spring-ground-night {
+  0%,43% {opacity:.22}
+  58%,91% {opacity:.07}
+  100% {opacity:.22}}
+@keyframes spring-day-night-background {
+  0%,43% {background-color:var(--art)}
+  58%,91% {background-color:#19243a}
+  100% {background-color:var(--art)}}
+@keyframes spring-day-night-dots {
+  0%,43% {opacity:.14}
+  58%,91% {opacity:.04}
+  100% {opacity:.14}}
+@keyframes spring-night-label {
+  0%,43% {color:var(--accent)}
+  58%,91% {color:#d8dfd1}
+  100% {color:var(--accent)}}
+@keyframes summer-sun-day {
+  0%,42% {opacity:1}
+  48%,100% {opacity:0}}
+@keyframes summer-birds-day {
+  0%,40% {opacity:1}
+  48%,100% {opacity:0}}
+@keyframes summer-moon-night {
+  0%,47% {opacity:0}
+  50%,94% {opacity:1}
+  100% {opacity:0}}
+@keyframes summer-bird-flap {
+  from {transform:rotate(-24deg)}
+  to {transform:rotate(24deg)}}
+@keyframes summer-stars-night {
+  0%,43% {opacity:0}
+  58%,91% {opacity:.9}
+  100% {opacity:0}}
+@keyframes summer-night-fade {
+  0%,43% {opacity:0}
+  56%,92% {opacity:.76}
+  100% {opacity:0}}
+@keyframes summer-day-night-background {
+  0%,43% {background-color:var(--art)}
+  58%,91% {background-color:#14233a}
+  100% {background-color:var(--art)}}
+@keyframes summer-day-night-dots {
+  0%,43% {opacity:.14}
+  58%,91% {opacity:.04}
+  100% {opacity:.14}}
+@keyframes summer-night-label {
+  0%,43% {color:var(--accent)}
+  58%,91% {color:#d8dfd1}
+  100% {color:var(--accent)}}
+@keyframes summer-orbit-drift {
+  to {stroke-dashoffset:-72}}
+@keyframes autumn-tree-sway {
+  0%,100% {transform:rotate(-1.2deg)}
+  50% {transform:rotate(1.6deg)}}
+@keyframes autumn-leaf-tumble {
+  0%,100% {transform:rotate(-24deg) scale(.16)}
+  50% {transform:rotate(28deg) scale(.14)}}
+@keyframes autumn-wind-drift {
+  0%,100% {stroke-dashoffset:80;opacity:.12}
+  45% {opacity:.48}
+  75% {stroke-dashoffset:-80;opacity:.2}}
+@keyframes winter-sun-set {
+  0%,40% {opacity:.95}
+  49%,100% {opacity:0}}
+@keyframes winter-moon-rise {
+  0%,47% {opacity:0}
+  58%,91% {opacity:1}
+  100% {opacity:0}}
 :root[data-theme=summer] .garden-art:before,:root[data-theme=winter] .garden-art:before {
   opacity:.06}
 :root[data-theme=autumn] .garden-art:before {
@@ -313,9 +546,9 @@
   z-index:1;
   pointer-events:none}
 :root[data-theme=hacker] .hero h1 {
-  font-size:clamp(36px,3.7vw,52px);
-  line-height:1.15;
-  letter-spacing:-2.6px}
+  font-size:clamp(50px,4.8vw,67px);
+  line-height:1.05;
+  letter-spacing:-2.5px}
 :root[data-theme=hacker] .hero h1 em {
   font-style:normal}
 :root[data-theme=hacker] .monogram {
@@ -339,6 +572,110 @@
   height:100%;
   position:relative;
   z-index:2}
+.terminal-screen {
+  height:calc(100% - 43px);
+  position:relative;
+  overflow:hidden;
+  font:11px/1.85 var(--mono)}
+.terminal-frame {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:22px 24px;
+  opacity:0;
+  pointer-events:none}
+.terminal-frame-bug {animation:terminal-frame-bug 24s linear infinite}
+.terminal-frame-rain {animation:terminal-frame-rain 24s linear infinite}
+.terminal-frame-clear {animation:terminal-frame-clear 24s linear infinite}
+.terminal-frame-fixed {animation:terminal-frame-fixed 24s linear infinite}
+.terminal-frame-loading {animation:terminal-frame-loading 24s linear infinite}
+.terminal-frame-result {animation:terminal-frame-result 24s linear infinite}
+.terminal-prompt {color:var(--text)}
+.terminal-frame pre {
+  margin:4px 0 0;
+  font:inherit;
+  line-height:1.9;
+  white-space:pre-wrap}
+.terminal-bug-line {
+  display:inline-block;
+  padding-inline:4px;
+  background:color-mix(in srgb,var(--accent) 13%,transparent);
+  animation:terminal-bug-flicker 700ms steps(2,end) 3}
+.terminal-error,.terminal-fixed,.terminal-loading-label,.terminal-result-foot {
+  color:var(--accent)}
+.terminal-error b {margin-right:7px}
+.terminal-error code {font:inherit}
+.terminal-matrix {
+  position:absolute;
+  inset:0 10px;
+  overflow:hidden;
+  color:#74e89c;
+  display:flex;
+  justify-content:space-around;
+  font:11px/1.55 var(--mono);
+  opacity:.9;
+  mask-image:linear-gradient(to bottom,transparent,#000 13%,#000 75%,transparent)}
+.terminal-matrix span {
+  position:relative;
+  flex:1;
+  text-align:center;
+  top:0;
+  animation:terminal-matrix-fall 2.4s linear infinite}
+.terminal-matrix span:nth-child(3n) {animation-delay:-.8s}
+.terminal-matrix span:nth-child(3n + 1) {animation-delay:-1.7s}
+.terminal-matrix span:nth-child(3n + 2) {animation-delay:-.3s}
+.terminal-glitch {
+  position:absolute;
+  left:24px;
+  top:50%;
+  color:var(--accent);
+  opacity:.6;
+  letter-spacing:2px}
+.terminal-cursor {animation:terminal-blink 1s step-end infinite}
+.terminal-code-line {display:block;clip-path:inset(0 100% 0 0)}
+.terminal-type-line-one {animation:terminal-type-one 24s steps(12,end) infinite}
+.terminal-type-line-two {animation:terminal-type-two 24s steps(12,end) infinite}
+.terminal-type-line-three {animation:terminal-type-three 24s steps(28,end) infinite}
+.terminal-type-line-four {animation:terminal-type-four 24s steps(14,end) infinite}
+.terminal-type-line-five {animation:terminal-type-five 24s steps(1,end) infinite}
+.terminal-progress {
+  height:5px;
+  margin-top:4px;
+  overflow:hidden;
+  border-radius:5px;
+  background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.terminal-progress i {
+  display:block;
+  width:100%;
+  height:100%;
+  transform:scaleX(0);
+  transform-origin:left;
+  background:var(--accent);
+  animation:terminal-progress-fill 24s ease-in-out infinite}
+.terminal-loading-label {display:flex;justify-content:space-between}
+.terminal-result-label {color:var(--accent)}
+.terminal-garden-result {
+  width:min(240px,82%);
+  height:112px;
+  align-self:center;
+  margin:auto 0 0;
+  overflow:visible}
+.terminal-garden-result .garden-ground,.terminal-garden-result .garden-stem,.terminal-garden-result .garden-rays {
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:2.2;
+  stroke-linecap:round}
+.terminal-garden-result .garden-bloom,.terminal-garden-result .garden-leaves {
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:2.2;
+  stroke-linejoin:round}
+.terminal-result-foot {font-size:9px;opacity:.8}
+.terminal-result-foot span {float:right}
+:root[data-theme=geeker] .terminal-matrix {color:#a24d2b}
+:root[data-theme=geeker] .terminal-glitch {color:#a24d2b}
 .terminal-top {
   display:flex;
   justify-content:space-between;
@@ -391,6 +728,41 @@
   50% {
   opacity:0}
 }
+@keyframes terminal-frame-bug {
+  0%,14% {opacity:1}
+  17%,100% {opacity:0}}
+@keyframes terminal-frame-rain {
+  0%,16% {opacity:0}
+  19%,44% {opacity:1}
+  48%,100% {opacity:0}}
+@keyframes terminal-frame-clear {
+  0%,45% {opacity:0}
+  48%,51% {opacity:1}
+  54%,100% {opacity:0}}
+@keyframes terminal-frame-fixed {
+  0%,50% {opacity:0}
+  53%,66% {opacity:1}
+  69%,100% {opacity:0}}
+@keyframes terminal-frame-loading {
+  0%,67% {opacity:0}
+  70%,80% {opacity:1}
+  83%,100% {opacity:0}}
+@keyframes terminal-frame-result {
+  0%,81% {opacity:0}
+  84%,100% {opacity:1}}
+@keyframes terminal-bug-flicker {
+  50% {opacity:.45;transform:translateX(2px)}}
+@keyframes terminal-matrix-fall {
+  from {transform:translateY(-115%)}
+  to {transform:translateY(135%)}}
+@keyframes terminal-type-one {0%,53% {clip-path:inset(0 100% 0 0)} 56%,100% {clip-path:inset(0 0 0 0)}}
+@keyframes terminal-type-two {0%,56% {clip-path:inset(0 100% 0 0)} 59%,100% {clip-path:inset(0 0 0 0)}}
+@keyframes terminal-type-three {0%,59% {clip-path:inset(0 100% 0 0)} 63%,100% {clip-path:inset(0 0 0 0)}}
+@keyframes terminal-type-four {0%,63% {clip-path:inset(0 100% 0 0)} 65%,100% {clip-path:inset(0 0 0 0)}}
+@keyframes terminal-type-five {0%,65% {clip-path:inset(0 100% 0 0)} 66%,100% {clip-path:inset(0 0 0 0)}}
+@keyframes terminal-progress-fill {
+  0%,68% {transform:scaleX(0)}
+  80%,100% {transform:scaleX(1)}}
 @media(max-width:1100px) {
   .theme-menu.appearance-panel {
   right:0}
@@ -433,9 +805,6 @@
   font-size:12px}
 .theme-option-description {
   font-size:10px}
-:root[data-theme=hacker] .hero h1 {
-  font-size:43px;
-  letter-spacing:-2.8px}
 :root[data-theme=hacker] .garden-art {
   height:320px}
 .terminal-code {
@@ -453,6 +822,47 @@
 @media(prefers-reduced-motion:reduce) {
   .terminal-cursor {
   animation:none}
+.terminal-frame {
+  display:none;
+  animation:none}
+.terminal-frame-result {
+  display:flex;
+  opacity:1}
+.terminal-frame-fixed pre {
+  clip-path:none}
+.terminal-code-line {
+  animation:none;
+  clip-path:none}
+.terminal-matrix,.terminal-glitch {
+  display:none}
+.garden-art .spring-orbit,.garden-art .spring-node,.garden-art .spring-breeze-line,.garden-art .spring-stem,.garden-art .spring-sun,.garden-art .spring-leaf {
+  animation:none}
+:root[data-theme=spring] .garden-art,:root[data-theme=spring] .garden-art:before,:root[data-theme=spring] .garden-art .spring-daylight,:root[data-theme=spring] .garden-art .spring-ground,:root[data-theme=spring] .garden-art .season-scene,:root[data-theme=spring] .garden-art .spring-stars,:root[data-theme=spring] .garden-art .spring-moon,:root[data-theme=spring] .garden-art .art-caption,:root[data-theme=spring] .garden-art .art-mark {
+  animation:none}
+:root[data-theme=spring] .garden-art .spring-sun,:root[data-theme=spring] .garden-art .spring-moon,:root[data-theme=spring] .garden-art .spring-stars {
+  display:none}
+:root[data-theme=spring] .garden-art .spring-static-sun {
+  display:block;
+  opacity:1}
+:root[data-theme=summer] .garden-art,:root[data-theme=summer] .garden-art:before,:root[data-theme=summer] .garden-art .summer-night-overlay,:root[data-theme=summer] .garden-art .summer-stars,:root[data-theme=summer] .garden-art .summer-moon,:root[data-theme=summer] .garden-art .summer-birds,:root[data-theme=summer] .garden-art .summer-bird-wing,:root[data-theme=summer] .garden-art .summer-orbit,:root[data-theme=summer] .garden-art .summer-sun,:root[data-theme=summer] .garden-art .art-caption,:root[data-theme=summer] .garden-art .art-mark {
+  animation:none}
+:root[data-theme=summer] .garden-art .summer-sun,:root[data-theme=summer] .garden-art .summer-moon,:root[data-theme=summer] .garden-art .summer-stars,:root[data-theme=summer] .garden-art .summer-night-overlay,:root[data-theme=summer] .garden-art .summer-birds {
+  display:none}
+:root[data-theme=summer] .garden-art .summer-static-sun {
+  display:block;
+  opacity:1}
+:root[data-theme=summer] .garden-art .summer-sailboat animateTransform,:root[data-theme=summer] .garden-art .summer-waves animateTransform,:root[data-theme=summer] .garden-art .summer-wave-glints animate {
+  display:none}
+:root[data-theme=autumn] .garden-art .autumn-tree,:root[data-theme=autumn] .garden-art .autumn-fall-rotation,:root[data-theme=autumn] .garden-art .autumn-breeze {
+  animation:none}
+:root[data-theme=autumn] .garden-art .autumn-falling-leaf {
+  display:none}
+:root[data-theme=winter] .garden-art .winter-sun,:root[data-theme=winter] .garden-art .winter-moon {
+  animation:none}
+:root[data-theme=winter] .garden-art .winter-sun-motion,:root[data-theme=winter] .garden-art .winter-moon-motion,:root[data-theme=winter] .garden-art .winter-flake-motion {
+  display:none}
+:root[data-theme=winter] .garden-art .winter-moon {
+  display:none}
 .theme-trigger,.theme-chevron,.theme-preview {
   transition:none}
 }

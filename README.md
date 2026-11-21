@@ -19,6 +19,7 @@ This repository contains the source for my personal website: a portfolio of sele
 ## Explore the site
 
 - **Writing:** browse published articles, methods, and project notes.
+- **Personal OS:** read the evolving practices I use to connect long-term goals with daily work.
 - **Projects:** see selected software projects and their available source or documentation links.
 - **RSS:** subscribe to new posts at [`/rss.xml`](https://unraveltao.github.io/rss.xml).
 
