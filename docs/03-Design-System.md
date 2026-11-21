@@ -97,6 +97,9 @@ The original spec used `letter-spacing: -0.01em` for headings and uppercase Lati
 - Images use `max-width: 100%`, square or 2px corners, optional `--line` border, and required alt text.
 - Motion duration: 160ms with `cubic-bezier(.2, 0, 0, 1)`. Animate only `opacity`, `transform`, `color`, and `border-color`; avoid animating `height` and `filter`.
 - Do not animate page navigation. Respect `prefers-reduced-motion: reduce` by removing motion.
+- The desktop homepage hero fills the viewport below the 116px site header so the selected project and writing sections begin below the first screen. Keep the single-column mobile flow naturally scrollable.
+- Geeker and Hacker use the same headline size scale as the seasonal themes at mobile, desktop, and wide desktop breakpoints.
+- The Geeker and Hacker terminal illustration follows one shared 24-second loop: show the bug, hold dense binary rain for about six seconds, clear the terminal, type corrected code line by line, show loading progress, then reveal the garden result. Keep theme colors distinct and show a static result when reduced motion is requested.
 
 ## 7. Historical component specifications
 
