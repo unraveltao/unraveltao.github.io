@@ -148,10 +148,10 @@ export function ThemeMenu() {
   }, [open, page])
 
   const pages = [
-    { id: 'themes', label: '主题' },
-    { id: 'reading', label: '排版' },
-    { id: 'contact', label: '联系' },
-    { id: 'support', label: '支持' },
+    { id: 'themes', label: 'Theme' },
+    { id: 'reading', label: 'Typography' },
+    { id: 'contact', label: 'Contact' },
+    { id: 'support', label: 'Support' },
   ] as const
 
   return (
@@ -197,7 +197,7 @@ export function ThemeMenu() {
           </button>
         </div>
 
-        <div className="appearance-tabs" role="tablist" aria-label="个人功能">
+        <div className="appearance-tabs" role="tablist" aria-label="Personal menu">
           {pages.map((item) => (
             <button
               key={item.id}
