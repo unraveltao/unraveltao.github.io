@@ -90,15 +90,15 @@ export default function PostRoute() {
         <h1>{post.title}</h1>
         <dl className="article-properties">
           <div>
-            <dt>Category</dt>
+            <dt><Icon name="category" />Category</dt>
             <dd><span className="post-category-label" data-category={post.category}>{postCategoryName(post.category)}</span></dd>
           </div>
           <div>
-            <dt>Published At</dt>
+            <dt><Icon name="calendar" />Published At</dt>
             <dd><time dateTime={post.date.slice(0, 10)}>{longDate(post.date)}</time></dd>
           </div>
           <div>
-            <dt>Summary</dt>
+            <dt><Icon name="summary" />Summary</dt>
             <dd><p className="article-property-summary">{post.summary}</p></dd>
           </div>
         </dl>

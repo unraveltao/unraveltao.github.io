@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from '~/components/Icon'
 import { CONTENT_ACCOUNTS, CONTACT_METHODS, type ContactLink } from '~/lib/contact-links'
 
 function ContactEntry({ link }: { link: ContactLink }) {
@@ -14,32 +15,48 @@ function ContactEntry({ link }: { link: ContactLink }) {
     }
   }
 
+  if (link.icon && link.href) {
+    return (
+      <li className="contact-social-item">
+        <a
+          className="contact-social-link"
+          href={link.href}
+          target="_blank"
+          rel="me noopener noreferrer"
+          aria-label={`Visit ${link.label} profile`}
+          title={link.label}
+        >
+          <Icon name={link.icon} />
+        </a>
+      </li>
+    )
+  }
+
   return (
     <li>
       <div className="contact-link-row">
-        {link.href ? (
-          <a
-            href={link.href}
-            target={link.href.startsWith('mailto:') ? undefined : '_blank'}
-            rel={link.href.startsWith('mailto:') ? undefined : 'me noopener noreferrer'}
-          >
-            <span>{link.label}</span>
-            {link.handle && <span className="contact-handle">{link.handle}</span>}
-          </a>
-        ) : (
-          <span className="contact-link-label">
-            <span>{link.label}</span>
-            {link.handle && <span className="contact-handle">{link.handle}</span>}
-          </span>
-        )}
+        <div className="contact-link-label">
+          <span className="contact-address"><span>{link.label}:</span> <span className="contact-handle">{link.handle}</span></span>
+          {link.note && (link.href ? (
+            <a className="contact-link-note contact-action-link" href={link.href} target="_blank" rel="noopener noreferrer">{link.note}</a>
+          ) : (
+            <span className="contact-link-note">{link.note}</span>
+          ))}
+        </div>
         {link.handle && (
-          <button type="button" className="contact-copy" aria-label={`复制 ${link.label}`} onClick={copyHandle}>
-            {copyStatus === 'copied' ? '已复制' : '复制'}
+          <button
+            type="button"
+            className="contact-copy"
+            aria-label={copyStatus === 'copied' ? `${link.label} copied` : `Copy ${link.label} account`}
+            title={copyStatus === 'copied' ? 'Copied' : 'Copy account'}
+            onClick={copyHandle}
+          >
+            <Icon name={copyStatus === 'copied' ? 'check' : 'copy'} />
           </button>
         )}
       </div>
-      {copyStatus === 'manual' && <p className="contact-copy-status" role="status">无法复制，请手动选择账号。</p>}
-      {link.note && <p>{link.note}</p>}
+      {copyStatus === 'copied' && <span className="contact-copy-status" role="status">Copied</span>}
+      {copyStatus === 'manual' && <p className="contact-copy-status" role="status">Copy failed. Please select the account and copy it manually.</p>}
     </li>
   )
 }
@@ -58,14 +75,15 @@ function ContactGroup({
   headingLevel: 2 | 3
 }) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3'
+  const isSocialGroup = links.some((link) => link.icon)
   return (
-    <section className="contact-group">
+    <section className={`contact-group${isSocialGroup ? ' contact-social-group' : ''}`}>
       <div className="contact-group-heading">
         <span className="contact-eyebrow">{eyebrow}</span>
         <Heading>{title}</Heading>
       </div>
       {links.length > 0 ? (
-        <ul className="contact-links">
+        <ul className={`contact-links${isSocialGroup ? ' contact-social-links' : ''}`}>
           {links.map((link) => <ContactEntry key={link.id} link={link} />)}
         </ul>
       ) : (
@@ -80,20 +98,20 @@ export function ContactDetails({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) {
     <div className="contact-page">
       <ContactGroup
         eyebrow="01 / CONTACT"
-        title="直接联系"
+        title="Direct contact"
         links={CONTACT_METHODS}
-        emptyMessage="公开联系方式正在整理，确认后会在这里补充。"
+        emptyMessage="Public contact details will appear here once confirmed."
         headingLevel={headingLevel}
       />
       <ContactGroup
         eyebrow="02 / ELSEWHERE"
-        title="其他平台"
+        title="Find me online"
         links={CONTENT_ACCOUNTS}
-        emptyMessage="B 站、小红书、公众号、知乎等账号链接会在确认后补充。"
+        emptyMessage="Social profile links will appear here once confirmed."
         headingLevel={headingLevel}
       />
       <p className="contact-file-note">
-        邮箱联系方式开放后，访客可以通过邮件发送文件；附件需要在邮件编辑界面中自行添加。
+        Email contact will be available for sending files. Add attachments in your email app.
       </p>
     </div>
   )
