@@ -14,8 +14,11 @@
 | `app/lib/site.json` | Site identity, URL, description, and repository link |
 | `app/lib/seo.ts` | Titles, canonical URLs, Open Graph, and structured data |
 | `app/lib/theme.ts` | Theme list, persistence, and initialization behavior |
+| `app/lib/reading-preferences.ts` | Reading typography options, persistence, and synchronous initialization |
+| `app/lib/contact-links.ts` | Author-approved contact methods and external account URLs |
+| `app/lib/post-categories.ts` | Ordered category names and labels derived from `content/post-categories.json` |
 | `app/styles/` | Existing global and theme styles |
-| `content/` | Post, Project, and Series data |
+| `content/` | Post, Project, Series, and registered Post category data |
 | `velite.config.ts` | Post and Project schemas and Markdown processing |
 | `react-router.config.ts` | Static prerender route list |
 | `vite.config.ts` | Development content rebuilds and path aliases |
@@ -28,7 +31,7 @@ Keep the directory structure shallow. Keep page-private logic with its page unti
 
 ## 2. Content and rendering
 
-The content model has two entities: Post and Project. Series are derived from Post metadata. Velite validates and emits build-time JSON and rendered HTML. Pages read content only through `app/lib/content.ts`; do not duplicate publication filtering in routes or components.
+The content model has two entities: Post and Project. A Post's required category is registered in `content/post-categories.json`; the Personal OS category pages use it to group writing. Series are derived from separate Post metadata. Velite validates and emits build-time JSON and rendered HTML. Pages read content only through `app/lib/content.ts`; do not duplicate publication filtering in routes or components.
 
 `pnpm build` runs Velite, cross-file validation, React Router type generation, TypeScript, prerendering, and postbuild processing. Any failure stops the build. `pnpm test` runs the Node built-in test suite for pure validation rules. The deployment workflow runs on pushes to `main` and can also be triggered manually.
 
@@ -38,7 +41,7 @@ Published Posts are selected by `app/lib/publish.ts`: not drafts, with a date no
 
 GitHub Actions uses Node.js 22 and pnpm 9 to build and deploy `build/client/` to GitHub Pages. No separate deployment service is required.
 
-All public URLs use trailing slashes. `app/lib/seo.ts` normalizes canonical URLs; article structured data follows the same convention. The site URL comes from `app/lib/site.json`; RSS and sitemap generation use that configuration. When adding a static route, register it in both `app/routes.ts` and the prerender list in `react-router.config.ts`. Posts, Projects, and Series pages are generated from content. `/personal-os/` is prerendered only when at least one published `personal-os` post exists. Legacy Workshop and Workflow routes remain available.
+All public URLs use trailing slashes. `app/lib/seo.ts` normalizes canonical URLs; article structured data follows the same convention. The site URL comes from `app/lib/site.json`; RSS and sitemap generation use that configuration. When adding a static route, register it in both `app/routes.ts` and the prerender list in `react-router.config.ts`. Posts, Projects, and Series pages are generated from content. `/personal-os/` and one `/personal-os/:category/` page per entry in `content/post-categories.json` are prerendered; each detail page filters published Posts through their required category metadata. `/contact/` is a static page backed by `app/lib/contact-links.ts`; it does not add a content entity. Legacy Workshop and Workflow routes remain available.
 
 The local preview command is `pnpm preview`, backed by `scripts/serve.mjs`. It models missing-slash redirects and not-found behavior; do not substitute `vite preview` when checking those hosting behaviors.
 
@@ -60,6 +63,8 @@ The homepage uses Project ordering and the `featured` Post flag rather than main
 ## 6. Visual themes and performance
 
 The implemented theme list is defined in `app/lib/theme.ts`: `spring`, `summer`, `autumn`, `winter`, `geeker`, and `hacker`. Theme styles are currently spread across `app/styles/garden.css`, `app/styles/garden-themes.css`, and `app/styles/global.css`. The design document still contains historical and aspirational specifications that do not fully match the implementation; treat it as guidance, not proof of current styling. Reconcile it against the rendered site during the planned UI cleanup.
+
+Reading typography remains separate from the six color themes. `app/lib/reading-preferences.ts` validates the local-storage value and supplies defaults to the synchronous head initializer and React provider; the provider restores the HTML data attributes after hydration and applies user changes immediately. CSS scopes these attributes to long-form `.article-body` content. Keep the existing synchronous theme initialization and hydration-time restoration intact.
 
 The historical first-screen JavaScript budget is 130KB gzip. Measurements recorded on 2026-11-02 ranged from about 119KB to 130KB depending on page and build. Those figures are not a current performance baseline. Re-measure after a meaningful UI or dependency change. There is no automated budget gate today.
 
@@ -86,3 +91,4 @@ The figures below describe specific past revisions. They are retained as history
 - **2026-11-02 — removal of inaccurate Lattice posts:** The author confirmed that two earlier Lattice posts contained invented experience and figures. Those posts and their now-empty series were removed. Their claims and old verification notes are not evidence about the project.
 - **2026-11-09 — Personal OS entry:** The `/personal-os/` directory and first method post passed content validation and a production build. The generated entry, post, RSS, sitemap, and trailing-slash canonicals were inspected. Mobile/desktop browser appearance, keyboard behavior, and all-theme visual checks were not completed in that environment.
 - **2026-11-18 — software-learning series:** Six posts and the `restarting-software` Series were added as content. The current `main` revision includes their publication; this note records the content change, not a new architecture decision.
+- **2026-11-22 — Reading preferences and contact page:** Added a static `/contact/` route with account data maintained outside content collections, plus persisted reading typography settings independent of the six color themes.

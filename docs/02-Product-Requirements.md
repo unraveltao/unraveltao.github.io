@@ -15,7 +15,9 @@ The site is a personal homepage, project portfolio, and selected technical writi
 | `/projects/:slug/` | Project details |
 | `/posts/` | Published posts in reverse chronological order, filterable by tags and keywords |
 | `/posts/:slug/` | Post body, table of contents, series navigation, and adjacent posts |
-| `/personal-os/` | Ordered directory of published Posts in the `personal-os` series |
+| `/personal-os/` | Directory of the four registered Post categories |
+| `/personal-os/:category/` | Published Posts filtered to one registered category |
+| `/contact/` | Public contact methods and links to the author's other platforms |
 | `/series/:series/` | Published posts in a series |
 | `/workshop/`, `/workflow/` | Legacy routes retained for existing links, outside the primary navigation |
 | `/404/` | Not-found page; static hosting also receives a root `404.html` |
@@ -24,7 +26,7 @@ The build also generates RSS and a sitemap. There is no separate tag index or Ab
 
 ## 3. Navigation
 
-The primary navigation contains Home, Writing, Personal OS, and Projects. Search, appearance controls, and GitHub remain in the utility area. Workshop is not in the primary navigation. The footer links to GitHub and RSS.
+The primary navigation contains Home, Writing, Personal OS, and Projects. Search, appearance controls, and GitHub remain in the utility area. Workshop is not in the primary navigation. The footer links to Contact, GitHub, and RSS.
 
 ## 4. Page behavior
 
@@ -42,11 +44,19 @@ Below project details, show published Posts whose `project` matches the project 
 
 ### Writing
 
-Posts may contain methods, technical decisions, and practice-based retrospectives. Preserve existing URLs. A newly published Post does not become a homepage feature automatically. The writing list remains available regardless of homepage selection and orders posts newest first on a vertical timeline. Each row connects its date and a small sequence number to the title, summary, and reading time with a fine left rail and node. Keep a little space between the number and node. Use an underline below article content that is long enough to cover the longest title, while remaining inside the article column. Show at most 20 Posts per page; when there are more results, provide previous/next arrows and a compact current/total page indicator, and number rows 01–20 on each page. Do not add year groups, category filters, or tag chips. Post bodies begin at `h2` and do not skip heading levels. Article pages show summary, date, and reading time; tag metadata remains in frontmatter but is not shown in the interface for now. Set `updated` only after a substantive revision.
+Posts may contain methods, technical decisions, and practice-based retrospectives. Preserve existing URLs. A newly published Post does not become a homepage feature automatically. The writing list remains available regardless of homepage selection and orders posts newest first on a vertical timeline. Each row connects its date and a small sequence number to the title, summary, and reading time with a fine left rail and node, and shows its category in the category's seasonal color. Keep a little space between the number and node. Use an underline below article content that is long enough to cover the longest title, while remaining inside the article column. Show at most 20 Posts per page; when there are more results, provide previous/next arrows and a compact current/total page indicator, and number rows 01–20 on each page. Do not add year groups, category filters, or topic-tag chips. Post bodies begin at `h2` and do not skip heading levels. Article pages show Category, Published At, and Summary as labeled properties; do not show publication status. Topic tags remain in frontmatter and can appear as links below the article. Set `updated` only after a substantive revision.
 
 ### Personal OS
 
-`/personal-os/` presents four editorial columns as a responsive card grid: Think, Review, Skill, and Log. The cards explain each column's purpose; they do not assign or list Posts yet. Article placement is an editorial decision and will be organized later, with tags describing each Post's specific topics. Existing Post and Series metadata and all article URLs remain unchanged.
+`/personal-os/` presents four linked editorial categories as a responsive card grid: Thinking, Review, Skill, and Log. Each category page lists published Posts whose required `category` matches that category. The Thinking category is the Personal OS home for thinking articles; the other categories follow the same metadata-driven rule. A category page with no published Posts shows a concise empty state. Existing Post URLs remain unchanged.
+
+### Appearance and reading typography
+
+The header gear opens a compact four-tab personal menu labeled in English: Theme, Typography, Contact, and Support. Show only the selected tab's contents so long controls do not stack into one tall panel. Theme retains the six existing color themes. Typography provides font family (site default, sans, serif), text size, line spacing, and reading width. These preferences apply to long-form Post and Project bodies; navigation, theme colors, article heading hierarchy, and code typography remain stable. Changes apply immediately, persist on the current device, and include a restore-defaults action. Defaults preserve each theme's current body typography. Contact shares the approved links with `/contact/`; Support remains a clearly labeled pending state until the owner supplies a public payment link or QR code. Tab labels and all four page titles use the same compact visual system and remain keyboard operable.
+
+### Contact and other platforms
+
+`/contact/` groups approved public contact methods separately from content-platform accounts. The gear menu's Contact tab uses the same shared component and link data. Link data is maintained in `app/lib/contact-links.ts`; do not publish example values or infer personal details from account metadata. Until approved values are added, show a short pending message in each group. Email links open a message composer; visitors attach files themselves. The footer links to this page. Do not add a new content collection for these static links. The gear menu's Support tab is a placeholder until the owner supplies an approved payment method; do not invent payment links or account details.
 
 ## 5. Content model and authoring
 
@@ -61,7 +71,7 @@ There is no Page collection or `content/pages/` directory.
 
 ### 5.2 Post fields
 
-A Post requires a title, a conclusion-oriented summary, a date, and 1–3 kebab-case tags. The title is at most 40 characters and the summary is 20–160 characters. Slugs and tags use lowercase letters, digits, and hyphens. Optional fields include project, series, order, draft, featured, and updated. A Post in a series requires a positive integer `order`. Personal OS modules use `series: personal-os`. `updated` records a substantive change, not every edit.
+A Post requires a registered category (`thinking`, `review`, `skill`, or `log`), a title, a conclusion-oriented summary, a date, and 1–3 kebab-case tags. The title is at most 40 characters and the summary is 20–160 characters. Slugs and tags use lowercase letters, digits, and hyphens. Optional fields include project, series, order, draft, featured, and updated. A Post in a series requires a positive integer `order`. Personal OS category pages use the Post's category metadata; `series` remains for genuine ordered sequences. `updated` records a substantive change, not every edit.
 
 ### 5.3 Project fields and publishing
 

@@ -15,7 +15,15 @@
   --season-gold:#d89c4e;
   --season-vein:#6f3b25;
   --season-mountain:#b4cbdc;
-  --season-ice:#ccdee9}
+  --season-ice:#ccdee9;
+  --category-thinking:#345c40;
+  --category-thinking-soft:#e7eddc;
+  --category-skill:#146c86;
+  --category-skill-soft:#dceef0;
+  --category-review:#a24d2b;
+  --category-review-soft:#f2e4ce;
+  --category-log:#3e6b92;
+  --category-log-soft:#e3edf6}
 :root[data-theme=summer] {
   --bg:#f7f8f2;
   --surface:#fffef9;
@@ -82,6 +90,14 @@
   --art:#0d1d13;
   --shadow:0 18px 60px #0007;
   --serif:'SFMono-Regular',Consolas,monospace;
+  --category-thinking:#a7d3a9;
+  --category-thinking-soft:#1d3323;
+  --category-skill:#87d4e2;
+  --category-skill-soft:#17313a;
+  --category-review:#e5a078;
+  --category-review-soft:#3b261c;
+  --category-log:#9bc4e8;
+  --category-log-soft:#1e2d3b;
   color-scheme:dark}
 .theme-trigger {
   display:inline-flex;
@@ -118,7 +134,8 @@
 .theme-menu.appearance-panel {
   top:51px;
   right:0;
-  width:376px;
+  width:460px;
+  max-width:calc(100vw - 40px);
   padding:22px;
   background:var(--surface);
   border-radius:12px;
@@ -132,16 +149,60 @@
   align-items:flex-start;
   justify-content:space-between;
   gap:12px;
-  margin-bottom:22px}
+  margin-bottom:13px}
 .appearance-eyebrow {
   font:8px var(--mono);
   letter-spacing:1.3px;
   color:var(--muted)}
-.appearance-header p {
-  font:normal 24px/1.25 Georgia,serif;
-  letter-spacing:-.6px;
+.appearance-tabs {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;
+  margin:0 0 22px;
+  padding:5px;
+  border:1px solid var(--border);
+  border-radius:7px;
+  background:var(--bg)}
+.appearance-tabs button {
+  min-height:35px;
+  border:0;
+  border-radius:4px;
+  background:transparent;
+  color:var(--muted);
+  font:11px var(--mono);
+  transition:background .15s,color .15s}
+.appearance-tabs button:hover {color:var(--text)}
+.appearance-tabs button[aria-selected=true] {
+  background:var(--surface);
   color:var(--text);
-  margin:8px 0 0}
+  box-shadow:0 1px 3px #00000012}
+.appearance-tabs button:focus-visible,.appearance-page:focus-visible {
+  outline:2px solid var(--accent);
+  outline-offset:2px}
+.appearance-page-heading {margin:0 0 22px}
+.appearance-page-heading h2 {
+  margin:8px 0 0;
+  color:var(--text);
+  font:normal 29px/1.2 Georgia,'Times New Roman',serif;
+  letter-spacing:-.55px}
+.appearance-page>.theme-group-label {margin-top:18px}
+.appearance-page>.theme-group-label:first-of-type {margin-top:0}
+.appearance-page .essentials-label {margin-top:18px}
+.appearance-page .contact-page {
+  display:block;
+  max-width:none;
+  padding:0;
+  border:0}
+.appearance-page .contact-group {padding-top:5px}
+.appearance-page .contact-group-heading h3 {font-size:19px;margin:7px 0 10px}
+.appearance-page .contact-links li {padding:9px 0}
+.appearance-page .contact-file-note {margin-bottom:10px}
+.personal-panel-page .contact-full-page-link {margin-top:5px}
+.support-panel-page .appearance-page-heading {margin-bottom:24px}
+.appearance-footer {
+  margin-top:22px;
+  padding-top:12px;
+  border-top:1px solid var(--border)}
 .theme-menu .appearance-close {
   width:29px;
   height:29px;
@@ -799,8 +860,7 @@
   height:61px}
 .theme-grid {
   gap:12px}
-.appearance-header p {
-  font-size:24px}
+.appearance-page-heading h2 {font-size:27px}
 .theme-option-name {
   font-size:12px}
 .theme-option-description {
