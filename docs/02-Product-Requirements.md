@@ -46,7 +46,7 @@ Posts may contain methods, technical decisions, and practice-based retrospective
 
 ### Personal OS
 
-Personal OS reuses Post and Series. `/personal-os/` selects published Posts with `series: personal-os` and sorts them by positive integer `order`. The directory displays each title, summary, and `updated` date, falling back to `date`. Posts retain their `/posts/:slug/` URLs. Adding a module must not require page or route changes. Series names and descriptions are stored in `content/series.json`.
+`/personal-os/` presents four editorial columns as a responsive card grid: Think, Review, Skill, and Log. The cards explain each column's purpose; they do not assign or list Posts yet. Article placement is an editorial decision and will be organized later, with tags describing each Post's specific topics. Existing Post and Series metadata and all article URLs remain unchanged.
 
 ## 5. Content model and authoring
 
