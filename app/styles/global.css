@@ -794,16 +794,7 @@ main {
 
 /* Reading preferences are independent of the six color themes and only affect long-form bodies. */
 .reading-settings {
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
-}
-
-.reading-settings-heading p {
-  margin: -3px 0 15px;
-  color: var(--muted);
-  font-size: 10px;
-  line-height: 1.6;
+  margin: 0;
 }
 
 .reading-setting {
@@ -961,8 +952,33 @@ main {
   font: normal 24px/1.3 var(--serif);
 }
 
+.contact-group-heading h3 {
+  margin: 9px 0 15px;
+  font: normal 21px/1.3 var(--serif);
+}
+
 .contact-pending,
 .contact-file-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.contact-full-page-link {
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 18px;
+  color: var(--accent);
+  font-size: 11px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.personal-panel-message {
+  max-width: 440px;
+  margin: 0;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
   color: var(--muted);
   font-size: 13px;
   line-height: 1.8;

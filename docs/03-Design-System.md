@@ -182,7 +182,8 @@ Show four cards in a two-column desktop grid, matching the Projects cards' restr
 
 ## 13. Reading preferences and contact links
 
-- The header gear panel separates the six color themes from a `Reading Typography` group. Keep each preference group labeled and use compact native buttons with `aria-pressed` state and a visible focus indicator.
+- The header gear opens a compact four-tab personal menu: Theme, Reading, Contact, and Support. Show one tab page at a time. Use a four-column tab row with a theme-aware selected state, `role="tablist"`/`role="tab"`/`role="tabpanel"`, arrow-key navigation, and visible focus. Keep a small uppercase monospace eyebrow and a shared 29px serif page title across all four pages; the theme and reading titles are `Make yourself at home.` and `Adjust long-form text to your comfort.`
+- Theme retains all six existing theme cards. Reading keeps the labeled preference groups and compact buttons with `aria-pressed` states. Contact reuses the same contact rows as `/contact/`; Support shows a restrained pending state until owner-approved payment details are available. The footer status explains that preferences are saved on this device.
 - Reading controls cover site-default/sans/serif font, small/standard/large text, compact/comfortable/relaxed line spacing, and narrow/standard/wide body width. Apply them to long-form Post and Project bodies; retain code typography and the article heading hierarchy.
 - Reading preferences apply immediately, persist on the current device, and include a restore-defaults action. The site-default font and standard text width retain each theme's current appearance.
 - The Contact page uses existing page-head, border, and type tokens. Group direct contact and other-platform links with clear labels; show concise pending copy when no approved details are configured. Keep external links keyboard-visible and do not invent account values.
