@@ -198,7 +198,38 @@
 .appearance-page .contact-links li {padding:9px 0}
 .appearance-page .contact-file-note {margin-bottom:10px}
 .personal-panel-page .contact-full-page-link {margin-top:5px}
-.support-panel-page .appearance-page-heading {margin-bottom:24px}
+.support-panel-page .appearance-page-heading {margin-bottom:18px}
+.support-qr-figure {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  margin:0 auto;
+  text-align:center}
+.support-qr {
+  display:block;
+  width:min(220px, 70vw);
+  aspect-ratio:1;
+  border:1px solid var(--border);
+  border-radius:50%;
+  background:#fff;
+  object-fit:cover}
+.support-qr-figure figcaption {
+  color:var(--muted);
+  font:10px/1.6 var(--mono)}
+.support-pledge {
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  margin:16px 0 0;
+  padding:13px 0 0;
+  border-top:1px solid var(--border);
+  color:var(--text);
+  font:normal 15px/1.6 var(--serif);
+  text-align:center}
+.support-pledge span[lang=en] {
+  color:var(--muted);
+  font:10px/1.6 var(--mono)}
 .appearance-footer {
   margin-top:22px;
   padding-top:12px;

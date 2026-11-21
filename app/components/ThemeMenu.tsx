@@ -312,9 +312,20 @@ export function ThemeMenu() {
                 <span className="appearance-eyebrow">SUPPORT THE WORK</span>
                 <h2 id="support-panel-title">A little support goes a long way.</h2>
               </div>
-              <p className="personal-panel-message" role="status">
-                支持方式还未配置。准备好后，可以在这里添加你提供的收款链接或二维码。
-              </p>
+              <figure className="support-qr-figure">
+                <img
+                  className="support-qr"
+                  src="/assets/support-qr.jpg"
+                  alt="QR code for sending a tip"
+                  width="460"
+                  height="460"
+                />
+                <figcaption>Scan to show your support.</figcaption>
+              </figure>
+              <blockquote className="support-pledge">
+                <span lang="zh-Hans">代码开源，乞讨闭源。</span>
+                <span lang="en">Open-source code. Closed-source begging.</span>
+              </blockquote>
             </section>
           )}
         </div>
