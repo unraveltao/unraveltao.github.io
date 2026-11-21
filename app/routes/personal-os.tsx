@@ -1,51 +1,62 @@
 import type { MetaFunction } from 'react-router'
-import { Link } from 'react-router'
-import { getPublishedPosts } from '~/lib/content'
 import { pageMeta } from '~/lib/seo'
 
 export const meta: MetaFunction = () =>
   pageMeta({
     path: '/personal-os',
     title: 'Personal OS',
-    description: '一套持续迭代的个人方法论：从长期方向到项目实践，再到每天可以完成的行动。',
+    description: 'A personal index for ideas, reviews, reusable skills, and ongoing logs.',
   })
 
-/** 从系列文章直接生成模块导航，新增章节不需要维护第二份清单。 */
-export default function PersonalOs() {
-  const posts = getPublishedPosts()
-    .filter((post) => post.series === 'personal-os')
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+const columns = [
+  {
+    name: 'Think',
+    number: '01',
+    description: '想法、观点与原则，记录我如何理解问题并作出判断。',
+  },
+  {
+    name: 'Review',
+    number: '02',
+    description: '回看一段实践或阶段，整理实际结果、经验与调整。',
+  },
+  {
+    name: 'Skill',
+    number: '03',
+    description: '沉淀可复用的方法、流程与工具实践。',
+  },
+  {
+    name: 'Log',
+    number: '04',
+    description: '记录项目、学习与实验的推进过程、决策和阶段进展。',
+  },
+]
 
+/** A four-column visual index; article curation remains a separate editorial step. */
+export default function PersonalOs() {
   return (
     <>
       <header className="page-head">
         <div className="eyebrow">PERSONAL OS</div>
         <h1>把长期方向，落到每天的行动。</h1>
         <p>
-          这里记录一套仍在实践和调整中的个人方法论。每个模块都从具体问题出发，说明当前做法、更新日期与尚待验证之处。
+          四个栏目分别收纳想法与原则、实践复盘、可复用方法，以及项目和学习过程记录。
         </p>
       </header>
 
-      {posts.length > 0 ? (
-        <ol className="personal-os-list">
-          {posts.map((post) => (
-            <li key={post.slug}>
-              <Link to={`/posts/${post.slug}/`}>
-                <span className="personal-os-order">{String(post.order ?? 0).padStart(2, '0')}</span>
-                <span className="personal-os-copy">
-                  <span className="personal-os-title">{post.title}</span>
-                  <span className="personal-os-summary">{post.summary}</span>
-                  <span className="personal-os-updated">
-                    更新于 <time dateTime={(post.updated ?? post.date).slice(0, 10)}>{post.updated ?? post.date}</time>
-                  </span>
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <p>Personal OS 的第一个模块正在整理中。</p>
-      )}
+      <section className="personal-os-grid" aria-label="Personal OS columns">
+        {columns.map((column) => (
+          <article className="personal-os-card" key={column.name}>
+            <div className="personal-os-card-art" aria-hidden="true">
+              <span className="personal-os-card-index">PERSONAL OS / {column.number}</span>
+              <span className="personal-os-card-word">{column.name}</span>
+            </div>
+            <div className="personal-os-card-body">
+              <h2>{column.name}</h2>
+              <p>{column.description}</p>
+            </div>
+          </article>
+        ))}
+      </section>
     </>
   )
 }
