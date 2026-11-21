@@ -4,6 +4,7 @@ import { DownloadNote } from '~/components/DownloadNote'
 import { Icon } from '~/components/Icon'
 import { Toc } from '~/components/Toc'
 import { getPublishedPosts, type Post } from '~/lib/content'
+import { postCategoryName } from '~/lib/post-categories'
 import { readingTime } from '~/lib/reading-time'
 import { pageMeta } from '~/lib/seo'
 import { seriesName } from '~/lib/series'
@@ -87,19 +88,38 @@ export default function PostRoute() {
       <header className="page-head article-head">
         <div className="eyebrow">WRITING</div>
         <h1>{post.title}</h1>
-        <p>{post.summary}</p>
-        <div className="row-meta">
-          <time dateTime={post.date.slice(0, 10)}>{longDate(post.date)}</time>
-          <span>·</span>
-          <span>{minutes} min read</span>
-          <span>·</span>
-          <span>{updated ? `Updated ${updated}` : 'Note'}</span>
-        </div>
+        <dl className="article-properties">
+          <div>
+            <dt><Icon name="category" />Category</dt>
+            <dd><span className="post-category-label" data-category={post.category}>{postCategoryName(post.category)}</span></dd>
+          </div>
+          <div>
+            <dt><Icon name="calendar" />Published At</dt>
+            <dd><time dateTime={post.date.slice(0, 10)}>{longDate(post.date)}</time></dd>
+          </div>
+          <div>
+            <dt><Icon name="summary" />Summary</dt>
+            <dd><p className="article-property-summary">{post.summary}</p></dd>
+          </div>
+        </dl>
       </header>
 
       <div className="article-layout">
         <div>
           <article className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
+          <div className="article-details-meta">
+            <div className="row-meta">
+              <span>{minutes} min read</span>
+              {updated && <><span>·</span><span>Updated {updated}</span></>}
+            </div>
+            <div className="post-tags" aria-label="文章主题标签">
+              {post.tags.map((tag) => (
+                <Link key={tag} className="tag" to={`/posts/?tag=${encodeURIComponent(tag)}`}>
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          </div>
           <div className="article-bottom">
             <Link className="text-link" to="/posts/">
               <Icon name="arrow" /> Back to writing

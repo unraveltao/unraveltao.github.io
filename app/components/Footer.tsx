@@ -14,6 +14,7 @@ export function Footer() {
         <span>
           © {year} {SITE_NAME}
         </span>
+        <Link to="/contact/">Contact</Link>
         <a href={SITE_REPO} target="_blank" rel="me noopener noreferrer">
           <Icon name="github" className="icon--brand" />
           GitHub

@@ -18,10 +18,9 @@ function readCollection(name: string): ContentItem[] {
 const now = new Date()
 const posts = readCollection('posts').filter((post) => isPublished(post, now))
 const projects = readCollection('projects').filter((project) => !project.draft)
+const postCategories = Object.keys(JSON.parse(readFileSync(new URL('./content/post-categories.json', import.meta.url), 'utf8')))
 
 const series = [...new Set(posts.flatMap((post) => (post.series ? [post.series] : [])))]
-const hasPersonalOs = posts.some((post) => post.series === 'personal-os')
-
 export default {
   ssr: true,
   // 默认是 lazy：客户端导航时去 GET /__manifest 补路由表——静态托管上没有这个端点，
@@ -31,7 +30,9 @@ export default {
   prerender: [
     '/',
     '/posts',
-    ...(hasPersonalOs ? ['/personal-os'] : []),
+    '/personal-os',
+    ...postCategories.map((category) => `/personal-os/${category}`),
+    '/contact',
     '/projects',
     '/workshop',
     '/workflow',

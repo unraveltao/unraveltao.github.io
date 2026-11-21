@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import type { Post } from '~/lib/content'
 import { readingTime } from '~/lib/reading-time'
+import { postCategoryName } from '~/lib/post-categories'
 import { Icon } from './Icon'
 
 const DATE = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', timeZone: 'UTC' })
@@ -33,6 +34,7 @@ export function PostRow({
       )}
       {timeline && <span className="writing-timeline-marker" aria-hidden="true" />}
       <div className={timeline ? 'writing-row-content' : undefined}>
+        <span className="post-category-label" data-category={post.category}>{postCategoryName(post.category)}</span>
         <h3>{post.title}</h3>
         <p>{post.summary}</p>
         {!compact && (
