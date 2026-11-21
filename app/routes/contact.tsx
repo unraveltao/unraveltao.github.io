@@ -11,7 +11,7 @@ export default function ContactRoute() {
   return (
     <>
       <header className="page-head contact-head">
-        <div className="eyebrow">CONTACT & ELSEWHERE</div>
+        <div className="eyebrow">联系与其他平台</div>
         <h1>联系我</h1>
         <p>这里汇总可以联系我的方式，以及我在其他平台发布的内容。</p>
       </header>

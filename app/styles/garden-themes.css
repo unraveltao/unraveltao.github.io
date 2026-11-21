@@ -206,14 +206,21 @@
   gap:10px;
   margin:0 auto;
   text-align:center}
+.support-qr-open {
+  display:block;
+  width:min(260px, 70vw);
+  border:1px solid var(--border);
+  background:#fff;
+  padding:8px}
+.support-qr-open:focus-visible {
+  outline:2px solid var(--accent);
+  outline-offset:3px}
 .support-qr {
   display:block;
-  width:min(220px, 70vw);
+  width:100%;
+  height:auto;
   aspect-ratio:1;
-  border:1px solid var(--border);
-  border-radius:50%;
-  background:#fff;
-  object-fit:cover}
+  object-fit:contain}
 .support-qr-figure figcaption {
   color:var(--muted);
   font:10px/1.6 var(--mono)}

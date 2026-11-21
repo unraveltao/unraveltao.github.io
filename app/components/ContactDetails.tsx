@@ -23,7 +23,7 @@ function ContactEntry({ link }: { link: ContactLink }) {
           href={link.href}
           target="_blank"
           rel="me noopener noreferrer"
-          aria-label={`Visit ${link.label} profile`}
+          aria-label={`打开${link.label}主页`}
           title={link.label}
         >
           <Icon name={link.icon} />
@@ -47,16 +47,16 @@ function ContactEntry({ link }: { link: ContactLink }) {
           <button
             type="button"
             className="contact-copy"
-            aria-label={copyStatus === 'copied' ? `${link.label} copied` : `Copy ${link.label} account`}
-            title={copyStatus === 'copied' ? 'Copied' : 'Copy account'}
+            aria-label={copyStatus === 'copied' ? `${link.label}已复制` : `复制${link.label}账号`}
+            title={copyStatus === 'copied' ? '已复制' : '复制账号'}
             onClick={copyHandle}
           >
             <Icon name={copyStatus === 'copied' ? 'check' : 'copy'} />
           </button>
         )}
       </div>
-      {copyStatus === 'copied' && <span className="contact-copy-status" role="status">Copied</span>}
-      {copyStatus === 'manual' && <p className="contact-copy-status" role="status">Copy failed. Please select the account and copy it manually.</p>}
+      {copyStatus === 'copied' && <span className="contact-copy-status" role="status">已复制</span>}
+      {copyStatus === 'manual' && <p className="contact-copy-status" role="status">复制失败，请手动选择账号复制。</p>}
     </li>
   )
 }
@@ -97,21 +97,21 @@ export function ContactDetails({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) {
   return (
     <div className="contact-page">
       <ContactGroup
-        eyebrow="01 / CONTACT"
-        title="Direct contact"
+        eyebrow="01 / 直接联系"
+        title="联系方式"
         links={CONTACT_METHODS}
-        emptyMessage="Public contact details will appear here once confirmed."
+        emptyMessage="公开联系方式确认后会显示在这里。"
         headingLevel={headingLevel}
       />
       <ContactGroup
-        eyebrow="02 / ELSEWHERE"
-        title="Find me online"
+        eyebrow="02 / 内容平台"
+        title="我的平台账号"
         links={CONTENT_ACCOUNTS}
-        emptyMessage="Social profile links will appear here once confirmed."
+        emptyMessage="平台账号链接确认后会显示在这里。"
         headingLevel={headingLevel}
       />
       <p className="contact-file-note">
-        Email contact will be available for sending files. Add attachments in your email app.
+        邮箱联系方式暂未公开；开放后，可以通过邮件联系并添加附件。
       </p>
     </div>
   )
