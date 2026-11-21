@@ -171,3 +171,8 @@ For the upcoming UI review, first record the specific user-facing problem and th
 ## 11. Current writing timeline (2026-11-21)
 
 The Writing archive uses a reverse-chronological vertical timeline. A fine theme-aware line and small muted nodes sit between the date rail and the article text. Place a small sequence number immediately before each node with a little breathing room, aligned horizontally with the date; each row shows its date, title, summary, and reading time. Use an underline below article content that is long enough to cover the longest title, but keep it within the article column and never let it cross the timeline rail. Show 20 Posts per page; display simple previous/next arrows and the current page over the total only when multiple pages exist. Keep the presentation editorial and quiet: no year dividers, filled cards, category chips, or decorative icons. The whole row remains a keyboard-accessible link with visible focus. On narrow screens, reduce the date and node gutters while preserving the same order and alignment.
+
+
+## 12. Personal OS column cards (2026-11-21)
+
+Show four cards in a two-column desktop grid, matching the Projects cards' restrained art-panel and text-panel treatment. The cards are Think, Review, Skill, and Log. Each has a quiet theme-aware grid illustration, a clear title, and one concise description. Stack the cards in one column on narrow screens. Keep them informational rather than clickable until the owner defines article placement; do not show counts, article links, or inferred topic tags.
