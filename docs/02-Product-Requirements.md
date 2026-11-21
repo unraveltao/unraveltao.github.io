@@ -16,6 +16,7 @@ The site is a personal homepage, project portfolio, and selected technical writi
 | `/posts/` | Published posts in reverse chronological order, filterable by tags and keywords |
 | `/posts/:slug/` | Post body, table of contents, series navigation, and adjacent posts |
 | `/personal-os/` | Ordered directory of published Posts in the `personal-os` series |
+| `/contact/` | Public contact methods and links to the author's other platforms |
 | `/series/:series/` | Published posts in a series |
 | `/workshop/`, `/workflow/` | Legacy routes retained for existing links, outside the primary navigation |
 | `/404/` | Not-found page; static hosting also receives a root `404.html` |
@@ -24,7 +25,7 @@ The build also generates RSS and a sitemap. There is no separate tag index or Ab
 
 ## 3. Navigation
 
-The primary navigation contains Home, Writing, Personal OS, and Projects. Search, appearance controls, and GitHub remain in the utility area. Workshop is not in the primary navigation. The footer links to GitHub and RSS.
+The primary navigation contains Home, Writing, Personal OS, and Projects. Search, appearance controls, and GitHub remain in the utility area. Workshop is not in the primary navigation. The footer links to Contact, GitHub, and RSS.
 
 ## 4. Page behavior
 
@@ -47,6 +48,14 @@ Posts may contain methods, technical decisions, and practice-based retrospective
 ### Personal OS
 
 `/personal-os/` presents four editorial columns as a responsive card grid: Think, Review, Skill, and Log. The cards explain each column's purpose; they do not assign or list Posts yet. Article placement is an editorial decision and will be organized later, with tags describing each Post's specific topics. Existing Post and Series metadata and all article URLs remain unchanged.
+
+### Appearance and reading typography
+
+The header gear opens one panel with two separate groups: the six existing color themes and reading typography preferences. Reading preferences are font family (site default, sans, serif), text size, line spacing, and reading width. They apply to long-form Post and Project bodies; navigation, theme colors, the article heading hierarchy, and code typography remain stable. Changes apply immediately and persist on the current device. The panel offers a restore-defaults action. Defaults preserve each theme's current body typography.
+
+### Contact and other platforms
+
+`/contact/` groups approved public contact methods separately from content-platform accounts. Link data is maintained in `app/lib/contact-links.ts`; do not publish example values or infer personal details from account metadata. Until approved values are added, show a short pending message in each group. Email links open a message composer; visitors attach files themselves. The footer links to this page. Do not add a new content collection for these static links.
 
 ## 5. Content model and authoring
 

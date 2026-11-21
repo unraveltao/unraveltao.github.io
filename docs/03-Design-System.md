@@ -176,3 +176,10 @@ The Writing archive uses a reverse-chronological vertical timeline. A fine theme
 ## 12. Personal OS column cards (2026-11-21)
 
 Show four cards in a two-column desktop grid, matching the Projects cards' restrained art-panel and text-panel treatment. The cards are Think, Review, Skill, and Log. Each has a quiet theme-aware grid illustration, a clear title, and one concise description. Stack the cards in one column on narrow screens. Keep them informational rather than clickable until the owner defines article placement; do not show counts, article links, or inferred topic tags.
+
+## 13. Reading preferences and contact links
+
+- The header gear panel separates the six color themes from a `Reading Typography` group. Keep each preference group labeled and use compact native buttons with `aria-pressed` state and a visible focus indicator.
+- Reading controls cover site-default/sans/serif font, small/standard/large text, compact/comfortable/relaxed line spacing, and narrow/standard/wide body width. Apply them to long-form Post and Project bodies; retain code typography and the article heading hierarchy.
+- Reading preferences apply immediately, persist on the current device, and include a restore-defaults action. The site-default font and standard text width retain each theme's current appearance.
+- The Contact page uses existing page-head, border, and type tokens. Group direct contact and other-platform links with clear labels; show concise pending copy when no approved details are configured. Keep external links keyboard-visible and do not invent account values.

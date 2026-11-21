@@ -11,15 +11,17 @@ import {
 import { Footer } from '~/components/Footer'
 import { Header } from '~/components/Header'
 import { Icon, IconSprite } from '~/components/Icon'
+import { ReadingPreferencesProvider } from '~/components/ReadingPreferencesProvider'
 import { ThemeProvider } from '~/components/ThemeProvider'
 import { SITE_NAME } from '~/lib/site'
 import { resolveTheme, THEME_INIT } from '~/lib/theme'
+import { READING_PREFERENCES_INIT } from '~/lib/reading-preferences'
 import '~/styles/global.css'
 
 /**
- * 内联脚本负责首屏主题（同步执行，避免闪白）。
- * 但 React hydration 会抹掉 <html> 上它不认识的属性，所以 App 里还要用
- * useLayoutEffect 补一次——那是在浏览器下一次绘制之前，用户看不到回退。
+ * Inline scripts synchronously set the initial theme and reading preferences.
+ * React hydration may remove unknown <html> attributes, so the providers restore
+ * them in layout effects before the next browser paint.
  */
 const RESTORE_ON_MOUNT = () => {
   document.documentElement.dataset.theme = resolveTheme()
@@ -45,7 +47,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:locale" content="en_US" />
         <meta name="twitter:card" content="summary_large_image" />
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+        <script dangerouslySetInnerHTML={{ __html: `${THEME_INIT};${READING_PREFERENCES_INIT}` }} />
       </head>
       <body>
         {children}
@@ -61,15 +63,17 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <IconSprite />
-      <a className="skip-link" href="#main">
-        Skip to content
-      </a>
-      <Header />
-      <main id="main" className="shell" tabIndex={-1}>
-        <Outlet />
-      </main>
-      <Footer />
+      <ReadingPreferencesProvider>
+        <IconSprite />
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
+        <Header />
+        <main id="main" className="shell" tabIndex={-1}>
+          <Outlet />
+        </main>
+        <Footer />
+      </ReadingPreferencesProvider>
     </ThemeProvider>
   )
 }
@@ -80,25 +84,27 @@ export function ErrorBoundary() {
 
   return (
     <ThemeProvider>
-      <IconSprite />
-      <a className="skip-link" href="#main">
-        Skip to content
-      </a>
-      <Header />
-      <main id="main" className="shell" tabIndex={-1}>
-        <div className="empty-state" style={{ marginTop: 60 }}>
-          <h1>{notFound ? 'This path hasn’t grown yet.' : 'The garden needs a moment.'}</h1>
-          <p>
-            {notFound
-              ? 'The page may have moved. There’s plenty to explore back at home.'
-              : 'Something broke while rendering this page. Try again, or head back home.'}
-          </p>
-          <a className="button primary" href="/">
-            Back to the garden <Icon name="arrow" />
-          </a>
-        </div>
-      </main>
-      <Footer />
+      <ReadingPreferencesProvider>
+        <IconSprite />
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
+        <Header />
+        <main id="main" className="shell" tabIndex={-1}>
+          <div className="empty-state" style={{ marginTop: 60 }}>
+            <h1>{notFound ? 'This path hasn’t grown yet.' : 'The garden needs a moment.'}</h1>
+            <p>
+              {notFound
+                ? 'The page may have moved. There’s plenty to explore back at home.'
+                : 'Something broke while rendering this page. Try again, or head back home.'}
+            </p>
+            <a className="button primary" href="/">
+              Back to the garden <Icon name="arrow" />
+            </a>
+          </div>
+        </main>
+        <Footer />
+      </ReadingPreferencesProvider>
     </ThemeProvider>
   )
 }

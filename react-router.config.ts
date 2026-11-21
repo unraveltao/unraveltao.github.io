@@ -32,6 +32,7 @@ export default {
     '/',
     '/posts',
     ...(hasPersonalOs ? ['/personal-os'] : []),
+    '/contact',
     '/projects',
     '/workshop',
     '/workflow',

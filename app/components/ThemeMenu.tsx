@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { THEMES, type ThemeConfig } from '~/lib/theme'
+import type { ReadingPreferences } from '~/lib/reading-preferences'
 import { Icon } from './Icon'
+import { useReadingPreferences } from './ReadingPreferencesProvider'
 import { useTheme } from './ThemeProvider'
 
 /**
@@ -32,8 +34,40 @@ function ThemeOption({ config, active, onPick }: { config: ThemeConfig; active: 
   )
 }
 
+function PreferenceChoices<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string
+  value: T
+  options: readonly { value: T; label: string }[]
+  onChange: (value: T) => void
+}) {
+  return (
+    <fieldset className="reading-setting">
+      <legend>{label}</legend>
+      <div className="reading-choice-row">
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            className="reading-choice"
+            aria-pressed={value === option.value}
+            onClick={() => onChange(option.value)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  )
+}
+
 export function ThemeMenu() {
   const { theme, setTheme } = useTheme()
+  const { preferences, setPreferences, resetPreferences } = useReadingPreferences()
   const [open, setOpen] = useState(false)
   const [saved, setSaved] = useState(true)
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -49,6 +83,10 @@ export function ThemeMenu() {
 
   const pick = (id: ThemeConfig['id']) => {
     setSaved(setTheme(id))
+  }
+
+  const changePreference = <K extends keyof ReadingPreferences>(key: K, value: ReadingPreferences[K]) => {
+    setSaved(setPreferences({ ...preferences, [key]: value }))
   }
 
   useEffect(() => {
@@ -142,6 +180,56 @@ export function ThemeMenu() {
             ))}
           </div>
         </div>
+
+        <section className="reading-settings" aria-labelledby="reading-settings-title">
+          <div className="reading-settings-heading">
+            <h2 className="theme-group-label" id="reading-settings-title">READING TYPOGRAPHY</h2>
+            <p>Adjust long-form text to your comfort.</p>
+          </div>
+          <PreferenceChoices<ReadingPreferences['font']>
+            label="Font"
+            value={preferences.font}
+            options={[
+              { value: 'site', label: 'Site default' },
+              { value: 'sans', label: 'Sans' },
+              { value: 'serif', label: 'Serif' },
+            ]}
+            onChange={(value) => changePreference('font', value)}
+          />
+          <PreferenceChoices<ReadingPreferences['size']>
+            label="Text size"
+            value={preferences.size}
+            options={[
+              { value: 'small', label: 'Small' },
+              { value: 'standard', label: 'Standard' },
+              { value: 'large', label: 'Large' },
+            ]}
+            onChange={(value) => changePreference('size', value)}
+          />
+          <PreferenceChoices<ReadingPreferences['lineSpacing']>
+            label="Line spacing"
+            value={preferences.lineSpacing}
+            options={[
+              { value: 'compact', label: 'Compact' },
+              { value: 'comfortable', label: 'Comfort' },
+              { value: 'relaxed', label: 'Relaxed' },
+            ]}
+            onChange={(value) => changePreference('lineSpacing', value)}
+          />
+          <PreferenceChoices<ReadingPreferences['width']>
+            label="Reading width"
+            value={preferences.width}
+            options={[
+              { value: 'narrow', label: 'Narrow' },
+              { value: 'standard', label: 'Standard' },
+              { value: 'wide', label: 'Wide' },
+            ]}
+            onChange={(value) => changePreference('width', value)}
+          />
+          <button type="button" className="reading-reset" onClick={() => setSaved(resetPreferences())}>
+            Restore reading defaults
+          </button>
+        </section>
 
         <div className="appearance-footer">
           <span className="preference-dot" />
