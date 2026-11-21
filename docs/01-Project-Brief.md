@@ -1,6 +1,6 @@
 # Project Positioning and Scope
 
-> Updated on 2026-11-02 under ADR-0012.
+> Updated on 2026-11-22 under ADR-0012.
 
 The site is primarily a personal homepage and portfolio, supported by selected technical writing. It should help visitors understand what I care about, what I have built, and how I make decisions.
 
@@ -21,4 +21,5 @@ Visitors should be able to understand the site's owner, find credible project in
 
 ## Scope
 
-The site presents public information; publishing to external platforms is a separate project. Keep the personal introduction on the homepage rather than adding an About route. Preserve RSS, series, projects, and writing. Keep the legacy Workshop and Workflow URLs accessible, but do not make them primary entry points. Evaluate new tools only when they have clear display value or are needed repeatedly. Consider pagination, subscriptions, or comments only when actual content or reader needs justify them.
+The site presents public information; publishing to external platforms is a separate project. Keep the personal introduction on the homepage rather than adding an About route. Preserve RSS, series, projects, writing, and the four-card Personal OS index. Keep the legacy Workshop and Workflow URLs accessible, but do not make them primary entry points. Evaluate new tools only when they have clear display value or are needed repeatedly. The Writing archive already uses pagination; consider subscriptions or comments only when actual reader needs justify them.
+

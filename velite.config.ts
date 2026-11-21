@@ -36,7 +36,7 @@ function slugFrom(path: string, prefix: string): string {
 
 const posts = defineCollection({
   name: 'Post',
-  pattern: 'posts/**/index.mdx',
+  pattern: 'posts/**/index.{md,mdx}',
   schema: s
     .object({
       title: s.string().min(1).max(40),
@@ -102,3 +102,4 @@ export default defineConfig({
   },
   collections: { posts, projects },
 })
+

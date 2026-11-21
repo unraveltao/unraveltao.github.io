@@ -3,15 +3,16 @@
 ## Project boundaries
 
 - This repository is a static personal website built with Vite 7, React Router 7, and Velite. Content and page code are separate.
-- The only content entities are Post and Project. Posts live in `content/posts/<slug>/index.mdx`; projects live in `content/projects/<slug>/index.mdx`. Methods and related writing use Post plus Series; do not add another content collection.
+- The only content entities are Post and Project. Posts use `content/posts/<slug>/index.md`; legacy `.mdx` Posts remain readable during migration. Projects use `content/projects/<slug>/index.mdx`. Methods and related writing use Post plus Series; do not add another content collection.
 - `app/` contains routes, components, shared logic, and styles. `public/` contains site-wide assets. `scripts/` and `tests/` contain build and content validation code.
 - `.velite/`, `.react-router/`, and `build/` are generated directories. Do not edit them by hand.
 
 ## Content rules
 
-- `velite.config.ts` is the single source of truth for frontmatter fields and validation. A Post requires a title, a 20–160 character summary, a date, and 1–3 kebab-case tags.
-- Personal OS posts use `series: personal-os` and a positive integer `order`. Its navigation is generated from published posts; adding a module must not require page or route changes.
-- Do not use an `h1` in post bodies. Begin at `h2` and do not skip heading levels. Add a language to code fences. Post images normally use a relative path to the same post directory and include descriptive alt text. Methodology SVGs may live in `public/assets/` and be referenced as `/assets/<name>.svg`. Internal links must use trailing slashes.
+- `velite.config.ts` is the source of truth for frontmatter field shapes. A Post requires a registered `category`, title, a 20-160 character summary, publication `date`, and 1-3 kebab-case tags. Categories are Thinking, Review, Skill, and Log, registered in `content/post-categories.json`; tags describe topics.
+- Use `series` only for a genuine ordered sequence, with a positive integer `order`; do not use Series as broad Post categories. Personal OS category pages are selected by the Post's explicit `category` field.
+- Write new Posts in plain Markdown (`index.md`). `.mdx` remains supported for existing Posts; do not add MDX components or migrate content solely to change extensions.
+- Do not use an `h1` in Post bodies. Begin at `h2` and do not skip heading levels. Add a language to code fences. Post images normally use a relative path to the same post directory and include descriptive alt text. Methodology SVGs may live in `public/assets/` and be referenced as `/assets/<name>.svg`. Internal links must use trailing slashes.
 - Published slugs and dates are stable. Do not delete, overwrite, or rewrite existing posts or images unless the task explicitly identifies the content to change.
 - Do not invent personal experiences, project facts, or outcomes. Clearly label unverified methods and results as unverified.
 
@@ -39,3 +40,4 @@ The release branch is `main`; `.github/workflows/deploy.yml` deploys the site. R
 ```bash
 git push git@github.com:unraveltao/unraveltao.github.io.git main
 ```
+
