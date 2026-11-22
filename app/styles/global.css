@@ -307,6 +307,19 @@ main {
   .terminal-art {
     height: auto;
   }
+
+  /* The animated frames are absolutely positioned, so they cannot give the
+     percentage-height screen an intrinsic height when terminal-art is auto. */
+  .terminal-screen {
+    height: auto;
+    min-height: 220px;
+    font-size: 12px;
+  }
+
+  .terminal-frame {
+    gap: 8px;
+    padding: 18px 16px;
+  }
 }
 
 /* ---------- 代码块窗口（rehype-code-window 产出） ---------- */
